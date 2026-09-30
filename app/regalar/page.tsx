@@ -104,7 +104,7 @@ export default function RegalarPage() {
         <div className="bg-surface-2 rounded-2xl border border-line p-4 mb-6 flex items-start gap-3">
           <Info className="w-5 h-5 text-warmth shrink-0 mt-0.5" />
           <p className="text-xs text-muted leading-relaxed">
-            Sube fotos claras del objeto (hasta 4 imágenes). Recuerda que debe estar en buen estado y ser útil para otra persona.
+            Sube fotos claras o un video corto (máx 60s) del objeto (hasta 4 archivos). Recuerda que debe estar en buen estado y ser útil para otra persona.
           </p>
         </div>
 
@@ -118,7 +118,7 @@ export default function RegalarPage() {
             
             <input 
               type="file" 
-              accept="image/png, image/jpeg, image/jpg"
+              accept="image/*,video/*"
               multiple 
               className="hidden" 
               ref={fileInputRef}
