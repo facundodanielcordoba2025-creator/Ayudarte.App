@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FACUTEAYUDA — Contanos tu sueño",
+  title: "AYUDARTE.APP — Contanos tu sueño",
   description: "Contanos tu sueño. Quizás podamos hacerlo realidad.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {

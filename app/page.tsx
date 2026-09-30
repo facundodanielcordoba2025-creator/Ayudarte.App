@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { HeartHandshake, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles } from "lucide-react";
+import { useGifts } from "@/hooks/useGifts";
 
 const MOTIVATION_QUOTES = [
   { quote: "El futuro pertenece a aquellos que creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
@@ -45,6 +46,7 @@ const MOTIVATION_QUOTES = [
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
   const [reclamarModal, setReclamarModal] = useState<{ title: string; image: string } | null>(null);
+  const { gifts } = useGifts();
   
   return (
     <div className="pb-28 animate-in fade-in duration-500">
@@ -52,21 +54,17 @@ export default function Home() {
       <section className="px-6 pt-16 pb-8 bg-surface-2 border-b border-line relative overflow-hidden">
 
 
-        <h1 className="sr-only">FACUTEAYUDA</h1>
-        <div className="relative z-10 mb-4 w-64 mx-auto md:mx-0 flex justify-center md:justify-start">
+        <h1 className="sr-only">AYUDARTE.APP</h1>
+        <div className="relative z-10 mb-6 w-full max-w-sm mx-auto md:mx-0 flex justify-center md:justify-start px-4 md:px-0">
           {/* Luz de fondo naranja */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 h-52 bg-star/40 blur-[45px] rounded-full pointer-events-none"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-star/40 blur-[60px] rounded-full pointer-events-none"></div>
           
           <img 
-            src="/logo.jpg" 
-            alt="FACUTEAYUDA Logo" 
-            className="relative w-full h-auto rounded-[2rem] drop-shadow-[0_0_25px_rgba(255,102,0,0.5)] border border-white/5"
+            src="/hero_image.png" 
+            alt="AYUDARTE.APP Logo" 
+            className="relative w-full h-auto drop-shadow-[0_0_30px_rgba(255,102,0,0.6)]"
           />
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-muted relative z-10 max-w-[80%]">
-          Conectamos personas con un sueño pendiente con una comunidad dispuesta a ayudar. 
-          Creemos en que, trabajando juntos, los sueños se hacen realidad.
-        </p>
         
         <div className="mt-5 relative z-10 flex flex-row w-full gap-3">
           <button
@@ -125,43 +123,31 @@ export default function Home() {
         </p>
 
         <div className="grid grid-cols-2 gap-3">
-          {/* Regalo 1 */}
-          <div className="bg-surface rounded-2xl border border-line p-3 shadow-sm flex flex-col group overflow-hidden">
-            <div className="w-full h-28 relative rounded-xl overflow-hidden mb-3 border border-line/50">
-              <img 
-                src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&auto=format&fit=crop&q=80" 
-                alt="Bicicleta Infantil"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+          {gifts.map(gift => (
+            <div key={gift.id} className="bg-surface rounded-2xl border border-line p-3 shadow-sm flex flex-col group overflow-hidden">
+              <div className="w-full h-28 relative rounded-xl overflow-hidden mb-3 border border-line/50">
+                <img 
+                  src={gift.images[0]} 
+                  alt={gift.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="font-bold text-cream text-sm line-clamp-1">{gift.title}</h3>
+              <p className="text-xs text-muted mt-1 mb-3 line-clamp-2">{gift.description}</p>
+              <button 
+                onClick={() => setReclamarModal({ title: gift.title, image: gift.images[0] })}
+                className="mt-auto w-full bg-star/10 text-star font-bold text-xs py-2 rounded-lg hover:bg-star/20 transition-colors"
+              >
+                Reclamar
+              </button>
             </div>
-            <h3 className="font-bold text-cream text-sm">Bicicleta Infantil</h3>
-            <p className="text-xs text-muted mt-1 mb-3">Usada en muy buen estado. Rodado 16.</p>
-            <button 
-              onClick={() => setReclamarModal({ title: "Bicicleta Infantil", image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&auto=format&fit=crop&q=80" })}
-              className="mt-auto w-full bg-star/10 text-star font-bold text-xs py-2 rounded-lg hover:bg-star/20 transition-colors"
-            >
-              Reclamar
-            </button>
-          </div>
-
-          {/* Regalo 2 */}
-          <div className="bg-surface rounded-2xl border border-line p-3 shadow-sm flex flex-col group overflow-hidden">
-            <div className="w-full h-28 relative rounded-xl overflow-hidden mb-3 border border-line/50">
-              <img 
-                src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&auto=format&fit=crop&q=80" 
-                alt="Lote de Libros"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+          ))}
+          
+          {gifts.length === 0 && (
+            <div className="col-span-2 text-center py-8 border-2 border-dashed border-line rounded-2xl">
+              <p className="text-muted text-sm">Aún no hay regalos disponibles.</p>
             </div>
-            <h3 className="font-bold text-cream text-sm">Lote de Libros</h3>
-            <p className="text-xs text-muted mt-1 mb-3">Libros de cuentos y manuales escolares.</p>
-            <button 
-              onClick={() => setReclamarModal({ title: "Lote de Libros", image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&auto=format&fit=crop&q=80" })}
-              className="mt-auto w-full bg-star/10 text-star font-bold text-xs py-2 rounded-lg hover:bg-star/20 transition-colors"
-            >
-              Reclamar
-            </button>
-          </div>
+          )}
         </div>
       </section>
 
@@ -218,7 +204,7 @@ export default function Home() {
                   Me di cuenta de que muchas personas tienen sueños pendientes y que, a nuestro alrededor, hay una comunidad entera dispuesta a ayudar si se les da la herramienta correcta.
                 </p>
                 <p>
-                  Así nació <strong>Facuteayuda</strong>. Una plataforma para conectar a quienes necesitan un empujón con aquellos que tienen ganas de darlo. 
+                  Así nació <strong>Ayudarte.app</strong>. Conectamos personas con un sueño pendiente con una comunidad dispuesta a ayudar. Creemos en que, trabajando juntos, los sueños se hacen realidad.
                 </p>
                 <p>
                   Pero esta plataforma es solo una parte de mi viaje. A lo largo de mi vida aprendí lecciones muy duras, cometí errores, caí y me volví a levantar. Para inspirar a más personas y dejarle un legado a mi hija, decidí escribir un libro contando cada paso y cada desafío.

@@ -4,10 +4,10 @@ import type { MetadataRoute } from "next";
 export const dynamic = "force-static";
 
 // Next.js genera /manifest.webmanifest automáticamente a partir de esto.
-// Esto es lo que permite "Instalar FACUTEAYUDA como PWA" desde el navegador.
+// Esto es lo que permite "Instalar AYUDARTE.APP como PWA" desde el navegador.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FACUTEAYUDA",
+    name: "AYUDARTE.APP",
     short_name: "Facu Ayuda",
     description: "Contanos tu sueño. Quizás podamos hacerlo realidad.",
     start_url: "/",

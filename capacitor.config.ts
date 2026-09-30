@@ -1,10 +1,10 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
-// Config de Capacitor para empaquetar la PWA de FACUTEAYUDA como app Android.
+// Config de Capacitor para empaquetar la PWA de AYUDARTE.APP como app Android.
 // webDir apunta a la carpeta que genera `next build` en modo export ("out").
 const config: CapacitorConfig = {
-  appId: 'com.facuteayuda.app',
-  appName: 'FACUTEAYUDA',
+  appId: 'com.ayudarte.app.app',
+  appName: 'AYUDARTE.APP',
   webDir: 'out',
   android: {
     allowMixedContent: false,
