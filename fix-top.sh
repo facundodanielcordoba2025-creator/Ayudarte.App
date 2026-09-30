@@ -1,0 +1,1 @@
+sed -i '' 's/import { CircleUserRound, Settings, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";/import { CircleUserRound, Settings, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";\nimport { AuthModal } from "\@\/components\/AuthModal";\nimport { useState } from "react";/g' app/perfil/page.tsx

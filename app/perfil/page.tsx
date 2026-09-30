@@ -1,8 +1,11 @@
 "use client";
 
 import { CircleUserRound, Settings, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";
+import { AuthModal } from "@/components/AuthModal";
+import { useState } from "react";
 
 export default function PerfilPage() {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   return (
     <div className="pb-28 min-h-screen bg-surface-2 animate-in fade-in duration-500">
       
@@ -25,7 +28,7 @@ export default function PerfilPage() {
             </p>
           </div>
         </div>
-        <button className="w-full mt-4 bg-star text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(255,102,0,0.3)] active:scale-95 transition-transform">
+        <button onClick={() => setIsAuthOpen(true)} className="w-full mt-4 bg-star text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(255,102,0,0.3)] active:scale-95 transition-transform">
           INICIAR SESIÓN / REGISTRARSE
         </button>
       </div>
@@ -132,6 +135,7 @@ export default function PerfilPage() {
         </details>
       </div>
 
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   );
 }
