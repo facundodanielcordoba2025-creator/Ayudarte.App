@@ -45,7 +45,7 @@ const MOTIVATION_QUOTES = [
 
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
-  const [reclamarModal, setReclamarModal] = useState<{ title: string; image: string } | null>(null);
+  const [reclamarModal, setReclamarModal] = useState<{ title: string; image: string; submitted?: boolean } | null>(null);
   const { gifts } = useGifts();
   
   return (
