@@ -88,7 +88,7 @@ export default function ContarMiSuenoPage() {
       {/* Header */}
       <div className="px-6 pt-10 pb-4 border-b border-line bg-surface/50 sticky top-0 z-10 backdrop-blur-md">
         <h1 className="font-display text-2xl font-semibold text-cream">
-          Contá tu sueño
+          Contá tu sueño {process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "" : <span className="text-red-500 text-sm"> (Sin conexión a Base de Datos)</span>}
         </h1>
         <p className="mt-1 text-xs text-muted">
           Paso {step} de 3: {step === 1 ? 'Tu historia' : step === 2 ? 'Multimedia' : 'Revisión'}
