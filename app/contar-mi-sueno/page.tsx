@@ -160,9 +160,9 @@ export default function ContarMiSuenoPage() {
               Una imagen o un video vale más que mil palabras. Las historias con fotos tienen un <span className="text-star font-semibold">70% más de chances</span> de cumplirse (Máx 60s o 4 archivos).
             </p>
             
-            <input type="file" accept="image/*,video/*" multiple className="hidden" ref={fileInputRef} onChange={handleFileChange} />
-            <input type="file" accept="image/*" capture="environment" className="hidden" ref={cameraInputRef} onChange={handleFileChange} />
-            <input type="file" accept="video/*" capture="environment" className="hidden" ref={videoInputRef} onChange={handleFileChange} />
+            <input type="file" accept="image/*,video/*" multiple className="opacity-0 w-0 h-0 absolute" ref={fileInputRef} onChange={handleFileChange} />
+            <input type="file" accept="image/*" capture="environment" className="opacity-0 w-0 h-0 absolute" ref={cameraInputRef} onChange={handleFileChange} />
+            <input type="file" accept="video/*" capture="environment" className="opacity-0 w-0 h-0 absolute" ref={videoInputRef} onChange={handleFileChange} />
 
             <div className="grid grid-cols-2 gap-4">
               <button onClick={() => cameraInputRef.current?.click()} className="flex flex-col items-center justify-center gap-3 bg-surface border border-line border-dashed rounded-2xl p-6 text-muted hover:border-star hover:text-star transition-colors">
