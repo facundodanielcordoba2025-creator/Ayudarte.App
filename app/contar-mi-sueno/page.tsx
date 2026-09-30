@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Camera, Video, UploadCloud, ChevronRight, Star, X } from "lucide-react";
+import { AuthModal } from "@/components/AuthModal";
 import { useRouter } from "next/navigation";
 
 export default function ContarMiSuenoPage() {
@@ -15,6 +16,8 @@ export default function ContarMiSuenoPage() {
   const [media, setMedia] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +52,11 @@ export default function ContarMiSuenoPage() {
       return;
     }
 
+    if (!isLoggedIn) {
+      alert("Para publicar tu sueño y poder contactarte si alguien quiere ayudar, primero debes registrarte o iniciar sesión.");
+      setIsAuthOpen(true);
+      return;
+    }
     setIsPublishing(true);
 
     try {
@@ -243,6 +251,7 @@ export default function ContarMiSuenoPage() {
           </button>
         </div>
       </div>
+      <AuthModal isOpen={isAuthOpen} onClose={() => { setIsAuthOpen(false); setIsLoggedIn(true); }} />
     </div>
   );
 }
