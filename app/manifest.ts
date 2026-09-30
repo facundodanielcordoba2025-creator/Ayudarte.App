@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "AYUDARTE.APP",
-    short_name: "Facu Ayuda",
+    short_name: "Ayudarte.App",
     description: "Contanos tu sueño. Quizás podamos hacerlo realidad.",
     start_url: "/",
     scope: "/",

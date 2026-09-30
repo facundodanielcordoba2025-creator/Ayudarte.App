@@ -4,7 +4,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 // webDir apunta a la carpeta que genera `next build` en modo export ("out").
 const config: CapacitorConfig = {
   appId: 'com.ayudarte.app.app',
-  appName: 'AYUDARTE.APP',
+  appName: 'Ayudarte.App',
   webDir: 'out',
   android: {
     allowMixedContent: false,
