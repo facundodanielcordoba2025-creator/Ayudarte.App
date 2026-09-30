@@ -1,0 +1,126 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Users, Star, Gift, Search, Trash2, Shield } from "lucide-react";
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("usuarios");
+  const [users, setUsers] = useState<any[]>([]);
+  const [dreams, setDreams] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Escuchar Usuarios
+    const qUsers = query(collection(db, "users"));
+    const unsubUsers = onSnapshot(qUsers, (snap) => {
+      setUsers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    // Escuchar Sueños
+    const qDreams = query(collection(db, "dreams"), orderBy("createdAt", "desc"));
+    const unsubDreams = onSnapshot(qDreams, (snap) => {
+      setDreams(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    return () => { unsubUsers(); unsubDreams(); };
+  }, []);
+
+  const deleteDream = async (id: string) => {
+    if (confirm("¿Seguro que quieres borrar este sueño?")) {
+      await deleteDoc(doc(db, "dreams", id));
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    if (confirm("¿Seguro que quieres borrar este usuario? Perderá el acceso.")) {
+      await deleteDoc(doc(db, "users", id));
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-surface-2 p-6 pb-28">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 bg-red-500/20 rounded-2xl flex items-center justify-center">
+          <Shield className="w-6 h-6 text-red-500" />
+        </div>
+        <div>
+          <h1 className="font-display text-2xl font-bold text-cream">Panel de Control</h1>
+          <p className="text-sm text-muted">Centro de mando de Ayudarte.App</p>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 custom-scrollbar">
+        <button 
+          onClick={() => setActiveTab("usuarios")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "usuarios" ? "bg-star text-night" : "bg-surface text-muted"}`}
+        >
+          <Users className="w-4 h-4" /> Usuarios ({users.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab("suenos")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "suenos" ? "bg-star text-night" : "bg-surface text-muted"}`}
+        >
+          <Star className="w-4 h-4" /> Sueños Activos ({dreams.length})
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="bg-surface border border-line rounded-3xl p-5 shadow-xl">
+        
+        {activeTab === "usuarios" && (
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="w-5 h-5 text-muted absolute left-4 top-1/2 -translate-y-1/2" />
+              <input type="text" placeholder="Buscar usuario..." className="w-full bg-surface-2 border border-line rounded-xl pl-11 pr-4 py-3 text-sm text-cream focus:outline-none focus:border-star" />
+            </div>
+
+            {users.length === 0 ? (
+              <p className="text-center text-muted py-8 text-sm">Todavía no hay usuarios registrados.</p>
+            ) : (
+              <div className="space-y-3">
+                {users.map(u => (
+                  <div key={u.id} className="flex items-center justify-between p-4 bg-surface-2 rounded-xl border border-line/50">
+                    <div>
+                      <h4 className="font-bold text-cream text-sm">{u.name || u.email}</h4>
+                      <p className="text-xs text-muted mt-1">{u.provincia} • {u.telefono}</p>
+                    </div>
+                    <button onClick={() => deleteUser(u.id)} className="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "suenos" && (
+          <div className="space-y-4">
+            {dreams.length === 0 ? (
+              <p className="text-center text-muted py-8 text-sm">No hay sueños publicados.</p>
+            ) : (
+              <div className="space-y-3">
+                {dreams.map(d => (
+                  <div key={d.id} className="p-4 bg-surface-2 rounded-xl border border-line/50">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-bold text-cream text-sm">{d.title}</h4>
+                        <p className="text-xs text-muted mt-1 line-clamp-2">{d.history}</p>
+                      </div>
+                      <button onClick={() => deleteDream(d.id)} className="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 shrink-0 ml-3">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
