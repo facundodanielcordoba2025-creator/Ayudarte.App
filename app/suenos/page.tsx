@@ -1,30 +1,30 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { MapPin, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import Link from "next/link";
-
-const suenos = [
-  {
-    id: 1,
-    nombre: "Roberto",
-    apellido: "Gómez",
-    localidad: "Rosario",
-    provincia: "Santa Fe",
-    historia: "Necesito comprar herramientas de carpintería para volver a armar mi taller que perdí en la última tormenta. Con eso podría volver a trabajar y mantener a mi familia.",
-    fecha: "Hace 2 horas"
-  },
-  {
-    id: 2,
-    nombre: "Silvia",
-    apellido: "Pérez",
-    localidad: "San Justo",
-    provincia: "Buenos Aires",
-    historia: "Estamos armando una biblioteca popular en el barrio y nos faltan estanterías y libros infantiles para que los chicos puedan venir a leer después del colegio.",
-    fecha: "Hace 5 horas"
-  }
-];
+import { useDreams } from "@/hooks/useDreams";
+import { useState } from "react";
 
 export default function SuenosPage() {
+  const { dreams, loading } = useDreams();
+  const [modalAyudar, setModalAyudar] = useState<string | null>(null);
+
+  const handleShare = async (title: string, history: string) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Mira este sueño en Ayudarte.App: "${history}"`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log("Error al compartir", err);
+      }
+    } else {
+      alert("La función de compartir no está disponible en este navegador.");
+    }
+  };
+
   return (
     <div className="pb-28 min-h-screen bg-surface-2">
       <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-10">
@@ -40,36 +40,85 @@ export default function SuenosPage() {
       </div>
 
       <div className="px-6 pt-6 space-y-4">
-        {suenos.map((s) => (
+        {loading && <p className="text-cream text-center">Cargando sueños...</p>}
+        
+        {!loading && dreams.length === 0 && (
+          <div className="text-center bg-surface border border-line rounded-2xl p-8">
+            <p className="text-muted text-sm">Todavía no hay sueños publicados.</p>
+            <p className="text-star font-bold text-sm mt-2">¡Sé el primero en contar el tuyo!</p>
+          </div>
+        )}
+
+        {dreams.map((s) => (
           <article key={s.id} className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <h3 className="font-bold text-cream text-lg">{s.nombre} {s.apellido}</h3>
+                <h3 className="font-bold text-cream text-lg">{s.title}</h3>
                 <div className="flex items-center gap-1 text-xs font-medium text-muted mt-1">
                   <MapPin className="w-3 h-3 text-warmth" />
-                  {s.localidad}, {s.provincia}
+                  {s.isForMe ? "Para sí mismo" : "Para alguien más"}
                 </div>
               </div>
-              <span className="text-[10px] text-muted bg-surface-2 px-2 py-1 rounded-md font-medium">
-                {s.fecha}
-              </span>
             </div>
             
-            <p className="text-sm text-cream leading-relaxed mt-2">
-              "{s.historia}"
+            <p className="text-sm text-cream leading-relaxed mt-2 whitespace-pre-wrap">
+              "{s.history}"
             </p>
+
+            {s.media && s.media.length > 0 && (
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+                {s.media.map((url, idx) => (
+                  <div key={idx} className="w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-line">
+                    {url.includes("video") ? (
+                       <div className="w-full h-full bg-surface-2 flex items-center justify-center relative">
+                         <video src={url} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                         <VideoIcon className="w-6 h-6 text-cream relative z-10" />
+                       </div>
+                    ) : (
+                      <img src={url} className="w-full h-full object-cover" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
             
             <div className="mt-4 pt-4 border-t border-line flex gap-3">
-              <button className="flex-1 bg-surface-2 hover:bg-line text-xs font-bold text-cream py-2.5 rounded-lg transition-colors">
+              <button 
+                onClick={() => handleShare(s.title, s.history)}
+                className="flex-1 bg-surface-2 hover:bg-line text-xs font-bold text-cream py-2.5 rounded-lg transition-colors"
+              >
                 Compartir
               </button>
-              <button className="flex-1 bg-star/10 hover:bg-star/20 text-xs font-bold text-star py-2.5 rounded-lg transition-colors">
+              <button 
+                onClick={() => setModalAyudar(s.title)}
+                className="flex-1 bg-star/10 hover:bg-star/20 text-xs font-bold text-star py-2.5 rounded-lg transition-colors"
+              >
                 Ayudar
               </button>
             </div>
           </article>
         ))}
       </div>
+
+      {modalAyudar && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-night/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-surface border border-line rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-in zoom-in-95">
+            <div className="w-16 h-16 bg-star/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">🤝</span>
+            </div>
+            <h3 className="font-bold text-cream text-lg mb-2">¡Gracias por ayudar!</h3>
+            <p className="text-sm text-muted mb-6">
+              Le avisaremos a la persona que publicaste "{modalAyudar}" que estás dispuesto a hacer su sueño realidad.
+            </p>
+            <button 
+              onClick={() => setModalAyudar(null)}
+              className="w-full bg-star text-white font-bold py-3 rounded-xl active:scale-95 transition-transform"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
