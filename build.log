@@ -1,0 +1,38 @@
+
+> facuteayuda@0.1.0 build:capacitor
+> BUILD_TARGET=capacitor next build
+
+▲ Next.js 16.3.1 (Turbopack)
+✓ Running next.config.ts took 90ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 13.8min
+  Running TypeScript ...
+app/contar-mi-sueno/page.tsx(4,64): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/donadores/page.tsx(3,47): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/libro/page.tsx(3,52): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/offline/page.tsx(3,25): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/page.tsx(5,179): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/page.tsx(240,32): error TS2339: Property 'submitted' does not exist on type '{ title: string; image: string; }'.
+app/page.tsx(258,36): error TS2339: Property 'submitted' does not exist on type '{ title: string; image: string; }'.
+app/page.tsx(263,31): error TS2339: Property 'submitted' does not exist on type '{ title: string; image: string; }'.
+app/page.tsx(278,73): error TS2353: Object literal may only specify known properties, and 'submitted' does not exist in type '{ title: string; image: string; } | ((prevState: { title: string; image: string; } | null) => { title: string; image: string; } | null)'.
+app/perfil/page.tsx(3,108): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/regalar/page.tsx(4,50): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+app/suenos/page.tsx(3,24): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+components/BottomNav.tsx(5,71): error TS7016: Could not find a declaration file for module 'lucide-react'. '/Users/facundocordoba/Documents/facuteayuda/node_modules/lucide-react/dist/cjs/lucide-react.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/lucide-react` if it exists or add a new declaration (.d.ts) file containing `declare module 'lucide-react';`
+lib/firebase.ts(3,66): error TS2307: Cannot find module 'firebase/app' or its corresponding type declarations.
+lib/firebase.ts(4,36): error TS2307: Cannot find module 'firebase/auth' or its corresponding type declarations.
+lib/firebase.ts(5,46): error TS2307: Cannot find module 'firebase/firestore' or its corresponding type declarations.
+lib/firebase.ts(6,50): error TS2307: Cannot find module 'firebase/storage' or its corresponding type declarations.
+Failed to type check.
+
