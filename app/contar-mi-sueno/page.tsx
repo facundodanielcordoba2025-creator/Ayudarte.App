@@ -73,11 +73,11 @@ export default function ContarMiSuenoPage() {
         createdAt: Date.now(),
       });
       
-      alert("¡Tu sueño fue publicado con éxito!");
+      
       router.push("/suenos");
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al publicar. Intenta nuevamente.");
+      setHistory("ERROR: " + (error instanceof Error ? error.message : String(error)));
     } finally {
       setIsPublishing(false);
     }
