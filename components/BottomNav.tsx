@@ -6,7 +6,7 @@ import { Home, Sparkles, CircleUserRound, Heart, MessageCircle } from "lucide-re
 
 const TABS = [
   { href: "/", label: "Inicio", icon: Home },
-  { href: "/suenos", label: "Sueños", icon: Sparkles },
+  
   { href: "/donadores", label: "Superhéroes", icon: Heart },
   { href: "/perfil", label: "Mi Cuenta", icon: CircleUserRound },
 ] as const;
@@ -20,7 +20,7 @@ export default function BottomNav() {
       className="fixed bottom-0 inset-x-0 z-40 border-t border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <ul className="grid grid-cols-4 items-center py-2">
+      <ul className="grid grid-cols-3 items-center py-2">
         {TABS.map(({ href, label, icon: Icon }) => {
           // Coincidencia exacta para Inicio, y parcial para las demás rutas
           const active = href === "/" ? pathname === href : pathname?.startsWith(href);

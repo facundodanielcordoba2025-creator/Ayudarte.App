@@ -1,17 +1,19 @@
 "use client";
 
-import { CircleUserRound, Settings, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [myDreams, setMyDreams] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
