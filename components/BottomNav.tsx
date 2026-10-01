@@ -17,7 +17,7 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 border-t border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] md:rounded-b-[2.2rem] md:border-x-4 md:border-b-4 md:border-surface md:mb-4"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40  bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] md:rounded-b-[2.2rem] md:border-x-4 md:border-b-4 md:border-surface md:mb-4"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <ul className="grid grid-cols-3 items-center py-2">
