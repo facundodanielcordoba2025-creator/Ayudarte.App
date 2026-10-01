@@ -2,10 +2,25 @@
 
 import { CircleUserRound, Settings, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
+import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { Trash2 } from "lucide-react";
+import { useEffect } from "react";
 import { useState } from "react";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [myDreams, setMyDreams] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const uid = localStorage.getItem("ayudarte_user_id");
+    setUserId(uid);
+    if (uid) {
+      const q = query(collection(db, "dreams"), where("userId", "==", uid));
+      return onSnapshot(q, (snap) => setMyDreams(snap.docs.map(d => ({id: d.id, ...d.data()}))));
+    }
+  }, []);
   return (
     <div className="pb-28 min-h-screen bg-surface-2 animate-in fade-in duration-500">
       

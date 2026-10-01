@@ -4,10 +4,13 @@ import { MapPin, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import Link from "next/link";
 import { useDreams } from "@/hooks/useDreams";
 import { useState } from "react";
+import { AuthModal } from "@/components/AuthModal";
+import { IntentionModal } from "@/components/IntentionModal";
 
 export default function SuenosPage() {
   const { dreams, loading } = useDreams();
-  const [modalAyudar, setModalAyudar] = useState<string | null>(null);
+  const [intentionItem, setIntentionItem] = useState<{id: string, title: string} | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const handleShare = async (title: string, history: string) => {
     if (navigator.share) {
@@ -90,7 +93,15 @@ export default function SuenosPage() {
                 Compartir
               </button>
               <button 
-                onClick={() => setModalAyudar(s.title)}
+                onClick={() => {
+                const userId = localStorage.getItem("ayudarte_user_id");
+                if (!userId) {
+                  alert("Para ayudar, primero debes registrarte.");
+                  setIsAuthOpen(true);
+                } else {
+                  setIntentionItem({ id: s.id, title: s.title });
+                }
+              }}
                 className="flex-1 bg-star/10 hover:bg-star/20 text-xs font-bold text-star py-2.5 rounded-lg transition-colors"
               >
                 Ayudar
@@ -100,7 +111,9 @@ export default function SuenosPage() {
         ))}
       </div>
 
-      {modalAyudar && (
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="ayudar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
+      {false && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-night/80 backdrop-blur-sm animate-in fade-in">
           <div className="bg-surface border border-line rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-in zoom-in-95">
             <div className="w-16 h-16 bg-star/20 rounded-full flex items-center justify-center mx-auto mb-4">

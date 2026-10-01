@@ -79,6 +79,7 @@ export default function ContarMiSuenoPage() {
         isForMe,
         media: uploadedUrls,
         createdAt: Date.now(),
+        userId,
       });
       
       router.push("/suenos");
@@ -251,7 +252,7 @@ export default function ContarMiSuenoPage() {
           </button>
         </div>
       </div>
-      <AuthModal isOpen={isAuthOpen} onClose={() => { setIsAuthOpen(false); setIsLoggedIn(true); }} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => { setIsAuthOpen(false); window.location.reload(); }} />
     </div>
   );
 }

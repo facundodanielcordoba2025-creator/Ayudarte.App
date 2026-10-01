@@ -8,6 +8,7 @@ import { db } from "@/lib/firebase";
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("usuarios");
   const [users, setUsers] = useState<any[]>([]);
+  const [connections, setConnections] = useState<any[]>([]);
   const [dreams, setDreams] = useState<any[]>([]);
 
   useEffect(() => {
@@ -23,7 +24,12 @@ export default function AdminDashboard() {
       setDreams(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 
-    return () => { unsubUsers(); unsubDreams(); };
+    const qConns = query(collection(db, "connections"), orderBy("createdAt", "desc"));
+    const unsubConns = onSnapshot(qConns, (snap) => {
+      setConnections(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    return () => { unsubUsers(); unsubDreams(); unsubConns(); };
   }, []);
 
   const deleteDream = async (id: string) => {
@@ -58,7 +64,7 @@ export default function AdminDashboard() {
         >
           <Users className="w-4 h-4" /> Usuarios ({users.length})
         </button>
-        <button 
+                <button 
           onClick={() => setActiveTab("suenos")}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "suenos" ? "bg-star text-night" : "bg-surface text-muted"}`}
         >
@@ -120,6 +126,42 @@ export default function AdminDashboard() {
           </div>
         )}
 
+
+        {activeTab === "conexiones" && (
+          <div className="space-y-4">
+            {connections.length === 0 ? (
+              <p className="text-center text-muted py-8 text-sm">No hay mensajes pendientes.</p>
+            ) : (
+              <div className="space-y-3">
+                {connections.map(c => {
+                  const user = users.find(u => u.id === c.userId);
+                  return (
+                    <div key={c.id} className="p-4 bg-surface-2 rounded-xl border border-line/50">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${c.type === 'ayudar' ? 'bg-star/20 text-star' : 'bg-warmth/20 text-warmth'}`}>
+                            {c.type === 'ayudar' ? 'Quiere Ayudar' : 'Reclama Regalo'}
+                          </span>
+                          <h4 className="font-bold text-cream text-sm mt-2">{c.itemTitle}</h4>
+                          <p className="text-sm text-cream mt-2 bg-surface p-3 rounded-lg border border-line">"{c.message}"</p>
+                          {user && (
+                            <div className="mt-3 text-xs text-muted">
+                              <p><strong className="text-cream">De:</strong> {user.name} ({user.provincia})</p>
+                              <p><strong className="text-cream">WhatsApp:</strong> {user.phone}</p>
+                            </div>
+                          )}
+                        </div>
+                        <button onClick={() => deleteDoc(doc(db, "connections", c.id))} className="p-2 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 shrink-0 ml-3 text-xs font-bold">
+                          Marcar Listo
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

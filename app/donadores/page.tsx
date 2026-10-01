@@ -1,74 +1,82 @@
 "use client";
 
-import { Heart, Building2, Medal, User } from "lucide-react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Trophy, Star, Gift, Medal } from "lucide-react";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-const donantes = [
-  { id: 1, nombre: "Farmacia San José", tipo: "empresa", monto: "$50.000", tiempo: "Hace 2 días" },
-  { id: 2, nombre: "Carlos M.", tipo: "persona", monto: "$2.000", tiempo: "Hace 1 hora" },
-  { id: 3, nombre: "Laura G.", tipo: "persona", monto: "$5.000", tiempo: "Hace 3 horas" },
-  { id: 4, nombre: "Supermercados El Sol", tipo: "empresa", monto: "$100.000", tiempo: "Hace 1 semana" },
-];
+export default function SuperheroesPage() {
+  const [ranking, setRanking] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function DonadoresPage() {
+  useEffect(() => {
+    const unsubUsers = onSnapshot(query(collection(db, "users")), (usersSnap) => {
+      const unsubConns = onSnapshot(query(collection(db, "connections")), (connsSnap) => {
+        const userScores: Record<string, { name: string, score: number, provincia: string }> = {};
+        
+        usersSnap.forEach(u => {
+          userScores[u.id] = { name: u.data().name || "Héroe Anónimo", score: 0, provincia: u.data().provincia || "" };
+        });
+
+        connsSnap.forEach(c => {
+          const userId = c.data().userId;
+          if (userScores[userId]) {
+            userScores[userId].score += 10;
+          }
+        });
+
+        const sorted = Object.values(userScores)
+          .filter(u => u.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 10);
+
+        setRanking(sorted);
+        setLoading(false);
+      });
+      return () => unsubConns();
+    });
+    return () => unsubUsers();
+  }, []);
+
   return (
     <div className="pb-28 min-h-screen bg-surface-2">
-      {/* HEADER */}
-      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line text-center">
-        <div className="w-16 h-16 bg-warmth/10 rounded-full flex items-center justify-center mx-auto mb-3">
-          <Heart className="w-8 h-8 text-warmth fill-warmth/20" />
-        </div>
-        <h1 className="font-display text-2xl font-bold text-cream">Nuestros Superhéroes</h1>
-        <p className="text-sm text-muted mt-2 leading-relaxed max-w-[250px] mx-auto">
-          Gracias a los aportes en la calle y transferencias, seguimos cumpliendo sueños.
-        </p>
-
-        {/* TARJETAS INFORMATIVAS: DONAR Y REGALAR */}
-        <div className="mt-6 grid grid-cols-2 gap-3 text-left">
-          {/* Tarjeta de Donación Monetaria */}
-          <div className="bg-surface-2 rounded-2xl border border-line p-3 shadow-sm flex flex-col relative overflow-hidden">
-            <h2 className="font-bold text-cream text-sm leading-tight">Aporte<br/>Económico</h2>
-            <p className="text-[10px] text-muted mt-1 leading-snug mb-3 flex-1">
-              Financiá sueños y sorteos. Toda ayuda suma.
-            </p>
-            <Link href="/donar" className="w-full bg-star text-white font-bold text-xs py-2 rounded-lg shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-1">
-              DONAR
-            </Link>
-          </div>
-
-          {/* Tarjeta de Regalar Objetos */}
-          <div className="bg-surface-2 rounded-2xl border border-line p-3 shadow-sm flex flex-col relative overflow-hidden">
-            <h2 className="font-bold text-cream text-sm leading-tight">Regalar<br/>un Objeto</h2>
-            <p className="text-[10px] text-muted mt-1 leading-snug mb-3 flex-1">
-              ¿Tenés algo en buen estado? Donalo a un soñador.
-            </p>
-            <Link href="/regalar" className="w-full border-2 border-star text-star bg-star/10 font-bold text-xs py-1.5 rounded-lg active:scale-95 transition-colors flex items-center justify-center gap-1">
-              REGALAR
-            </Link>
-          </div>
-        </div>
+      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-10">
+        <h1 className="font-display text-2xl font-bold text-cream flex items-center gap-2">
+          <Trophy className="w-6 h-6 text-star" />
+          Nuestros Superhéroes
+        </h1>
+        <p className="text-sm text-muted mt-1">Los héroes más activos del mes. Cada vez que ofreces ayuda, sumas 10 puntos.</p>
       </div>
 
-      {/* RANKING / FEED DE DONACIONES */}
-      <div className="px-6 pt-6 space-y-3">
-        {donantes.map((d, index) => (
-          <div key={d.id} className="bg-surface border border-line rounded-2xl p-4 flex items-center gap-4 shadow-sm animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: `${index * 100}ms` }}>
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${d.tipo === 'empresa' ? 'bg-star/20 text-star' : 'bg-line text-muted'}`}>
-              {d.tipo === 'empresa' ? <Building2 className="w-6 h-6" /> : <User className="w-6 h-6" />}
-            </div>
-            
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-cream">{d.nombre}</h3>
-                <span className="font-display font-bold text-warmth">{d.monto}</span>
-              </div>
-              <div className="flex items-center gap-1 mt-1 text-xs text-muted">
-                <Medal className="w-3 h-3" />
-                {d.tipo === 'empresa' ? 'Empresa Padrino' : 'Socio de Calle'} • {d.tiempo}
-              </div>
-            </div>
+      <div className="px-6 pt-6 space-y-4">
+        {loading ? (
+          <p className="text-center text-muted">Calculando ranking...</p>
+        ) : ranking.length === 0 ? (
+          <div className="text-center bg-surface border border-line rounded-2xl p-8">
+            <p className="text-muted text-sm">Todavía no hay superhéroes este mes.</p>
+            <p className="text-star font-bold text-sm mt-2">¡Sé el primero en ayudar!</p>
           </div>
-        ))}
+        ) : (
+          ranking.map((hero, index) => (
+            <div key={index} className="flex items-center gap-4 bg-surface border border-line rounded-2xl p-4 shadow-sm relative overflow-hidden">
+              {index === 0 && <div className="absolute top-0 right-0 w-16 h-16 bg-star/10 rounded-bl-full" />}
+              
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center font-display font-bold text-lg shrink-0 ${index === 0 ? 'bg-star text-night' : index === 1 ? 'bg-gray-300 text-night' : index === 2 ? 'bg-orange-400 text-night' : 'bg-surface-2 text-cream border border-line'}`}>
+                {index === 0 ? <Medal className="w-6 h-6" /> : `#${index + 1}`}
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="font-bold text-cream">{hero.name}</h3>
+                <p className="text-xs text-muted mt-0.5">{hero.provincia}</p>
+              </div>
+              
+              <div className="text-right">
+                <div className="text-star font-display font-bold text-xl">{hero.score}</div>
+                <div className="text-[10px] text-muted uppercase tracking-wider">Puntos</div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

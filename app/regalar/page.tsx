@@ -16,6 +16,7 @@ export default function RegalarPage() {
   const [description, setDescription] = useState("");
   const [itemState, setItemState] = useState("Usado");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,6 +211,7 @@ export default function RegalarPage() {
           </button>
         </form>
       </div>
+      <AuthModal isOpen={isAuthOpen} onClose={() => window.location.reload()} />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { AuthModal } from "@/components/AuthModal";
+import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
 import { HeartHandshake, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
@@ -218,7 +220,9 @@ export default function Home() {
         </div>
       )}
       {/* MODAL: RECLAMAR */}
-      {reclamarModal && (
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="reclamar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
+      {false && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-night/80 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-surface border border-line rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
             <div className="flex justify-between items-center p-4 border-b border-line bg-surface-2">
