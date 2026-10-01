@@ -113,25 +113,6 @@ export default function SuenosPage() {
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="ayudar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
-      {false && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-night/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-surface border border-line rounded-3xl w-full max-w-sm p-6 text-center shadow-2xl animate-in zoom-in-95">
-            <div className="w-16 h-16 bg-star/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🤝</span>
-            </div>
-            <h3 className="font-bold text-cream text-lg mb-2">¡Gracias por ayudar!</h3>
-            <p className="text-sm text-muted mb-6">
-              Le avisaremos a la persona que publicaste "{modalAyudar}" que estás dispuesto a hacer su sueño realidad.
-            </p>
-            <button 
-              onClick={() => setModalAyudar(null)}
-              className="w-full bg-star text-white font-bold py-3 rounded-xl active:scale-95 transition-transform"
-            >
-              Entendido
-            </button>
           </div>
-        </div>
-      )}
-    </div>
   );
 }

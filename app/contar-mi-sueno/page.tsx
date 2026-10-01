@@ -47,12 +47,13 @@ export default function ContarMiSuenoPage() {
   };
 
   const handleSubmit = async () => {
+    const userId = localStorage.getItem("ayudarte_user_id");
     if (!title.trim() || !history.trim()) {
       setHistory("Por favor completa el título y la historia.");
       return;
     }
 
-    if (!isLoggedIn) {
+    if (!userId) {
       alert("Para publicar tu sueño y poder contactarte si alguien quiere ayudar, primero debes registrarte o iniciar sesión.");
       setIsAuthOpen(true);
       return;

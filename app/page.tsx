@@ -47,7 +47,8 @@ const MOTIVATION_QUOTES = [
 
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
-  const [reclamarModal, setReclamarModal] = useState<{ title: string; image: string; submitted?: boolean } | null>(null);
+  const [intentionItem, setIntentionItem] = useState<{id: string, title: string} | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   
   return (
@@ -222,79 +223,6 @@ export default function Home() {
       {/* MODAL: RECLAMAR */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="reclamar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
-      {false && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-night/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-surface border border-line rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center p-4 border-b border-line bg-surface-2">
-              <h3 className="font-bold text-cream">
-                {reclamarModal.submitted ? '¡Solicitud Aprobada!' : 'Reclamar Regalo'}
-              </h3>
-              <button 
-                onClick={() => setReclamarModal(null)}
-                className="w-8 h-8 rounded-full bg-line/50 flex items-center justify-center text-muted hover:text-cream transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-line/50">
-                  <img src={reclamarModal.image} alt={reclamarModal.title} className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-cream text-lg">{reclamarModal.title}</h4>
-                  <p className="text-xs text-muted">
-                    {reclamarModal.submitted ? 'El donante aceptó entregártelo.' : 'Serás conectado con el donante.'}
-                  </p>
-                </div>
-              </div>
-              
-              {!reclamarModal.submitted ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-bold text-cream mb-2">¿Por qué lo necesitas?</label>
-                    <p className="text-xs text-muted mb-2">
-                      Escribe un mensaje breve al donante explicando por qué este regalo te ayudaría.
-                    </p>
-                    <textarea 
-                      rows={4}
-                      placeholder="Hola! Este regalo me sería súper útil porque..."
-                      className="w-full bg-surface-2 border border-line rounded-xl px-4 py-3 text-sm text-cream placeholder:text-muted/50 focus:outline-none focus:border-star transition-colors resize-none"
-                    />
-                  </div>
-                  
-                  <button 
-                    onClick={() => setReclamarModal({ ...reclamarModal, submitted: true })}
-                    className="w-full bg-star text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
-                  >
-                    <Send className="w-4 h-4" />
-                    Enviar Solicitud
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-warmth/10 border border-warmth/30 p-4 rounded-xl text-center">
-                    <p className="text-sm text-cream font-medium">
-                      (Simulación) Cuando el dueño apruebe tu solicitud en la vida real, te aparecerá este botón:
-                    </p>
-                  </div>
-                  <button 
-                    onClick={() => window.open('https://wa.me/1234567890', '_blank')}
-                    className="w-full bg-[#25D366] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(37,211,102,0.3)] hover:bg-[#22bf5b] active:scale-95 transition-all"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                    </svg>
-                    Contactar por WhatsApp
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
