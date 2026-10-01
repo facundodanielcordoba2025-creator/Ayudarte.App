@@ -90,7 +90,7 @@ export default function Home() {
       {/* SECCIÓN: MOTIVATE (Carrusel de Frases) */}
       <section className="px-6 py-12 overflow-hidden">
         <div className="flex items-center gap-2 mb-6">
-          <Quote className="w-6 h-6 text-warmth" />
+          <Quote className="w-6 h-6 text-star" />
           <h2 className="font-display text-xl font-bold text-cream">Motívate</h2>
         </div>
         
@@ -118,7 +118,7 @@ export default function Home() {
       {/* REGALOS DISPONIBLES */}
       <section className="px-6 py-8">
         <div className="flex items-center gap-2 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-warmth"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-star"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
           <h2 className="font-display text-xl font-bold text-cream">Regalos Disponibles</h2>
         </div>
         <p className="text-sm text-muted mb-4">
@@ -164,7 +164,7 @@ export default function Home() {
       {/* SORTEO Y GANADORES */}
       <section className="px-6 pb-8">
         <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-6 h-6 text-warmth" />
+          <Trophy className="w-6 h-6 text-star" />
           <h2 className="font-display text-xl font-bold text-cream">Sorteos y Adjudicados</h2>
         </div>
         

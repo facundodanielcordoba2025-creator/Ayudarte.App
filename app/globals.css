@@ -13,9 +13,9 @@
   --color-night: #1a0e4f;      /* fondo base (azul/morado vibrante oscuro) */
   --color-surface: #26166b;    /* tarjetas (morado un poco más claro) */
   --color-surface-2: #341e8c;  /* tarjetas elevadas / inputs */
-  --color-star: #FF6600;       /* acento primario: Naranja Nickelodeon */
-  --color-star-dim: #E55C00;
-  --color-warmth: #00E52D;     /* acento secundario: Verde Slime */
+  --color-star: #00E52D;       /* acento primario: Verde Slime */
+  --color-star-dim: #00CC28;
+  --color-warmth: #FF6600;     /* acento secundario: Naranja Nickelodeon */
   --color-cream: #ffffff;      /* texto principal (blanco puro) */
   --color-muted: #a79bf2;      /* texto secundario (lila/celeste) */
   --color-line: #4229a8;       /* bordes sutiles vibrantes */
