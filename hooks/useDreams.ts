@@ -9,6 +9,9 @@ export interface Dream {
   isForMe: boolean;
   media: string[];
   createdAt: number;
+  userId?: string;
+  userName?: string;
+  userProvincia?: string;
 }
 
 export function useDreams() {
