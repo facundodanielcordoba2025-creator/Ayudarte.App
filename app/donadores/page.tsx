@@ -7,23 +7,40 @@ import { db } from "@/lib/firebase";
 
 export default function SuperheroesPage() {
   const [ranking, setRanking] = useState<any[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubUsers = onSnapshot(query(collection(db, "users")), (usersSnap) => {
       const unsubConns = onSnapshot(query(collection(db, "connections")), (connsSnap) => {
+        
         const userScores: Record<string, { name: string, score: number, provincia: string }> = {};
+        const companiesList: any[] = [];
         
         usersSnap.forEach(u => {
-          userScores[u.id] = { name: u.data().name || "Héroe Anónimo", score: 0, provincia: u.data().provincia || "" };
+          const data = u.data();
+          userScores[u.id] = { name: data.name || "Héroe Anónimo", score: 0, provincia: data.provincia || "" };
+          if (data.isCompany) {
+            companiesList.push({ id: u.id, ...data, score: 0 });
+          }
         });
 
+
+        
         connsSnap.forEach(c => {
           const userId = c.data().userId;
           if (userScores[userId]) {
             userScores[userId].score += 10;
           }
+          const comp = companiesList.find(comp => comp.id === userId);
+          if (comp) {
+            comp.score += 10;
+          }
         });
+
+        // Filter companies that have actually helped (score > 0)
+        setCompanies(companiesList.filter(c => c.score > 0).sort((a,b) => b.score - a.score));
+
 
         const sorted = Object.values(userScores)
           .filter(u => u.score > 0)
@@ -113,20 +130,32 @@ export default function SuperheroesPage() {
         </p>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors">
-            <div className="w-16 h-16 bg-surface-2 rounded-full mb-3 flex items-center justify-center text-muted font-bold">
-              LOGO
+          {companies.length === 0 ? (
+            <div className="col-span-2 bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors">
+              <div className="w-16 h-16 bg-surface-2 rounded-full mb-3 flex items-center justify-center text-muted font-bold">
+                LOGO
+              </div>
+              <h3 className="text-sm font-bold text-cream">Tu Empresa Aquí</h3>
+              <p className="text-[10px] text-muted mt-1">Sé la primera empresa en ayudar</p>
             </div>
-            <h3 className="text-sm font-bold text-cream">Tu Empresa Aquí</h3>
-            <p className="text-[10px] text-muted mt-1">Sponsor Oficial</p>
-          </div>
-          <div className="bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors">
-            <div className="w-16 h-16 bg-surface-2 rounded-full mb-3 flex items-center justify-center text-muted font-bold">
-              LOGO
-            </div>
-            <h3 className="text-sm font-bold text-cream">Súmate</h3>
-            <p className="text-[10px] text-muted mt-1">Contáctanos</p>
-          </div>
+          ) : (
+            companies.map(comp => (
+              <div key={comp.id} className="bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-star/20 text-star text-[10px] font-bold px-2 py-1 rounded-md">
+                  {comp.score} pts
+                </div>
+                {comp.companyLogo ? (
+                  <img src={comp.companyLogo} alt={comp.companyName} className="w-16 h-16 rounded-2xl mb-3 object-cover border border-line" />
+                ) : (
+                  <div className="w-16 h-16 bg-surface-2 rounded-2xl mb-3 flex items-center justify-center text-muted font-bold border border-line">
+                    {comp.companyName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <h3 className="text-sm font-bold text-cream">{comp.companyName}</h3>
+                <p className="text-[10px] text-muted mt-1">{comp.provincia}</p>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

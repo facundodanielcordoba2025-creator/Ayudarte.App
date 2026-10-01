@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { X, Mail, KeyRound, MapPin, Phone, User } from "lucide-react";
 import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [step, setStep] = useState(1);
@@ -14,6 +15,10 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   // Profile data
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isCompany, setIsCompany] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [companyLogo, setCompanyLogo] = useState<File | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [provincia, setProvincia] = useState("");
   const [localidad, setLocalidad] = useState("");
   const [zip, setZip] = useState("");
