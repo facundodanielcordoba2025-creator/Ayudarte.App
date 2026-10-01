@@ -1,0 +1,63 @@
+name: Build Android App (APK & AAB)
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Next.js for Capacitor (Export)
+        run: npm run build:capacitor
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Initialize Capacitor Android
+        run: |
+          npx cap add android || true
+          npx cap sync android
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build Android Debug APK (Para probar en celulares)
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+
+      - name: Build Android Release AAB (Para subir a Play Store)
+        run: |
+          cd android
+          ./gradlew bundleRelease
+
+      - name: Upload APK (Prueba)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ayudarte-app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload AAB (Play Store Unsigned)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ayudarte-app-release-unsigned.aab
+          path: android/app/build/outputs/bundle/release/app-release-unsigned.aab
