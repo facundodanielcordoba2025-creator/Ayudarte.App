@@ -48,7 +48,7 @@ const MOTIVATION_QUOTES = [
 
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
-  const [intentionItem, setIntentionItem] = useState<{id: string, title: string} | null>(null);
+  const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar"} | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   const { dreams } = useDreams();
@@ -172,7 +172,7 @@ export default function Home() {
                     if (uid === dream.userId) {
                       return alert("No puedes ayudarte a ti mismo.");
                     }
-                    setIntentionItem({ id: dream.id, title: dream.title });
+                    setIntentionItem({ id: dream.id, title: dream.title, type: "ayudar" });
                   }}
                   className="w-full bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20"
                 >
@@ -213,7 +213,7 @@ export default function Home() {
                   if (!userId) {
                     setIsAuthOpen(true);
                   } else {
-                    setIntentionItem({ id: gift.id, title: gift.title });
+                    setIntentionItem({ id: gift.id, title: gift.title, type: "reclamar" });
                   }
                 }}
                 className="mt-auto w-full bg-star/10 text-star font-bold text-xs py-2 rounded-lg hover:bg-star/20 transition-colors"
@@ -299,7 +299,7 @@ export default function Home() {
       )}
       {/* MODAL: RECLAMAR */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="reclamar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
+      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type={intentionItem?.type || "reclamar"} itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
     </div>
   );
 }
