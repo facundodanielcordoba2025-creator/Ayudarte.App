@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { X, Mail, KeyRound, MapPin, Phone, User } from "lucide-react";
 import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
