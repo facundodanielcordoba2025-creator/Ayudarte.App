@@ -18,6 +18,7 @@ export default function RegalarPage() {
   const [itemState, setItemState] = useState("Usado");
   const [isPublishing, setIsPublishing] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [showTerms, setShowTerms] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
