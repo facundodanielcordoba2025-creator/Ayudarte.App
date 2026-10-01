@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trophy, Star, Gift, Medal } from "lucide-react";
+import { Trophy, Star, Gift, Medal, Building2 } from "lucide-react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -121,7 +121,7 @@ export default function SuperheroesPage() {
       <div className="px-6 pt-10 pb-4 border-t border-line mt-8">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-8 h-8 rounded-full bg-star/20 flex items-center justify-center">
-            <span className="text-lg">🤝</span>
+            <Building2 className="w-5 h-5 text-star" />
           </div>
           <h2 className="font-display text-xl font-bold text-cream">Empresas Solidarias</h2>
         </div>
