@@ -57,7 +57,7 @@ export default function SuperheroesPage() {
 
   return (
     <div className="pb-28 min-h-screen bg-surface-2">
-      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-10">
+      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-40">
         <h1 className="font-display text-2xl font-bold text-cream flex items-center gap-2">
           <Trophy className="w-6 h-6 text-star" />
           Nuestros Superhéroes

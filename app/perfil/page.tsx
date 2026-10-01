@@ -33,7 +33,7 @@ export default function PerfilPage() {
     <div className="pb-28 min-h-screen bg-surface-2 animate-in fade-in duration-500">
       
       {/* HEADER */}
-      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-10">
+      <div className="px-6 pt-10 pb-6 bg-surface border-b border-line sticky top-0 z-40">
         <h1 className="font-display text-2xl font-bold text-cream">Mi Cuenta</h1>
         <p className="text-sm text-muted mt-1">Gestioná tu perfil y resolvé tus dudas.</p>
       </div>
