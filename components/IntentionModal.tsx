@@ -88,8 +88,8 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
               <h2 className="text-xl font-display font-bold text-cream mb-4">¿Cómo quieres ayudar?</h2>
               
               <button onClick={() => { setHelpMode("economico"); setStep(2); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-surface-2 border border-line hover:border-star transition-colors text-left group">
-                <div className="w-12 h-12 rounded-full bg-star/10 flex items-center justify-center shrink-0 group-hover:bg-star/20 transition-colors">
-                  <DollarSign className="w-6 h-6 text-star" />
+                <div className="w-12 h-12 rounded-full bg-star flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,229,45,0.4)]">
+                  <DollarSign className="w-6 h-6 text-night" />
                 </div>
                 <div>
                   <h3 className="font-bold text-cream">Aporte Económico</h3>
@@ -98,8 +98,8 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
               </button>
 
               <button onClick={() => { setHelpMode("objeto"); setStep(2); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-surface-2 border border-line hover:border-star transition-colors text-left group">
-                <div className="w-12 h-12 rounded-full bg-star/10 flex items-center justify-center shrink-0 group-hover:bg-star/20 transition-colors">
-                  <Package className="w-6 h-6 text-star" />
+                <div className="w-12 h-12 rounded-full bg-star flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,229,45,0.4)]">
+                  <Package className="w-6 h-6 text-night" fill="currentColor" />
                 </div>
                 <div>
                   <h3 className="font-bold text-cream">Aporte de Objeto</h3>
@@ -109,7 +109,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
 
               <button onClick={() => { setHelpMode("completo"); setStep(2); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-surface-2 border border-star/50 hover:border-star transition-colors text-left group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-star/10 rounded-full blur-xl -mr-8 -mt-8 pointer-events-none"></div>
-                <div className="w-12 h-12 rounded-full bg-star flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,102,0,0.4)]">
+                <div className="w-12 h-12 rounded-full bg-star flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,229,45,0.4)]">
                   <Star className="w-6 h-6 text-night" fill="currentColor" />
                 </div>
                 <div>
