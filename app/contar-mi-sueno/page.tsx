@@ -17,6 +17,7 @@ export default function ContarMiSuenoPage() {
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [showTerms, setShowTerms] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock
 
   const fileInputRef = useRef<HTMLInputElement>(null);
