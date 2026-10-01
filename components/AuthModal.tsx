@@ -15,6 +15,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   // Profile data
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [dni, setDni] = useState("");
   const [isCompany, setIsCompany] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
@@ -75,6 +76,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       const docRef = await addDoc(collection(db, "users"), {
         email,
         name,
+        dni,
         phone,
         provincia,
         localidad,
@@ -174,6 +176,11 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                   <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block">Nombre completo</label>
                   <input type="text" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
                 </div>
+                <div>
+                  <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block">DNI / CUIT (Seguridad)</label>
+                  <input type="text" value={dni} onChange={e=>setDni(e.target.value)} placeholder="Sin puntos ni espacios" className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
+                </div>
+
                 <div>
                   <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block">Teléfono (WhatsApp)</label>
                   <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
