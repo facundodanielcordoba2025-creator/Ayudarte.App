@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, MessageSquareHeart } from "lucide-react";
+import { X, MessageSquareHeart, CheckCircle2 } from "lucide-react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -65,7 +65,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
           {success ? (
             <div className="text-center py-6 space-y-4 animate-in zoom-in">
               <div className="w-16 h-16 bg-star/20 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-3xl">🤝</span>
+                <CheckCircle2 className="w-8 h-8 text-star" />
               </div>
               <h2 className="text-xl font-bold text-cream">¡Mensaje enviado!</h2>
               <p className="text-sm text-muted">El equipo de Ayudarte se pondrá en contacto contigo muy pronto para coordinar todo de forma segura.</p>
