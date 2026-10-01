@@ -17,9 +17,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   const [phone, setPhone] = useState("");
   const [dni, setDni] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isCompany,
-        acceptedTerms: true,
-        acceptedTermsAt: Date.now(), setIsCompany] = useState(false);
+  const [isCompany, setIsCompany] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
