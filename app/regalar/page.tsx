@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { AuthModal } from "@/components/AuthModal";
 import { ArrowLeft, Camera, Gift, Info, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

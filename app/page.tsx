@@ -138,7 +138,14 @@ export default function Home() {
               <h3 className="font-bold text-cream text-sm line-clamp-1">{gift.title}</h3>
               <p className="text-xs text-muted mt-1 mb-3 line-clamp-2">{gift.description}</p>
               <button 
-                onClick={() => setReclamarModal({ title: gift.title, image: gift.images[0] })}
+                onClick={() => {
+                  const userId = localStorage.getItem("ayudarte_user_id");
+                  if (!userId) {
+                    setIsAuthOpen(true);
+                  } else {
+                    setIntentionItem({ id: gift.id, title: gift.title });
+                  }
+                }}
                 className="mt-auto w-full bg-star/10 text-star font-bold text-xs py-2 rounded-lg hover:bg-star/20 transition-colors"
               >
                 Reclamar
