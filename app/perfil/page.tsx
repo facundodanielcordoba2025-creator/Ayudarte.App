@@ -289,6 +289,12 @@ export default function PerfilPage() {
       </div>
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
+      <div className="px-6 py-10 flex justify-center">
+        <button onClick={() => router.push('/legales')} className="text-xs font-bold text-muted hover:text-star transition-colors underline underline-offset-4">
+          Términos, Privacidad y Políticas Legales
+        </button>
+      </div>
     </div>
   );
 }
