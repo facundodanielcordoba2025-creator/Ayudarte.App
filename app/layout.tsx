@@ -40,12 +40,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="es-AR"
       className={`${fredoka.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-black flex justify-center overscroll-none md:py-4">
-        <div className="w-full max-w-md bg-night min-h-screen relative flex flex-col shadow-[0_0_40px_rgba(0,0,0,0.5)] md:rounded-[2.5rem] md:border-4 md:border-surface overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-night overscroll-none">
         <ServiceWorkerRegister />
         <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
         <BottomNav />
-      </div>
       </body>
     </html>
   );
