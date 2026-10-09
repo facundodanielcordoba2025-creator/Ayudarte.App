@@ -9,18 +9,34 @@ export async function POST(request: Request) {
     }
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #1a0e4f; padding: 40px; border-radius: 20px; color: #f2e2d9;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #ff6600; margin: 0; font-size: 28px; font-weight: 800;">Ayudarte.app</h1>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
+        
+        <!-- Header Image -->
+        <div style="width: 100%; text-align: center; background-color: #fcfcfc; border-bottom: 3px solid #ff6600;">
+          <img src="https://res.cloudinary.com/dffhpwfiz/image/upload/v1790805445/ChatGPT_Image_30_sept_2026_06_57_03_p.m._cfv8xi.png" alt="Ayudarte Banner" style="width: 100%; max-height: 250px; object-fit: cover; display: block;" />
         </div>
-        <div style="background-color: #24195d; padding: 30px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,102,0,0.3);">
-          <h2 style="margin-top: 0; color: #f2e2d9; font-size: 20px;">Tu código secreto</h2>
-          <p style="color: #a8a0d4; font-size: 15px; margin-bottom: 25px;">Usa este código PIN de 6 dígitos para iniciar sesión en tu cuenta. No lo compartas con nadie.</p>
-          <div style="background-color: #1a0e4f; border: 2px dashed #ff6600; border-radius: 12px; padding: 15px; margin: 20px 0;">
-            <span style="font-size: 32px; font-weight: bold; color: #ff6600; letter-spacing: 5px;">${code}</span>
+        
+        <div style="padding: 40px 30px; text-align: center;">
+          <h2 style="margin-top: 0; color: #1a0e4f; font-size: 24px; font-weight: 700;">¡Hola! Aquí está tu acceso</h2>
+          <p style="color: #555555; font-size: 16px; line-height: 1.5; margin-bottom: 35px;">
+            Estás a un paso de entrar a Ayudarte.app. Ingresa el siguiente código de 6 dígitos en la aplicación para confirmar tu identidad:
+          </p>
+          
+          <!-- Code Block -->
+          <div style="background-color: #fffaf5; border: 2px solid #ff6600; border-radius: 12px; padding: 20px; margin: 0 auto 35px auto; max-width: 300px;">
+            <span style="font-size: 40px; font-weight: 800; color: #ff6600; letter-spacing: 8px;">${code}</span>
           </div>
-          <p style="color: #a8a0d4; font-size: 13px; margin-top: 30px;">Si no fuiste tú quien solicitó este código, puedes ignorar este correo sin problemas.</p>
+          
+          <p style="color: #888888; font-size: 14px; line-height: 1.5; margin-bottom: 30px;">
+            Este código es seguro e intransferible. Si tú no solicitaste iniciar sesión, puedes ignorar este mensaje sin preocuparte.
+          </p>
         </div>
+
+        <!-- Footer Image -->
+        <div style="width: 100%; text-align: center; background-color: #1a0e4f;">
+          <img src="https://res.cloudinary.com/dffhpwfiz/image/upload/v1790798645/ChatGPT_Image_30_sept_2026_05_03_43_p.m._ue4j17.png" alt="Ayudarte Footer" style="width: 100%; max-height: 120px; object-fit: cover; display: block; opacity: 0.9;" />
+        </div>
+
       </div>
     `;
 
