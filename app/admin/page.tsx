@@ -166,7 +166,13 @@ export default function AdminDashboard() {
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-star/20 text-star">{cat.emoji} {cat.label}</span>
+                          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-star/20 text-star">
+                            {(() => {
+                              const Icon = cat.icon;
+                              return <Icon className="w-3 h-3" />;
+                            })()}
+                            {cat.label}
+                          </span>
                           <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${h.status === "pendiente" ? "bg-warmth/20 text-warmth" : h.status === "rechazada" ? "bg-red-500/15 text-red-400" : "bg-surface text-muted"}`}>
                             {EVENTUAL_STATUS_LABEL[h.status] ?? h.status}
                           </span>

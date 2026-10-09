@@ -116,17 +116,20 @@ export default function AyudaEventualPage() {
         <div>
           <label className="block text-xs font-semibold text-muted mb-2 uppercase tracking-wide">¿Qué necesitás?</label>
           <div className="grid grid-cols-2 gap-3">
-            {EVENTUAL_CATEGORIES.map(c => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setCategory(c.id)}
-                className={`flex items-center gap-2 border rounded-xl px-3 py-3 text-sm font-medium text-left transition-colors ${category === c.id ? "border-star bg-star/10 text-star" : "border-line bg-surface text-muted"} ${c.id === "otro" ? "col-span-2" : ""}`}
-              >
-                <span className="text-lg">{c.emoji}</span>
-                {c.label}
-              </button>
-            ))}
+            {EVENTUAL_CATEGORIES.map(c => {
+              const Icon = c.icon;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setCategory(c.id)}
+                  className={`flex items-center gap-2 border rounded-xl px-3 py-3 text-sm font-medium text-left transition-colors ${category === c.id ? "border-star bg-star/10 text-star" : "border-line bg-surface text-muted"} ${c.id === "otro" ? "col-span-2" : ""}`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {c.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

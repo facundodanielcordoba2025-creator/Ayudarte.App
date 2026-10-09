@@ -203,7 +203,11 @@ export default function Home() {
                 <div key={help.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-star/15 text-star text-[11px] font-bold px-2.5 py-1 rounded-full">
-                      <span>{cat.emoji}</span>{cat.label}
+                      {(() => {
+                        const Icon = cat.icon;
+                        return <Icon className="w-3.5 h-3.5" />;
+                      })()}
+                      {cat.label}
                     </span>
                     <span className="flex items-center gap-1 text-[10px] font-bold text-muted">
                       <MapPin className="w-3 h-3" />

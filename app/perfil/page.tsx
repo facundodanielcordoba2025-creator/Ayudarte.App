@@ -188,15 +188,20 @@ export default function PerfilPage() {
             <h2 className="font-display text-lg font-bold text-cream uppercase tracking-wide">Mis Pedidos de Ayuda</h2>
           </div>
           <div className="space-y-3">
-            {myEventual.map(h => (
-              <div key={h.id} className="bg-surface border border-line rounded-2xl p-4 flex items-start gap-3">
-                <span className="text-2xl leading-none mt-0.5">{categoryInfo(h.category).emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-cream text-sm line-clamp-2">{h.title}</h3>
-                  <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider ${h.status === "rechazada" ? "bg-red-500/15 text-red-400" : "bg-star/20 text-star"}`}>
-                    {EVENTUAL_STATUS_LABEL[h.status] ?? h.status}
-                  </span>
-                </div>
+            {myEventual.map(h => {
+              const catInfo = categoryInfo(h.category);
+              const Icon = catInfo.icon;
+              return (
+                <div key={h.id} className="bg-surface border border-line rounded-2xl p-4 flex items-start gap-3">
+                  <div className="mt-1 bg-surface-light p-2 rounded-lg text-star">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-cream text-sm line-clamp-2">{h.title}</h3>
+                    <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider ${h.status === "rechazada" ? "bg-red-500/15 text-red-400" : "bg-star/20 text-star"}`}>
+                      {EVENTUAL_STATUS_LABEL[h.status] ?? h.status}
+                    </span>
+                  </div>
                 {h.status !== "cubierta" && (
                   <button
                     onClick={async () => {
@@ -211,7 +216,8 @@ export default function PerfilPage() {
                   </button>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
