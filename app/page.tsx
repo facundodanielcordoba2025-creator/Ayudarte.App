@@ -74,21 +74,14 @@ export default function Home() {
           />
         </div>
         
-        <div className="mt-5 relative z-10 flex flex-row w-full gap-3">
+        <div className="mt-5 relative z-10 flex flex-row w-full gap-3 justify-center">
           <button
             onClick={() => setShowOrigen(true)}
-            className="flex-1 inline-flex justify-center items-center gap-1.5 text-[10px] sm:text-xs font-bold text-white transition-colors bg-star hover:bg-star/90 px-2 py-3 rounded-full shadow-[0_2px_10px_rgba(255,102,0,0.3)] active:scale-95"
+            className="inline-flex justify-center items-center gap-1.5 text-[10px] sm:text-xs font-bold text-white transition-colors bg-star hover:bg-star/90 px-6 py-3 rounded-full shadow-[0_2px_10px_rgba(255,102,0,0.3)] active:scale-95"
           >
             <Sparkles className="w-4 h-4" />
             EL ORIGEN
           </button>
-          <Link
-            href="/libro"
-            className="flex-1 inline-flex justify-center items-center gap-1.5 text-[10px] sm:text-xs font-bold text-white transition-colors bg-star hover:bg-star/90 px-2 py-3 rounded-full shadow-[0_2px_10px_rgba(255,102,0,0.3)] active:scale-95"
-          >
-            <BookOpen className="w-4 h-4" />
-            MI CONSEJO
-          </Link>
         </div>
       </section>
 
@@ -354,10 +347,7 @@ export default function Home() {
                   Así nació <strong>Ayudarte.app</strong>. Conectamos personas con un sueño pendiente con una comunidad dispuesta a ayudar. Creemos en que, trabajando juntos, los sueños se hacen realidad.
                 </p>
                 <p>
-                  Pero esta plataforma es solo una parte de mi viaje. A lo largo de mi vida aprendí lecciones muy duras, cometí errores, caí y me volví a levantar. Para inspirar a más personas y dejarle un legado a mi hija, decidí escribir un libro contando cada paso y cada desafío.
-                </p>
-                <p className="font-bold text-center mt-6 text-cream">
-                  Ese libro se llama "Mi Consejo", y te invito a leerlo en la sección oficial.
+                  Pero esta plataforma es solo una parte de mi viaje. A lo largo de mi vida aprendí lecciones muy duras, cometí errores, caí y me volví a levantar, y cada paso me trajo hasta aquí.
                 </p>
               </div>
             </div>
