@@ -43,6 +43,13 @@ body {
   background: var(--color-night);
   color: var(--color-cream);
   font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: auto;
+  user-select: auto;
 }
 
 h1, h2, h3, .font-display {
