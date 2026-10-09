@@ -59,7 +59,7 @@ export default function Home() {
   return (
     <div className="pb-28 animate-in fade-in duration-500">
       {/* HEADER / HERO */}
-      <section className="px-6 pt-16 pb-8 bg-surface-2 border-b border-line relative overflow-hidden">
+      <section className="px-6 pt-16 pb-8 relative overflow-hidden">
 
 
         <h1 className="sr-only">AYUDARTE.APP</h1>
