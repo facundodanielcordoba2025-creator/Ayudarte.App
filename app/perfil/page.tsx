@@ -123,8 +123,8 @@ export default function PerfilPage() {
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
               <div className="flex items-center gap-4 relative z-10 pointer-events-none">
-                <div className="w-12 h-12 bg-star text-night rounded-2xl flex items-center justify-center shrink-0">
-                  <Star className="w-6 h-6" fill="currentColor" />
+                <div className="w-12 h-12 bg-star/10 border border-star/30 text-star rounded-2xl flex items-center justify-center shrink-0">
+                  <Star className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-cream text-lg">Contar Mi Sueño</h3>
@@ -149,7 +149,7 @@ export default function PerfilPage() {
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
               <div className="flex items-center gap-4 relative z-10 pointer-events-none">
-                <div className="w-12 h-12 bg-star text-night rounded-2xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-star/10 border border-star/30 text-star rounded-2xl flex items-center justify-center shrink-0">
                   <HandHeart className="w-6 h-6" />
                 </div>
                 <div>
@@ -168,7 +168,7 @@ export default function PerfilPage() {
           >
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mb-10 pointer-events-none"></div>
             <div className="flex items-center gap-4 relative z-10 pointer-events-none">
-              <div className="w-12 h-12 bg-star text-night rounded-2xl flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 bg-star/10 border border-star/30 text-star rounded-2xl flex items-center justify-center shrink-0">
                 <Gift className="w-6 h-6" />
               </div>
               <div>
