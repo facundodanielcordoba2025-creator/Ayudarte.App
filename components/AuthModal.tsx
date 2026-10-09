@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 "use client";
+import { toast } from "react-hot-toast";
 
 import { useState } from "react";
 import { X, Mail, KeyRound, MapPin, Phone, User } from "lucide-react";

@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 "use client";
+import { toast } from "react-hot-toast";
 
 import { useState, useRef } from "react";
 import { AuthModal } from "@/components/AuthModal";

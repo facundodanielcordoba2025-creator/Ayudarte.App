@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 "use client";
+import { toast } from "react-hot-toast";
 
 import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";

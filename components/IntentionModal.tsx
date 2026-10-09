@@ -1,6 +1,6 @@
+"use client";
 import { toast } from "react-hot-toast";
 
-"use client";
 
 import { useState } from "react";
 import { X, MessageSquareHeart, Copy, CheckCircle2, DollarSign, Package, Star } from "lucide-react";

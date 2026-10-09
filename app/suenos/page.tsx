@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 "use client";
+import { toast } from "react-hot-toast";
 
 import { MapPin, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import Link from "next/link";

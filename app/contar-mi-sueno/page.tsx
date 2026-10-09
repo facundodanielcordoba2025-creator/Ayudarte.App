@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 "use client";
+import { toast } from "react-hot-toast";
 
 import { useState, useRef } from "react";
 import { Camera, Video, UploadCloud, ChevronRight, Star, X } from "lucide-react";
