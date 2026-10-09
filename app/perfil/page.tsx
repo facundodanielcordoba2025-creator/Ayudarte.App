@@ -164,7 +164,7 @@ export default function PerfilPage() {
 
           <button 
             onClick={() => router.push('/regalar')}
-            className="w-full bg-gradient-to-br from-star/20 to-surface border-2 border-star/50 rounded-3xl p-6 text-left relative overflow-hidden active:scale-95 transition-transform"
+            className="w-full bg-surface border-2 border-star/50 rounded-3xl p-6 text-left relative overflow-hidden active:scale-95 transition-transform"
           >
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mb-10 pointer-events-none"></div>
             <div className="flex items-center gap-4 relative z-10 pointer-events-none">
