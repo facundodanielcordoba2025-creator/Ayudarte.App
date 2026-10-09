@@ -295,33 +295,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SORTEO Y GANADORES */}
-      <section className="px-6 pb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-6 h-6 text-star" />
-          <h2 className="font-display text-xl font-bold text-cream">Sorteos y Adjudicados</h2>
-        </div>
-        
-        <div className="rounded-2xl border border-line bg-surface overflow-hidden shadow-sm">
-          <div className="bg-star/10 px-5 py-4 border-b border-line flex justify-between items-center">
-            <span className="text-sm font-bold text-star uppercase tracking-wide">Último Ganador</span>
-            <span className="text-xs font-semibold text-muted bg-surface px-2 py-1 rounded-md">Mayo 2026</span>
-          </div>
-          <div className="p-5">
-            <h3 className="font-bold text-cream text-lg">Micaela Fernández</h3>
-            <p className="text-sm text-muted mt-1">San Miguel de Tucumán, Tucumán</p>
-            <p className="mt-3 text-sm text-cream bg-surface-2 p-3 rounded-xl border border-line">
-              "Gracias a todos, pude conseguir la silla de ruedas deportiva para volver a jugar al básquet."
-            </p>
-          </div>
-          <div className="bg-surface-2 px-5 py-3 border-t border-line flex items-center justify-between">
-            <div className="flex items-center gap-2 text-muted">
-              <Calendar className="w-4 h-4" />
-              <span className="text-xs font-medium">Próximo sorteo: <strong>15 de Junio</strong></span>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* MODAL: EL ORIGEN DE TODO */}
       {showOrigen && (
