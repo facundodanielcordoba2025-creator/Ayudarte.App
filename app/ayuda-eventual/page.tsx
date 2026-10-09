@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { useState } from "react";
@@ -37,12 +38,12 @@ export default function AyudaEventualPage() {
   };
 
   const handleSubmit = async () => {
-    if (!category) return alert("Elegí qué tipo de ayuda necesitás.");
-    if (!title.trim() || !description.trim()) return alert("Completá el título y contanos tu situación.");
+    if (!category) return toast("Elegí qué tipo de ayuda necesitás.");
+    if (!title.trim() || !description.trim()) return toast("Completá el título y contanos tu situación.");
 
     const userId = localStorage.getItem("ayudarte_user_id");
     if (!userId) {
-      alert("Para pedir una ayuda primero tenés que registrarte o iniciar sesión.");
+      toast("Para pedir una ayuda primero tenés que registrarte o iniciar sesión.");
       setIsAuthOpen(true);
       return;
     }
@@ -57,7 +58,7 @@ export default function AyudaEventualPage() {
       const existing = await getDocs(query(collection(db, "eventualHelps"), where("userId", "==", userId)));
       const hasActive = existing.docs.some(d => ["pendiente", "aprobada"].includes(d.data().status));
       if (hasActive) {
-        alert("Ya tenés un pedido de ayuda activo. Cuando se resuelva vas a poder cargar otro.");
+        toast("Ya tenés un pedido de ayuda activo. Cuando se resuelva vas a poder cargar otro.");
         return;
       }
 
@@ -81,11 +82,11 @@ export default function AyudaEventualPage() {
         userProvincia: user.provincia || null,
       });
 
-      alert("¡Recibimos tu pedido! Nuestro equipo lo va a revisar y te avisamos cuando esté publicado.");
+      toast("¡Recibimos tu pedido! Nuestro equipo lo va a revisar y te avisamos cuando esté publicado.");
       router.push("/perfil");
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al enviar tu pedido. Probá de nuevo en unos minutos.");
+      toast("Hubo un error al enviar tu pedido. Probá de nuevo en unos minutos.");
     } finally {
       setIsPublishing(false);
     }

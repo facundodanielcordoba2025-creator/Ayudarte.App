@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 
 "use client";
 
@@ -38,9 +39,9 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemK
   };
 
   const handleSubmit = async () => {
-    if (type === "ayudar" && helpMode === "economico" && !amount) return alert("Por favor ingresa un monto.");
-    if (type === "ayudar" && helpMode === "objeto" && !message.trim()) return alert("Por favor escribe qué objeto donarás.");
-    if (type === "reclamar" && !message.trim()) return alert("Por favor escribe un mensaje.");
+    if (type === "ayudar" && helpMode === "economico" && !amount) return toast("Por favor ingresa un monto.");
+    if (type === "ayudar" && helpMode === "objeto" && !message.trim()) return toast("Por favor escribe qué objeto donarás.");
+    if (type === "reclamar" && !message.trim()) return toast("Por favor escribe un mensaje.");
     
     const userId = localStorage.getItem("ayudarte_user_id");
     if (!userId) return;
@@ -66,7 +67,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemK
       }, 5000);
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al enviar tu mensaje.");
+      toast("Hubo un error al enviar tu mensaje.");
     } finally {
       setLoading(false);
     }
@@ -165,7 +166,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemK
                             <strong className="text-sm text-cream font-mono">00000031000000000000</strong>
                             <button onClick={() => {
                               navigator.clipboard.writeText("00000031000000000000");
-                              alert("CBU copiado al portapapeles");
+                              toast("CBU copiado al portapapeles");
                             }} className="p-1.5 hover:bg-star/20 rounded-md transition-colors text-star">
                               <Copy className="w-4 h-4" />
                             </button>
@@ -178,7 +179,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemK
                             <strong className="text-sm text-cream font-mono">AYUDARTE.APP.SOLIDARIO</strong>
                             <button onClick={() => {
                               navigator.clipboard.writeText("AYUDARTE.APP.SOLIDARIO");
-                              alert("Alias copiado al portapapeles");
+                              toast("Alias copiado al portapapeles");
                             }} className="p-1.5 hover:bg-star/20 rounded-md transition-colors text-star">
                               <Copy className="w-4 h-4" />
                             </button>

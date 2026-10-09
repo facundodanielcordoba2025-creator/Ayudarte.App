@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { useState } from "react";
@@ -166,7 +167,7 @@ export default function Home() {
                       return;
                     }
                     if (uid === dream.userId) {
-                      return alert("No puedes ayudarte a ti mismo.");
+                      return toast("No puedes ayudarte a ti mismo.");
                     }
                     setIntentionItem({ id: dream.id, title: dream.title, type: "ayudar" });
                   }}
@@ -233,7 +234,7 @@ export default function Home() {
                         return;
                       }
                       if (uid === help.userId) {
-                        return alert("No puedes ayudarte a ti mismo.");
+                        return toast("No puedes ayudarte a ti mismo.");
                       }
                       setIntentionItem({ id: help.id, title: help.title, type: "ayudar", kind: "eventual" });
                     }}

@@ -3,6 +3,7 @@ import { Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import { Toaster } from "react-hot-toast";
 
 const fredoka = Fredoka({
   variable: "--font-fredoka",
@@ -41,6 +42,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fredoka.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-night overscroll-none">
+        <Toaster 
+          position="top-center" 
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#26166b',
+              color: '#ffffff',
+              borderRadius: '12px',
+              border: '1px solid #4229a8'
+            },
+          }} 
+        />
         <ServiceWorkerRegister />
         <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
         <BottomNav />

@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { MapPin, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
@@ -24,7 +25,7 @@ export default function SuenosPage() {
         console.log("Error al compartir", err);
       }
     } else {
-      alert("La función de compartir no está disponible en este navegador.");
+      toast("La función de compartir no está disponible en este navegador.");
     }
   };
 
@@ -96,7 +97,7 @@ export default function SuenosPage() {
                 onClick={() => {
                 const userId = localStorage.getItem("ayudarte_user_id");
                 if (!userId) {
-                  alert("Para ayudar, primero debes registrarte.");
+                  toast("Para ayudar, primero debes registrarte.");
                   setIsAuthOpen(true);
                 } else {
                   setIntentionItem({ id: s.id, title: s.title });

@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { useState, useRef } from "react";
@@ -47,11 +48,11 @@ export default function RegalarPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) {
-      alert("Por favor completa el título y la descripción.");
+      toast("Por favor completa el título y la descripción.");
       return;
     }
     if (images.length === 0) {
-      alert("Por favor, sube al menos 1 foto del regalo.");
+      toast("Por favor, sube al menos 1 foto del regalo.");
       return;
     }
 
@@ -74,11 +75,11 @@ export default function RegalarPage() {
         images: uploadedUrls,
       });
       
-      alert("¡Regalo publicado con éxito!");
+      toast("¡Regalo publicado con éxito!");
       router.push("/");
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al publicar. ¿Activaste Firestore y Storage?");
+      toast("Hubo un error al publicar. ¿Activaste Firestore y Storage?");
     } finally {
       setIsPublishing(false);
     }

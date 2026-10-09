@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart } from "lucide-react";
@@ -113,7 +114,7 @@ export default function PerfilPage() {
             <button 
               onClick={() => {
                 if (myDreams.length >= 2) {
-                  alert("Ya tienes 2 sueños publicados. Para publicar uno nuevo, debes eliminar alguno de los anteriores.");
+                  toast("Ya tienes 2 sueños publicados. Para publicar uno nuevo, debes eliminar alguno de los anteriores.");
                 } else {
                   router.push('/contar-mi-sueno');
                 }
@@ -139,7 +140,7 @@ export default function PerfilPage() {
             <button 
               onClick={() => {
                 if (hasActiveEventual) {
-                  alert("Ya tenés un pedido de ayuda activo. Cuando se resuelva vas a poder cargar otro.");
+                  toast("Ya tenés un pedido de ayuda activo. Cuando se resuelva vas a poder cargar otro.");
                 } else {
                   router.push('/ayuda-eventual');
                 }

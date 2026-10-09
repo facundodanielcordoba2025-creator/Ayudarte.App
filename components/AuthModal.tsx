@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { useState } from "react";
@@ -30,7 +31,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   if (!isOpen) return null;
 
   const handleSendCode = async () => {
-    if (!email.includes("@")) return alert("Ingresa un email válido");
+    if (!email.includes("@")) return toast("Ingresa un email válido");
     setLoading(true);
     
     // Generar código de 6 dígitos aleatorio
@@ -47,11 +48,11 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       if (res.ok) {
         setStep(2);
       } else {
-        alert("Hubo un error al enviar el correo. Por favor, intenta de nuevo.");
+        toast("Hubo un error al enviar el correo. Por favor, intenta de nuevo.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error de conexión");
+      toast("Error de conexión");
     } finally {
       setLoading(false);
     }
@@ -59,7 +60,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
   const handleVerifyCode = async () => {
     if (code !== generatedCode && code !== "123456") {
-      return alert("Código incorrecto, por favor revisa tu correo.");
+      return toast("Código incorrecto, por favor revisa tu correo.");
     }
 
     
@@ -73,7 +74,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         // Usuario ya existe! Iniciar sesión directamente.
         const userDoc = querySnapshot.docs[0];
         localStorage.setItem("ayudarte_user_id", userDoc.id);
-        alert(`¡Bienvenido de nuevo, ${userDoc.data().name || email}!`);
+        toast(`¡Bienvenido de nuevo, ${userDoc.data().name || email}!`);
         onClose();
         // Recargar página para actualizar estados
         window.location.reload();
@@ -83,14 +84,14 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       }
     } catch (error) {
       console.error(error);
-      alert("Error de conexión");
+      toast("Error de conexión");
     } finally {
       setLoading(false);
     }
   };
 
   const handleRegister = async () => {
-    if (!name || !phone || !provincia) return alert("Por favor completa al menos tu nombre, teléfono y provincia.");
+    if (!name || !phone || !provincia) return toast("Por favor completa al menos tu nombre, teléfono y provincia.");
     
     setLoading(true);
     try {
@@ -107,12 +108,12 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       });
       
       localStorage.setItem("ayudarte_user_id", docRef.id);
-      alert("¡Registro exitoso! Ya eres parte de Ayudarte.App");
+      toast("¡Registro exitoso! Ya eres parte de Ayudarte.App");
       onClose();
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert("Error al registrarse");
+      toast("Error al registrarse");
     } finally {
       setLoading(false);
     }

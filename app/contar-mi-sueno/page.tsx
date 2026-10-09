@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 "use client";
 
 import { useState, useRef } from "react";
@@ -55,7 +56,7 @@ export default function ContarMiSuenoPage() {
     }
 
     if (!userId) {
-      alert("Para publicar tu sueño y poder contactarte si alguien quiere ayudar, primero debes registrarte o iniciar sesión.");
+      toast("Para publicar tu sueño y poder contactarte si alguien quiere ayudar, primero debes registrarte o iniciar sesión.");
       setIsAuthOpen(true);
       return;
     }
