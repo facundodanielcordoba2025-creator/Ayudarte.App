@@ -226,6 +226,12 @@ export default function Home() {
                     </p>
                   ) : null}
 
+                  {help.media && help.media.length > 0 && (
+                    <div className="mb-4 rounded-xl overflow-hidden bg-surface-2 h-40 border border-line">
+                      <img src={help.media[0]} alt="Evidencia de ayuda" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+
                   <button
                     onClick={() => {
                       const uid = localStorage.getItem("ayudarte_user_id");
