@@ -4,9 +4,10 @@ import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles, MapPin } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles, MapPin } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
+import { useEventualHelps, categoryInfo } from "@/hooks/useEventualHelps";
 
 const MOTIVATION_QUOTES = [
   { quote: "El futuro pertenece a aquellos que creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
@@ -48,10 +49,12 @@ const MOTIVATION_QUOTES = [
 
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
-  const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar"} | null>(null);
+  const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar", kind?: "dream" | "eventual"} | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   const { dreams } = useDreams();
+  const { helps: eventualHelps } = useEventualHelps();
+  const approvedEventual = eventualHelps.filter(h => h.status === "aprobada");
   
   return (
     <div className="pb-28 animate-in fade-in duration-500">
@@ -185,6 +188,70 @@ export default function Home() {
       </section>
 
 
+      {/* SECCIÓN AYUDAS EVENTUALES (solo las aprobadas por el admin) */}
+      <section className="px-6 py-10 bg-surface-2/40 border-y border-line">
+        <div className="flex items-center gap-2 mb-2">
+          <HandHeart className="w-6 h-6 text-star" />
+          <h2 className="font-display text-xl font-bold text-cream">Ayudas del Día a Día</h2>
+        </div>
+        <p className="text-sm text-muted mb-6">
+          Necesidades básicas de personas de la comunidad: una factura, el alquiler, un plato de comida o un medicamento.
+        </p>
+
+        <div className="space-y-4">
+          {approvedEventual.length === 0 ? (
+            <div className="text-center py-8 border-2 border-dashed border-line rounded-2xl">
+              <p className="text-muted text-sm">No hay pedidos de ayuda publicados por ahora.</p>
+            </div>
+          ) : (
+            approvedEventual.map(help => {
+              const cat = categoryInfo(help.category);
+              return (
+                <div key={help.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 bg-star/15 text-star text-[11px] font-bold px-2.5 py-1 rounded-full">
+                      <span>{cat.emoji}</span>{cat.label}
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-muted">
+                      <MapPin className="w-3 h-3" />
+                      {help.userProvincia || 'Argentina'}
+                    </span>
+                  </div>
+
+                  <h4 className="font-display font-bold text-lg text-cream mb-1 leading-tight">{help.title}</h4>
+                  <p className="text-xs text-muted mb-3">{help.userName ? `Pedido por ${help.userName}` : 'Pedido de la comunidad'}</p>
+                  <p className="text-sm text-muted mb-4 leading-relaxed line-clamp-3">{help.description}</p>
+
+                  {help.amountNeeded ? (
+                    <p className="text-sm text-cream mb-4">
+                      Se necesitan aprox. <span className="font-bold text-star">${help.amountNeeded.toLocaleString('es-AR')}</span>
+                    </p>
+                  ) : null}
+
+                  <button
+                    onClick={() => {
+                      const uid = localStorage.getItem("ayudarte_user_id");
+                      if (!uid) {
+                        setIsAuthOpen(true);
+                        return;
+                      }
+                      if (uid === help.userId) {
+                        return alert("No puedes ayudarte a ti mismo.");
+                      }
+                      setIntentionItem({ id: help.id, title: help.title, type: "ayudar", kind: "eventual" });
+                    }}
+                    className="w-full bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20"
+                  >
+                    Quiero ayudar
+                  </button>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
+
+
       {/* REGALOS DISPONIBLES */}
       <section className="px-6 py-8">
         <div className="flex items-center gap-2 mb-4">
@@ -299,7 +366,7 @@ export default function Home() {
       )}
       {/* MODAL: RECLAMAR */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type={intentionItem?.type || "reclamar"} itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
+      <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type={intentionItem?.type || "reclamar"} itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} itemKind={intentionItem?.kind || "dream"} />
     </div>
   );
 }

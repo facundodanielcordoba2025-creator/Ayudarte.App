@@ -2,7 +2,8 @@ export async function uploadToCloudinary(file: File): Promise<string> {
   const cloudName = "dffhpwfiz";
   const uploadPreset = "ayudarte_app";
 
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  // "auto" acepta imágenes y videos (el formulario de sueños permite ambos).
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 
   const formData = new FormData();
   formData.append("file", file);

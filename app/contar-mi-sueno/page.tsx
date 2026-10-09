@@ -62,17 +62,13 @@ export default function ContarMiSuenoPage() {
     setIsPublishing(true);
 
     try {
-      const { storage, db } = await import('@/lib/firebase');
-      const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      const { db } = await import('@/lib/firebase');
       const { collection, addDoc } = await import('firebase/firestore');
+      const { uploadToCloudinary } = await import('@/lib/cloudinary');
       
-      const uploadedUrls = [];
+      const uploadedUrls: string[] = [];
       for (const file of media) {
-        const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
-        const storageRef = ref(storage, `suenos/${uniqueName}`);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        uploadedUrls.push(url);
+        uploadedUrls.push(await uploadToCloudinary(file));
       }
 
       await addDoc(collection(db, 'dreams'), {

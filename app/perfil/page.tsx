@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -8,6 +8,7 @@ import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function PerfilPage() {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
   const [myHelps, setMyHelps] = useState<any[]>([]);
+  const [myEventual, setMyEventual] = useState<EventualHelp[]>([]);
 
   useEffect(() => {
     const uid = localStorage.getItem("ayudarte_user_id");
@@ -32,10 +34,21 @@ export default function PerfilPage() {
       const unsubHelps = onSnapshot(qHelps, (snap) => {
         setMyHelps(snap.docs.map(d => ({id: d.id, ...d.data()})));
       });
-      return () => { unsubDreams(); unsubUser(); unsubHelps(); };
+
+      const qEventual = query(collection(db, "eventualHelps"), where("userId", "==", uid));
+      const unsubEventual = onSnapshot(qEventual, (snap) => {
+        setMyEventual(
+          snap.docs
+            .map(d => ({ id: d.id, ...d.data() }) as EventualHelp)
+            .sort((a, b) => b.createdAt - a.createdAt)
+        );
+      });
+      return () => { unsubDreams(); unsubUser(); unsubHelps(); unsubEventual(); };
 
     }
   }, []);
+
+  const hasActiveEventual = myEventual.some(h => h.status === "pendiente" || h.status === "aprobada");
   return (
     <div className="pb-28 min-h-screen bg-surface-2 animate-in fade-in duration-500">
       
@@ -122,6 +135,32 @@ export default function PerfilPage() {
             </button>
           )}
 
+          {!userData.isCompany && (
+            <button 
+              onClick={() => {
+                if (hasActiveEventual) {
+                  alert("Ya tenés un pedido de ayuda activo. Cuando se resuelva vas a poder cargar otro.");
+                } else {
+                  router.push('/ayuda-eventual');
+                }
+              }}
+              className="w-full bg-surface border-2 border-star/50 rounded-3xl p-6 text-left relative overflow-hidden active:scale-95 transition-transform"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+              <div className="flex items-center gap-4 relative z-10 pointer-events-none">
+                <div className="w-12 h-12 bg-star text-night rounded-2xl flex items-center justify-center shrink-0">
+                  <HandHeart className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-cream text-lg">Necesito una Ayuda</h3>
+                  <p className="text-xs text-muted mt-1">
+                    {hasActiveEventual ? "Tenés un pedido activo" : "Luz, alquiler, comida, medicamentos"}
+                  </p>
+                </div>
+              </div>
+            </button>
+          )}
+
           <button 
             onClick={() => router.push('/regalar')}
             className="w-full bg-gradient-to-br from-star/20 to-surface border-2 border-star/50 rounded-3xl p-6 text-left relative overflow-hidden active:scale-95 transition-transform"
@@ -137,6 +176,43 @@ export default function PerfilPage() {
               </div>
             </div>
           </button>
+        </div>
+      )}
+
+
+      {/* MIS PEDIDOS DE AYUDA EVENTUAL */}
+      {userId && myEventual.length > 0 && (
+        <div className="px-6 mt-10">
+          <div className="flex items-center gap-2 mb-4">
+            <HandHeart className="w-5 h-5 text-star" />
+            <h2 className="font-display text-lg font-bold text-cream uppercase tracking-wide">Mis Pedidos de Ayuda</h2>
+          </div>
+          <div className="space-y-3">
+            {myEventual.map(h => (
+              <div key={h.id} className="bg-surface border border-line rounded-2xl p-4 flex items-start gap-3">
+                <span className="text-2xl leading-none mt-0.5">{categoryInfo(h.category).emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-cream text-sm line-clamp-2">{h.title}</h3>
+                  <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider ${h.status === "rechazada" ? "bg-red-500/15 text-red-400" : "bg-star/20 text-star"}`}>
+                    {EVENTUAL_STATUS_LABEL[h.status] ?? h.status}
+                  </span>
+                </div>
+                {h.status !== "cubierta" && (
+                  <button
+                    onClick={async () => {
+                      if (confirm("¿Querés eliminar este pedido de ayuda?")) {
+                        await deleteDoc(doc(db, "eventualHelps", h.id));
+                      }
+                    }}
+                    className="p-2 bg-red-500/10 text-red-400 rounded-lg shrink-0"
+                    aria-label="Eliminar pedido"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

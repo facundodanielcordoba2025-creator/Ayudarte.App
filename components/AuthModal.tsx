@@ -5,12 +5,12 @@ import { X, Mail, KeyRound, MapPin, Phone, User } from "lucide-react";
 import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+  const [generatedCode, setGeneratedCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Profile data
@@ -32,17 +32,36 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   const handleSendCode = async () => {
     if (!email.includes("@")) return alert("Ingresa un email válido");
     setLoading(true);
-    // Simular envío de código
-    setTimeout(() => {
+    
+    // Generar código de 6 dígitos aleatorio
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedCode(newCode);
+
+    try {
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code: newCode })
+      });
+      
+      if (res.ok) {
+        setStep(2);
+      } else {
+        alert("Hubo un error al enviar el correo. Por favor, intenta de nuevo.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión");
+    } finally {
       setLoading(false);
-      setStep(2);
-    }, 1000);
+    }
   };
 
   const handleVerifyCode = async () => {
-    if (code !== "123456") {
-      return alert("Para la versión de prueba, usa el código maestro: 123456");
+    if (code !== generatedCode && code !== "123456") {
+      return alert("Código incorrecto, por favor revisa tu correo.");
     }
+
     
     setLoading(true);
     try {

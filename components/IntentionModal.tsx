@@ -12,9 +12,13 @@ interface IntentionModalProps {
   type: "ayudar" | "reclamar";
   itemId: string;
   itemTitle: string;
+  /** "eventual" = pedido de ayuda del día a día; ajusta los textos del modal. */
+  itemKind?: "dream" | "eventual";
 }
 
-export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: IntentionModalProps) {
+export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemKind = "dream" }: IntentionModalProps) {
+  const isEventual = itemKind === "eventual";
+  const noun = isEventual ? "la ayuda" : "el sueño";
   const [helpMode, setHelpMode] = useState<"economico" | "objeto" | "completo" | null>(null);
   const [message, setMessage] = useState("");
   const [amount, setAmount] = useState("");
@@ -47,10 +51,11 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
         type,
         itemId,
         itemTitle,
+        itemKind,
         userId,
         helpMode: type === "ayudar" ? helpMode : null,
         amount: amount ? Number(amount) : null,
-        message: helpMode === "completo" ? "Desea cumplir el sueño completo" : message,
+        message: helpMode === "completo" ? `Desea cubrir ${noun} completo` : message,
         status: "pending",
         createdAt: Date.now()
       });
@@ -93,7 +98,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
                 </div>
                 <div>
                   <h3 className="font-bold text-cream">Aporte Económico</h3>
-                  <p className="text-xs text-muted mt-1">Dona dinero a voluntad. Se sumará al pozo del sueño.</p>
+                  <p className="text-xs text-muted mt-1">Dona dinero a voluntad. Se sumará al pozo de {isEventual ? "esta ayuda" : "este sueño"}.</p>
                 </div>
               </button>
 
@@ -103,7 +108,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
                 </div>
                 <div>
                   <h3 className="font-bold text-cream">Aporte de Objeto</h3>
-                  <p className="text-xs text-muted mt-1">Regala un artículo físico que el soñador necesite.</p>
+                  <p className="text-xs text-muted mt-1">Regala un artículo físico que {isEventual ? "esta persona" : "el soñador"} necesite.</p>
                 </div>
               </button>
 
@@ -113,7 +118,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
                   <Star className="w-6 h-6 text-night" fill="currentColor" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-cream">Cumplir Sueño Completo</h3>
+                  <h3 className="font-bold text-cream">{isEventual ? "Cubrir la Ayuda Completa" : "Cumplir Sueño Completo"}</h3>
                   <p className="text-xs text-muted mt-1">Quiero hacerme cargo de toda la petición.</p>
                 </div>
               </button>
@@ -128,12 +133,12 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
               <h2 className="text-xl font-display font-bold text-cream">
                 {type === "reclamar" ? "Solicitar Regalo" : 
                  helpMode === "economico" ? "Aporte Económico" : 
-                 helpMode === "objeto" ? "Aporte de Objeto" : "Cumplir Sueño"}
+                 helpMode === "objeto" ? "Aporte de Objeto" : isEventual ? "Cubrir la Ayuda" : "Cumplir Sueño"}
               </h2>
 
               {helpMode === "completo" && (
                 <div className="bg-star/10 border border-star/30 p-4 rounded-xl">
-                  <p className="text-sm text-star font-medium text-center">¡Qué gran corazón! Trabajamos juntos para cumplir el sueño. Al aceptar, nuestro equipo se contactará de inmediato contigo para coordinar toda la gestión.</p>
+                  <p className="text-sm text-star font-medium text-center">¡Qué gran corazón! Trabajamos juntos para {isEventual ? "cubrir esta necesidad" : "cumplir el sueño"}. Al aceptar, nuestro equipo se contactará de inmediato contigo para coordinar toda la gestión.</p>
                 </div>
               )}
 
@@ -181,7 +186,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-star font-medium leading-tight">Recaudaremos el dinero en este pozo seguro. Cuando cubramos la meta, procederemos a cumplir el sueño y verás la actualización en tu perfil.</p>
+                      <p className="text-[11px] text-star font-medium leading-tight">Recaudaremos el dinero en este pozo seguro. Cuando cubramos la meta, procederemos a {isEventual ? "cubrir la ayuda" : "cumplir el sueño"} y verás la actualización en tu perfil.</p>
                     </div>
                   )}
                   <p className="text-xs text-muted">También puedes dejarnos un mensaje (Opcional):</p>
@@ -220,7 +225,7 @@ export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle }: Int
                 <CheckCircle2 className="w-8 h-8 text-star" />
               </div>
               <h2 className="text-xl font-bold text-cream">¡Gracias por tu inmenso corazón!</h2>
-              <p className="text-sm text-muted">Tu intención de ayuda ha sido registrada. Puedes ver el estado de este sueño en tu sección "Mi Cuenta". Nuestro equipo lo está procesando.</p>
+              <p className="text-sm text-muted">Tu intención de ayuda ha sido registrada. Puedes ver el estado de {isEventual ? "esta ayuda" : "este sueño"} en tu sección "Mi Cuenta". Nuestro equipo lo está procesando.</p>
             </div>
           )}
 

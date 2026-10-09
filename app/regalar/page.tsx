@@ -58,17 +58,12 @@ export default function RegalarPage() {
     setIsPublishing(true);
 
     try {
-      // 1. Subir las imágenes a Firebase Storage
-      const { storage } = await import('@/lib/firebase');
-      const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      // 1. Subir las imágenes a Cloudinary
+      const { uploadToCloudinary } = await import('@/lib/cloudinary');
       
-      const uploadedUrls = [];
+      const uploadedUrls: string[] = [];
       for (const file of images) {
-        const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
-        const storageRef = ref(storage, `regalos/${uniqueName}`);
-        await uploadBytes(storageRef, file);
-        const url = await getDownloadURL(storageRef);
-        uploadedUrls.push(url);
+        uploadedUrls.push(await uploadToCloudinary(file));
       }
 
       // 2. Guardar en Firestore
