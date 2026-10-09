@@ -74,13 +74,13 @@ export default function Home() {
           />
         </div>
         
-        <div className="mt-5 relative z-10 flex flex-row w-full gap-3 justify-center">
+        <div className="mt-6 relative z-10 flex flex-row w-full justify-center px-6">
           <button
             onClick={() => setShowOrigen(true)}
-            className="inline-flex justify-center items-center gap-1.5 text-[10px] sm:text-xs font-bold text-white transition-colors bg-star hover:bg-star/90 px-6 py-3 rounded-full shadow-[0_2px_10px_rgba(255,102,0,0.3)] active:scale-95"
+            className="w-full max-w-[280px] inline-flex justify-center items-center gap-2 text-sm font-bold text-white transition-colors bg-star hover:bg-star/90 px-8 py-4 rounded-full shadow-[0_4px_16px_rgba(255,102,0,0.4)] active:scale-95"
           >
-            <Sparkles className="w-4 h-4" />
-            EL ORIGEN
+            <Sparkles className="w-5 h-5" />
+            EL ORIGEN DE AYUDARTE
           </button>
         </div>
       </section>
