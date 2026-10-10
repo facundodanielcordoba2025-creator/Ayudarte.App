@@ -1,17 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
-// Config de Capacitor para empaquetar la PWA de AYUDARTE.APP como app Android.
-// webDir apunta a la carpeta que genera `next build` en modo export ("out").
 const config: CapacitorConfig = {
   appId: 'com.ayudarte.app.app',
   appName: 'Ayudarte.App',
   webDir: 'out',
-  android: {
-    allowMixedContent: false,
-  },
   server: {
-    // androidScheme "https" evita problemas con cookies/storage de Firebase Auth
-    androidScheme: 'https',
+    url: 'https://www.ayudarte.app',
+    cleartext: true
   },
   plugins: {
     SplashScreen: {

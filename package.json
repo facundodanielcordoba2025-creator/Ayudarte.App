@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:capacitor": "BUILD_TARGET=capacitor next build",
+    "build:capacitor": "mkdir -p out && echo '<html><body>Redirecting...</body></html>' > out/index.html",
     "cap:add:android": "npx cap add android",
     "cap:add:ios": "npx cap add ios",
     "cap:sync:android": "npm run build:capacitor && npx cap sync android",
