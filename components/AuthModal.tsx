@@ -92,9 +92,15 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
   const handleRegister = async () => {
     if (!name || !phone || !provincia) return toast("Por favor completa al menos tu nombre, teléfono y provincia.");
+    if (isCompany && !companyName) return toast("Si eres empresa, ingresa el nombre de la empresa.");
     
     setLoading(true);
     try {
+      let logoUrl = null;
+      if (isCompany && companyLogo) {
+        logoUrl = await uploadToCloudinary(companyLogo);
+      }
+
       const docRef = await addDoc(collection(db, "users"), {
         email,
         name,
@@ -104,6 +110,9 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         localidad,
         zip,
         address,
+        isCompany,
+        companyName: isCompany ? companyName : null,
+        companyLogo: logoUrl,
         createdAt: Date.now()
       });
       
@@ -194,8 +203,42 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
               <p className="text-xs text-muted mb-4">Último paso. Necesitamos saber quién eres para entregar o recibir ayudas.</p>
               
               <div className="space-y-3 h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                
+                {/* Selector Persona / Empresa */}
+                <div className="flex bg-surface-2 p-1 rounded-xl mb-4 border border-line">
+                  <button 
+                    onClick={() => setIsCompany(false)}
+                    className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${!isCompany ? 'bg-star text-night shadow-sm' : 'text-muted hover:text-cream'}`}
+                  >
+                    Soy Persona
+                  </button>
+                  <button 
+                    onClick={() => setIsCompany(true)}
+                    className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${isCompany ? 'bg-star text-night shadow-sm' : 'text-muted hover:text-cream'}`}
+                  >
+                    Soy Empresa
+                  </button>
+                </div>
+
+                {isCompany && (
+                  <div className="bg-star/5 border border-star/20 p-4 rounded-xl space-y-3 mb-4">
+                    <div>
+                      <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block text-star">Nombre de la Empresa</label>
+                      <input type="text" value={companyName} onChange={e=>setCompanyName(e.target.value)} placeholder="Ej. Zapatería López" className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block text-star">Logo de la Empresa (Opcional)</label>
+                      <input type="file" accept="image/*" onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setCompanyLogo(e.target.files[0]);
+                        }
+                      }} className="w-full text-xs text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-surface-2 file:text-star hover:file:bg-surface-light transition-colors" />
+                    </div>
+                  </div>
+                )}
+
                 <div>
-                  <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block">Nombre completo</label>
+                  <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1 block">{isCompany ? 'Nombre del Contacto' : 'Nombre completo'}</label>
                   <input type="text" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
                 </div>
                 <div>
