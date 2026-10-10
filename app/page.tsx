@@ -133,7 +133,7 @@ export default function Home() {
               <div key={dream.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4">
                   <div className="flex items-center gap-1 bg-surface-2 px-2 py-1 rounded-md text-[10px] font-bold text-muted">
-                    <MapPin, Package className="w-3 h-3" />
+                    <MapPin className="w-3 h-3" />
                     {dream.userProvincia || 'Argentina'}
                   </div>
                 </div>
@@ -212,7 +212,7 @@ export default function Home() {
                       {cat.label}
                     </span>
                     <span className="flex items-center gap-1 text-[10px] font-bold text-muted">
-                      <MapPin, Package className="w-3 h-3" />
+                      <MapPin className="w-3 h-3" />
                       {help.userProvincia || 'Argentina'}
                     </span>
                   </div>
