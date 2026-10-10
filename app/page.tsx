@@ -5,10 +5,11 @@ import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles, MapPin } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles, MapPin, Package } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo } from "@/hooks/useEventualHelps";
+import { useOffers } from "@/hooks/useOffers";
 
 const MOTIVATION_QUOTES = [
   { quote: "El futuro pertenece a aquellos que creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
@@ -50,7 +51,7 @@ const MOTIVATION_QUOTES = [
 
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
-  const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar", kind?: "dream" | "eventual"} | null>(null);
+  const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar", kind?: "dream" | "eventual" | "offer"} | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   const { dreams } = useDreams();
@@ -132,7 +133,7 @@ export default function Home() {
               <div key={dream.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4">
                   <div className="flex items-center gap-1 bg-surface-2 px-2 py-1 rounded-md text-[10px] font-bold text-muted">
-                    <MapPin className="w-3 h-3" />
+                    <MapPin, Package className="w-3 h-3" />
                     {dream.userProvincia || 'Argentina'}
                   </div>
                 </div>
@@ -211,7 +212,7 @@ export default function Home() {
                       {cat.label}
                     </span>
                     <span className="flex items-center gap-1 text-[10px] font-bold text-muted">
-                      <MapPin className="w-3 h-3" />
+                      <MapPin, Package className="w-3 h-3" />
                       {help.userProvincia || 'Argentina'}
                     </span>
                   </div>
@@ -251,6 +252,75 @@ export default function Home() {
                 </div>
               );
             })
+          )}
+        </div>
+      </section>
+
+
+      {/* MERCADO SOLIDARIO (Empresas) */}
+      <section className="px-6 py-8 bg-star/5">
+        <div className="flex items-center gap-2 mb-2">
+          <Package className="w-6 h-6 text-star" />
+          <h2 className="font-display text-xl font-bold text-cream">Mercado Solidario</h2>
+        </div>
+        <p className="text-sm text-muted mb-6">
+          Empresas que donan parte de su stock o artículos nuevos. Exclusivo para la comunidad de Ayudarte.
+        </p>
+
+        <div className="space-y-4">
+          {offers.length === 0 ? (
+            <div className="text-center py-8 border-2 border-dashed border-line rounded-2xl bg-surface">
+              <p className="text-muted text-sm">Por ahora no hay stock disponible.</p>
+            </div>
+          ) : (
+            offers.map(offer => (
+              <div key={offer.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm">
+                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-line">
+                  {offer.companyLogo ? (
+                    <img src={offer.companyLogo} alt={offer.companyName} className="w-10 h-10 rounded-xl object-cover border border-line" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl bg-surface-2 border border-line flex items-center justify-center text-cream font-bold">
+                      {offer.companyName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-bold text-cream text-sm flex items-center gap-1.5">
+                      {offer.companyName}
+                      <ShieldCheck className="w-3.5 h-3.5 text-star" />
+                    </h3>
+                    <p className="text-[10px] text-muted flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {offer.userProvincia || 'Argentina'}
+                    </p>
+                  </div>
+                </div>
+
+                <h4 className="font-display font-bold text-lg text-cream mb-2 leading-tight">{offer.title}</h4>
+                <p className="text-sm text-muted mb-4 leading-relaxed line-clamp-3">{offer.description}</p>
+
+                {offer.media && offer.media.length > 0 && (
+                  <div className="mb-4 rounded-xl overflow-hidden bg-surface-2 h-40 border border-line">
+                    <img src={offer.media[0]} alt={offer.title} className="w-full h-full object-cover" />
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    const uid = localStorage.getItem("ayudarte_user_id");
+                    if (!uid) {
+                      setIsAuthOpen(true);
+                      return;
+                    }
+                    if (uid === offer.userId) {
+                      return toast("No puedes solicitar tu propio ofrecimiento.");
+                    }
+                    setIntentionItem({ id: offer.id, title: offer.title, type: "reclamar", kind: "offer" });
+                  }}
+                  className="w-full bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20"
+                >
+                  Postularme para recibir esto
+                </button>
+              </div>
+            ))
           )}
         </div>
       </section>

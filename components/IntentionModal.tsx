@@ -14,7 +14,7 @@ interface IntentionModalProps {
   itemId: string;
   itemTitle: string;
   /** "eventual" = pedido de ayuda del día a día; ajusta los textos del modal. */
-  itemKind?: "dream" | "eventual";
+  itemKind?: "dream" | "eventual" | "offer";
 }
 
 export function IntentionModal({ isOpen, onClose, type, itemId, itemTitle, itemKind = "dream" }: IntentionModalProps) {

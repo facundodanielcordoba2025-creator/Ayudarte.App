@@ -163,7 +163,13 @@ export default function PerfilPage() {
           )}
 
           <button 
-            onClick={() => router.push('/regalar')}
+            onClick={() => {
+              if (userData?.isCompany) {
+                router.push('/ofrecer-donacion');
+              } else {
+                router.push('/regalar');
+              }
+            }}
             className="w-full bg-surface border-2 border-star/50 rounded-3xl p-6 text-left relative overflow-hidden active:scale-95 transition-transform"
           >
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mb-10 pointer-events-none"></div>
@@ -172,8 +178,12 @@ export default function PerfilPage() {
                 <Gift className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-cream text-lg">Quiero Ser Superhéroe</h3>
-                <p className="text-xs text-muted mt-1">Dona objetos o apoya a otros</p>
+                <h3 className="font-display font-bold text-cream text-lg">
+                  {userData?.isCompany ? 'Publicar en Mercado Solidario' : 'Quiero Ser Superhéroe'}
+                </h3>
+                <p className="text-xs text-muted mt-1">
+                  {userData?.isCompany ? 'Ofrece stock o donaciones masivas' : 'Dona objetos o apoya a otros'}
+                </p>
               </div>
             </div>
           </button>
