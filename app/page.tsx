@@ -5,7 +5,7 @@ import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, Send, Quote, Sparkles, MapPin, Package } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo } from "@/hooks/useEventualHelps";
@@ -57,6 +57,7 @@ export default function Home() {
   const { dreams } = useDreams();
   const { helps: eventualHelps } = useEventualHelps();
   const approvedEventual = eventualHelps.filter(h => h.status === "aprobada");
+  const { offers } = useOffers();
   
   return (
     <div className="pb-28 animate-in fade-in duration-500">
