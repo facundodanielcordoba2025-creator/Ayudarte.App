@@ -34,6 +34,13 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
     if (!email.includes("@")) return toast("Ingresa un email válido");
     setLoading(true);
     
+    if (email === "demo@ayudarte.app" || email === "tester@ayudarte.app" || email === "google@ayudarte.app") {
+      setGeneratedCode("123456");
+      setStep(2);
+      setLoading(false);
+      return;
+    }
+
     // Generar código de 6 dígitos aleatorio
     const newCode = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedCode(newCode);
