@@ -37,6 +37,13 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup Keystore for Release Signing
+        run: |
+          cd android/app
+          if [ ! -f "ayudarte-release-key.jks" ]; then
+            keytool -genkey -v -keystore ayudarte-release-key.jks -alias ayudarte -keyalg RSA -keysize 2048 -validity 10000 -storepass ayudarte2026 -keypass ayudarte2026 -dname "CN=Ayudarte, OU=Mobile, O=Ayudarte, L=Buenos Aires, ST=Buenos Aires, C=AR"
+          fi
+
       - name: Build Android Debug APK (Para probar en celulares)
         run: |
           cd android
@@ -48,14 +55,20 @@ jobs:
           cd android
           ./gradlew bundleRelease
 
-      - name: Upload APK (Prueba)
+      - name: Upload APK (Para instalar en celulares)
         uses: actions/upload-artifact@v4
         with:
           name: ayudarte-app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Upload AAB (Play Store Unsigned)
+      - name: Upload AAB (Google Play Store Bundle Firmado)
         uses: actions/upload-artifact@v4
         with:
-          name: ayudarte-app-release-unsigned.aab
-          path: android/app/build/outputs/bundle/release/app-release-unsigned.aab
+          name: ayudarte-app-release.aab
+          path: android/app/build/outputs/bundle/release/*.aab
+
+      - name: Upload Keystore (Copia de seguridad de la firma)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ayudarte-keystore.jks
+          path: android/app/ayudarte-release-key.jks

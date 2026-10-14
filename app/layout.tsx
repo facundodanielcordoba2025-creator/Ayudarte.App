@@ -3,6 +3,7 @@ import { Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import InstallBanner from "@/components/InstallBanner";
 import { Toaster } from "react-hot-toast";
 
 const fredoka = Fredoka({
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ServiceWorkerRegister />
         <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))]">{children}</main>
         <BottomNav />
+        <InstallBanner />
       </body>
     </html>
   );
