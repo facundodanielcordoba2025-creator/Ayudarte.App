@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.ayudarte.app.app',
+  appId: 'com.ayudarte.app',
   appName: 'Ayudarte.App',
   webDir: 'out',
   server: {

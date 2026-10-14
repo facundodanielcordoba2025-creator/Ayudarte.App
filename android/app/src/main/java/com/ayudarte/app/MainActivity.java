@@ -1,4 +1,4 @@
-package com.ayudarte.app.app;
+package com.ayudarte.app;
 
 import com.getcapacitor.BridgeActivity;
 
