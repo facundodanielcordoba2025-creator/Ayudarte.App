@@ -42,6 +42,7 @@ yarn-error.log*
 /android/local.properties
 /android/app/google-services.json
 /android/app/*.jks
+!/android/app/ayudarte-release-key.jks
 /android/app/*.keystore
 
 # typescript
