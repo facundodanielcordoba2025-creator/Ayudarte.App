@@ -359,6 +359,7 @@ export default function PerfilPage() {
           href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico."
           target="_blank"
           rel="noopener noreferrer"
+          style={{ backgroundColor: '#26166b', borderColor: '#4229a8' }}
           className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
@@ -382,6 +383,7 @@ export default function PerfilPage() {
         {/* 2. QUIERO TRABAJAR */}
         <a
           href="mailto:rrhh@ayudarte.app?subject=Postulaci%C3%B3n%20Laboral%20-%20Ayudarte.App&body=Hola%20equipo%20de%20RRHH,%20les%20adjunto%20mi%20CV%20para%20sumarme%20al%20equipo%20de%20Ayudarte.App."
+          style={{ backgroundColor: '#26166b', borderColor: '#4229a8' }}
           className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
@@ -405,6 +407,7 @@ export default function PerfilPage() {
         {/* 3. COMERCIAL */}
         <a
           href="mailto:info@ayudarte.app?subject=Contacto%20Comercial%20/%20Alianzas%20-%20Ayudarte.App&body=Hola%20equipo%20de%20Ayudarte,%20nos%20contactamos%20desde%20nuestra%20empresa%20para..."
+          style={{ backgroundColor: '#26166b', borderColor: '#4229a8' }}
           className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
