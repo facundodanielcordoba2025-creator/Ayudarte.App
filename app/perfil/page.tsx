@@ -354,27 +354,27 @@ export default function PerfilPage() {
 
       {/* SECCIÓN DE CONTACTO, EMPLEO Y COMERCIAL */}
       <div className="px-6 mt-8 space-y-3.5">
-        {/* 1. SOPORTE TÉCNICO / EMPLEO (WhatsApp) */}
+        {/* 1. SOPORTE TÉCNICO (WhatsApp) */}
         <a
           href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico."
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
+          className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
-              <MessageCircle className="w-6 h-6 text-[#25D366]" />
+            <div className="w-12 h-12 rounded-2xl bg-star/15 border border-star/30 flex items-center justify-center shrink-0 shadow-inner">
+              <MessageCircle className="w-6 h-6 text-star" />
             </div>
             <div className="text-left min-w-0">
-              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
+              <h4 className="font-extrabold text-cream text-base leading-tight tracking-wide">
                 SOPORTE TÉCNICO
               </h4>
-              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+              <p className="text-xs text-muted font-semibold mt-1 truncate">
                 011 7676-6892
               </p>
             </div>
           </div>
-          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
+          <span className="px-4 py-2 bg-star hover:bg-star-dim text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Chatear
           </span>
         </a>
@@ -382,22 +382,22 @@ export default function PerfilPage() {
         {/* 2. QUIERO TRABAJAR */}
         <a
           href="mailto:rrhh@ayudarte.app?subject=Postulaci%C3%B3n%20Laboral%20-%20Ayudarte.App&body=Hola%20equipo%20de%20RRHH,%20les%20adjunto%20mi%20CV%20para%20sumarme%20al%20equipo%20de%20Ayudarte.App."
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
+          className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
-              <Briefcase className="w-6 h-6 text-[#25D366]" />
+            <div className="w-12 h-12 rounded-2xl bg-star/15 border border-star/30 flex items-center justify-center shrink-0 shadow-inner">
+              <Briefcase className="w-6 h-6 text-star" />
             </div>
             <div className="text-left min-w-0">
-              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
+              <h4 className="font-extrabold text-cream text-base leading-tight tracking-wide">
                 QUIERO TRABAJAR
               </h4>
-              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+              <p className="text-xs text-muted font-semibold mt-1 truncate">
                 rrhh@ayudarte.app
               </p>
             </div>
           </div>
-          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
+          <span className="px-4 py-2 bg-star hover:bg-star-dim text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Enviar CV
           </span>
         </a>
@@ -405,22 +405,22 @@ export default function PerfilPage() {
         {/* 3. COMERCIAL */}
         <a
           href="mailto:info@ayudarte.app?subject=Contacto%20Comercial%20/%20Alianzas%20-%20Ayudarte.App&body=Hola%20equipo%20de%20Ayudarte,%20nos%20contactamos%20desde%20nuestra%20empresa%20para..."
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
+          className="w-full bg-surface hover:bg-surface-2 text-cream p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center justify-between gap-4 shadow-sm border border-line active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
-              <Building2 className="w-6 h-6 text-[#25D366]" />
+            <div className="w-12 h-12 rounded-2xl bg-star/15 border border-star/30 flex items-center justify-center shrink-0 shadow-inner">
+              <Building2 className="w-6 h-6 text-star" />
             </div>
             <div className="text-left min-w-0">
-              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
+              <h4 className="font-extrabold text-cream text-base leading-tight tracking-wide">
                 COMERCIAL
               </h4>
-              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+              <p className="text-xs text-muted font-semibold mt-1 truncate">
                 info@ayudarte.app
               </p>
             </div>
           </div>
-          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
+          <span className="px-4 py-2 bg-star hover:bg-star-dim text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Contactar
           </span>
         </a>
