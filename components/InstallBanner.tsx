@@ -6,6 +6,8 @@ import { Download, X, Share, PlusSquare } from "lucide-react";
 export default function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
   const [showIOSModal, setShowIOSModal] = useState(false);
   const [isDismissed, setIsDismissed] = useState(true);
   const [isStandalone, setIsStandalone] = useState(true);
@@ -22,16 +24,26 @@ export default function InstallBanner() {
 
     // 2. Verificar si el usuario ya lo cerró en esta sesión
     const dismissed = sessionStorage.getItem("ayudarte_pwa_dismissed");
-    if (!dismissed) {
+    if (dismissed) {
+      setIsDismissed(true);
+      return;
+    }
+
+    const ua = (typeof window !== "undefined" ? window.navigator.userAgent : "").toLowerCase();
+    const isIosDevice = /iphone|ipad|ipod/.test(ua);
+    const isAndroidDevice = /android/.test(ua);
+    const inApp = /instagram|fbav|fban|tiktok|twitter|micromessenger/.test(ua);
+
+    setIsIOS(isIosDevice);
+    setIsAndroid(isAndroidDevice);
+    setIsInAppBrowser(inApp);
+
+    // En iOS (Safari) o navegadores in-app en Android, mostramos el banner
+    if (isIosDevice || (isAndroidDevice && inApp)) {
       setIsDismissed(false);
     }
 
-    // 3. Detectar iOS (Safari)
-    const ua = window.navigator.userAgent.toLowerCase();
-    const isIosDevice = /iphone|ipad|ipod/.test(ua);
-    setIsIOS(isIosDevice);
-
-    // 4. Capturar evento de instalación nativo (Android Chrome / Edge)
+    // 4. Capturar evento de instalación nativo (Android Chrome / Edge / Samsung)
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -46,20 +58,37 @@ export default function InstallBanner() {
   }, []);
 
   const handleInstallClick = async () => {
+    // 1. Flujo nativo Android en 1 clic (Chrome, Edge, Samsung Internet)
     if (deferredPrompt) {
-      // Flujo nativo Android
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        setIsDismissed(true);
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+          setIsDismissed(true);
+        }
+      } catch (err) {
+        console.error("Error al disparar instalación:", err);
       }
       setDeferredPrompt(null);
-    } else if (isIOS) {
-      // Flujo instructivo iOS
+      return;
+    }
+
+    // 2. Si está en Android dentro del navegador bloqueado de Instagram/Facebook:
+    // Abrir automáticamente en Chrome real para que se instale en 1 clic
+    if (isAndroid) {
+      try {
+        const cleanUrl = window.location.href.replace(/^https?:\/\//, "");
+        window.location.href = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+      } catch (e) {
+        window.open(window.location.href, "_system");
+      }
+      return;
+    }
+
+    // 3. En iPhone / iPad (iOS Safari no permite instalación por script, requiere modal visual)
+    if (isIOS) {
       setShowIOSModal(true);
-    } else {
-      // Fallback
-      alert("Para instalar la app, abre las opciones de tu navegador (3 puntitos) y selecciona 'Instalar aplicación' o 'Agregar a la pantalla principal'.");
+      return;
     }
   };
 
