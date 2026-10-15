@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2 } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -375,6 +375,55 @@ export default function PerfilPage() {
           </div>
           <span className="px-4 py-2 bg-white text-[#128C7E] font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Chatear
+          </span>
+        </a>
+      </div>
+
+      {/* BOTONES ADICIONALES: QUIERO TRABAJAR & COMERCIAL */}
+      <div className="px-6 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        {/* QUIERO TRABAJAR / ENVÍO DE CV */}
+        <a
+          href="mailto:rrhh@ayudarte.app?subject=Postulaci%C3%B3n%20Laboral%20-%20Ayudarte.App&body=Hola%20equipo%20de%20RRHH,%20les%20adjunto%20mi%20CV%20para%20sumarme%20al%20equipo%20de%20Ayudarte.App."
+          className="bg-surface border-2 border-line hover:border-warmth/60 p-4 rounded-3xl flex items-center justify-between gap-3 shadow-md active:scale-95 transition-all group"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-2xl bg-warmth/15 text-warmth flex items-center justify-center shrink-0 border border-warmth/30">
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <div className="text-left min-w-0">
+              <h4 className="font-bold text-cream text-sm group-hover:text-warmth transition-colors">
+                QUIERO TRABAJAR
+              </h4>
+              <p className="text-[11px] text-muted truncate">
+                Envianos tu CV a <strong className="text-cream">rrhh@ayudarte.app</strong>
+              </p>
+            </div>
+          </div>
+          <span className="px-3 py-1.5 bg-warmth text-night font-bold text-xs rounded-xl shrink-0 shadow">
+            Enviar CV
+          </span>
+        </a>
+
+        {/* CONTACTO COMERCIAL / EMPRESAS */}
+        <a
+          href="mailto:info@ayudarte.app?subject=Contacto%20Comercial%20/%20Alianzas%20-%20Ayudarte.App&body=Hola%20equipo%20de%20Ayudarte,%20nos%20contactamos%20desde%20nuestra%20empresa%20para..."
+          className="bg-surface border-2 border-line hover:border-star/60 p-4 rounded-3xl flex items-center justify-between gap-3 shadow-md active:scale-95 transition-all group"
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-2xl bg-star/15 text-star flex items-center justify-center shrink-0 border border-star/30">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div className="text-left min-w-0">
+              <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">
+                COMERCIAL
+              </h4>
+              <p className="text-[11px] text-muted truncate">
+                Escribinos a <strong className="text-cream">info@ayudarte.app</strong>
+              </p>
+            </div>
+          </div>
+          <span className="px-3 py-1.5 bg-star text-night font-bold text-xs rounded-xl shrink-0 shadow">
+            Contactar
           </span>
         </a>
       </div>
