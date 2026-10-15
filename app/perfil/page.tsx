@@ -352,77 +352,75 @@ export default function PerfilPage() {
 
 
 
-      {/* BOTÓN SOPORTE TÉCNICO / EMPLEO */}
-      <div className="px-6 mt-8">
+      {/* SECCIÓN DE CONTACTO, EMPLEO Y COMERCIAL */}
+      <div className="px-6 mt-8 space-y-3.5">
+        {/* 1. SOPORTE TÉCNICO / EMPLEO (WhatsApp) */}
         <a
           href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico%20/%20Empleo."
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl active:scale-95 transition-all"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-inner">
-              <MessageCircle className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
+              <MessageCircle className="w-6 h-6 text-[#25D366]" />
             </div>
             <div className="text-left min-w-0">
               <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
                 SOPORTE TÉCNICO / EMPLEO
               </h4>
-              <p className="text-xs text-white/95 font-medium mt-1 truncate">
-                Escribinos por WhatsApp al 011 7676-6892
+              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+                011 7676-6892
               </p>
             </div>
           </div>
-          <span className="px-4 py-2 bg-white text-[#128C7E] font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
+          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Chatear
           </span>
         </a>
-      </div>
 
-      {/* BOTONES ADICIONALES: QUIERO TRABAJAR & COMERCIAL */}
-      <div className="px-6 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        {/* QUIERO TRABAJAR / ENVÍO DE CV */}
+        {/* 2. QUIERO TRABAJAR */}
         <a
           href="mailto:rrhh@ayudarte.app?subject=Postulaci%C3%B3n%20Laboral%20-%20Ayudarte.App&body=Hola%20equipo%20de%20RRHH,%20les%20adjunto%20mi%20CV%20para%20sumarme%20al%20equipo%20de%20Ayudarte.App."
-          className="bg-surface border-2 border-line hover:border-warmth/60 p-4 rounded-3xl flex items-center justify-between gap-3 shadow-md active:scale-95 transition-all group"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-2xl bg-warmth/15 text-warmth flex items-center justify-center shrink-0 border border-warmth/30">
-              <Briefcase className="w-5 h-5" />
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
+              <Briefcase className="w-6 h-6 text-[#25D366]" />
             </div>
             <div className="text-left min-w-0">
-              <h4 className="font-bold text-cream text-sm group-hover:text-warmth transition-colors">
+              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
                 QUIERO TRABAJAR
               </h4>
-              <p className="text-[11px] text-muted truncate">
-                Envianos tu CV a <strong className="text-cream">rrhh@ayudarte.app</strong>
+              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+                rrhh@ayudarte.app
               </p>
             </div>
           </div>
-          <span className="px-3 py-1.5 bg-warmth text-night font-bold text-xs rounded-xl shrink-0 shadow">
+          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Enviar CV
           </span>
         </a>
 
-        {/* CONTACTO COMERCIAL / EMPRESAS */}
+        {/* 3. COMERCIAL */}
         <a
           href="mailto:info@ayudarte.app?subject=Contacto%20Comercial%20/%20Alianzas%20-%20Ayudarte.App&body=Hola%20equipo%20de%20Ayudarte,%20nos%20contactamos%20desde%20nuestra%20empresa%20para..."
-          className="bg-surface border-2 border-line hover:border-star/60 p-4 rounded-3xl flex items-center justify-between gap-3 shadow-md active:scale-95 transition-all group"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-2xl bg-star/15 text-star flex items-center justify-center shrink-0 border border-star/30">
-              <Building2 className="w-5 h-5" />
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0 shadow-inner">
+              <Building2 className="w-6 h-6 text-[#25D366]" />
             </div>
             <div className="text-left min-w-0">
-              <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">
+              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
                 COMERCIAL
               </h4>
-              <p className="text-[11px] text-muted truncate">
-                Escribinos a <strong className="text-cream">info@ayudarte.app</strong>
+              <p className="text-xs text-blue-100 font-bold mt-1 truncate">
+                info@ayudarte.app
               </p>
             </div>
           </div>
-          <span className="px-3 py-1.5 bg-star text-night font-bold text-xs rounded-xl shrink-0 shadow">
+          <span className="px-4 py-2 bg-[#25D366] hover:bg-[#20ba59] text-night font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Contactar
           </span>
         </a>
