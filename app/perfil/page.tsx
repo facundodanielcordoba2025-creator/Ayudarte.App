@@ -358,22 +358,22 @@ export default function PerfilPage() {
           href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico%20/%20Empleo."
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg active:scale-95 transition-all group"
+          className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl active:scale-95 transition-all"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shrink-0 shadow-md">
-              <MessageCircle className="w-5 h-5 text-night" />
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-inner">
+              <MessageCircle className="w-6 h-6 text-white" />
             </div>
-            <div className="text-left">
-              <h4 className="font-bold text-cream text-sm group-hover:text-white transition-colors">
+            <div className="text-left min-w-0">
+              <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
                 SOPORTE TÉCNICO / EMPLEO
               </h4>
-              <p className="text-xs text-muted">
-                Escribinos directo por WhatsApp al 011 7676-6892
+              <p className="text-xs text-white/95 font-medium mt-1 truncate">
+                Escribinos por WhatsApp al 011 7676-6892
               </p>
             </div>
           </div>
-          <span className="px-3.5 py-1.5 bg-[#25D366] text-night text-xs font-bold rounded-xl shrink-0 shadow active:scale-95">
+          <span className="px-4 py-2 bg-white text-[#128C7E] font-extrabold text-xs rounded-2xl shadow-md shrink-0 uppercase tracking-wider">
             Chatear
           </span>
         </a>
