@@ -356,7 +356,7 @@ export default function PerfilPage() {
       <div className="px-6 mt-8 space-y-3.5">
         {/* 1. SOPORTE TÉCNICO / EMPLEO (WhatsApp) */}
         <a
-          href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico%20/%20Empleo."
+          href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico."
           target="_blank"
           rel="noopener noreferrer"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 sm:p-5 rounded-3xl flex items-center justify-between gap-4 shadow-xl border border-blue-400/30 active:scale-95 transition-all"
@@ -367,7 +367,7 @@ export default function PerfilPage() {
             </div>
             <div className="text-left min-w-0">
               <h4 className="font-extrabold text-white text-base leading-tight tracking-wide">
-                SOPORTE TÉCNICO / EMPLEO
+                SOPORTE TÉCNICO
               </h4>
               <p className="text-xs text-blue-100 font-bold mt-1 truncate">
                 011 7676-6892
