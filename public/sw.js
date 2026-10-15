@@ -41,23 +41,46 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Notificaciones push (Firebase Cloud Messaging) llegan acá cuando
-// la app no está en primer plano.
+// Notificaciones push (Web Push / FCM) llegan acá cuando la app está en segundo plano o cerrada
 self.addEventListener("push", (event) => {
   if (!event.data) return;
-  const data = event.data.json();
-  const title = data.notification?.title || "FACUTEAYUDA";
-  const options = {
-    body: data.notification?.body || "",
-    icon: "/icons/icon-192.png",
-    badge: "/icons/icon-192.png",
-    data: data.data || {},
-  };
-  event.waitUntil(self.registration.showNotification(title, options));
+  try {
+    const data = event.data.json();
+    const title = data.title || data.notification?.title || "Ayudarte.App";
+    const body = data.body || data.notification?.body || "Tenés una novedad en Ayudarte.App";
+    const url = data.url || data.data?.url || data.notification?.data?.url || "/";
+    const options = {
+      body,
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      vibrate: [200, 100, 200],
+      data: { url },
+      actions: [
+        { action: "open", title: "Ver ahora" }
+      ]
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+  } catch (err) {
+    console.error("Error al procesar notificación push:", err);
+  }
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url = event.notification.data?.url || "/";
-  event.waitUntil(clients.openWindow(url));
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      // Si ya hay una ventana abierta con la app, enfocarla y navegar
+      for (const client of windowClients) {
+        if ("focus" in client) {
+          if (client.url === url) return client.focus();
+          return client.navigate(url).then((c) => c.focus());
+        }
+      }
+      // Si no hay ventana abierta, abrir una nueva
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    })
+  );
 });

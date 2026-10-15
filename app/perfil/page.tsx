@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
+import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -278,6 +279,11 @@ export default function PerfilPage() {
           </div>
         </div>
       )}
+
+      {/* PREFERENCIAS Y NOTIFICACIONES PUSH */}
+      <div className="px-6 mt-6">
+        <PushNotificationPrompt compact />
+      </div>
 
       {/* PREGUNTAS FRECUENTES (Inspirado en UNICEF) */}
       <div className="px-6 mt-10">

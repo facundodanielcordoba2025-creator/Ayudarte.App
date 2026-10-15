@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { 
   Users, Star, Gift, Search, Trash2, Shield, HandHeart, Package, CheckCircle, 
   Briefcase, UserCheck, ShieldCheck, AlertCircle, Sparkles, MessageSquare,
-  Plus, X, UserPlus
+  Plus, X, UserPlus, Bell, Send, Smartphone, CheckCheck, Radio, Volume2
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
@@ -143,6 +143,13 @@ export default function AdminDashboard() {
   const [newEmpRole, setNewEmpRole] = useState<"evaluador" | "admin">("evaluador");
   const [isAddingEmp, setIsAddingEmp] = useState(false);
 
+  // Notificaciones Push
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [pushTitle, setPushTitle] = useState("");
+  const [pushBody, setPushBody] = useState("");
+  const [pushUrl, setPushUrl] = useState("/");
+  const [isSendingPush, setIsSendingPush] = useState(false);
+
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newEmpEmail.trim() || !newEmpName.trim()) {
@@ -223,8 +230,43 @@ export default function AdminDashboard() {
       setOffers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 
-    return () => { unsubUsers(); unsubDreams(); unsubConns(); unsubEventual(); unsubOffers(); };
+    // Escuchar Suscriptores de Notificaciones Push
+    const qPush = query(collection(db, "push_subscriptions"), orderBy("createdAt", "desc"));
+    const unsubPush = onSnapshot(qPush, (snap) => {
+      setSubscribers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    return () => { unsubUsers(); unsubDreams(); unsubConns(); unsubEventual(); unsubOffers(); unsubPush(); };
   }, []);
+
+  const handleSendBroadcastPush = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pushTitle.trim() || !pushBody.trim()) {
+      return toast.error("Por favor completá el título y el mensaje.");
+    }
+    setIsSendingPush(true);
+    try {
+      const res = await fetch("/api/push/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: pushTitle.trim(),
+          body: pushBody.trim(),
+          url: pushUrl.trim() || "/"
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al enviar");
+      toast.success(`¡Notificación enviada! Llegó a ${data.sentCount} dispositivo(s).`);
+      setPushTitle("");
+      setPushBody("");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "Error al enviar la notificación.");
+    } finally {
+      setIsSendingPush(false);
+    }
+  };
 
   const deleteDream = async (id: string) => {
     if (confirm("¿Seguro que quieres borrar este sueño?")) {
@@ -398,6 +440,13 @@ export default function AdminDashboard() {
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "conexiones" ? "bg-star text-night" : "bg-surface text-muted"}`}
         >
           <MessageSquare className="w-4 h-4" /> Mensajes / Conexiones ({connections.length})
+        </button>
+
+        <button 
+          onClick={() => setActiveTab("push")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "push" ? "bg-star text-night" : "bg-surface text-muted"}`}
+        >
+          <Bell className="w-4 h-4" /> Notificaciones Push ({subscribers.length})
         </button>
       </div>
 
@@ -963,6 +1012,199 @@ export default function AdminDashboard() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 7: NOTIFICACIONES PUSH */}
+        {activeTab === "push" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-line">
+              <div>
+                <h3 className="font-bold text-cream text-base flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-star" />
+                  Centro de Emisión de Notificaciones Push
+                </h3>
+                <p className="text-xs text-muted">
+                  Enviá alertas y avisos en tiempo real directo a la pantalla de los usuarios, incluso con la app cerrada.
+                </p>
+              </div>
+              <span className="text-xs text-star font-bold bg-star/15 px-3 py-1 rounded-full border border-star/30 self-start sm:self-auto">
+                {subscribers.length} dispositivo(s) suscripto(s)
+              </span>
+            </div>
+
+            {/* Tarjetas de estadísticas */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="bg-surface-2 p-4 rounded-2xl border border-line">
+                <div className="flex items-center justify-between text-muted mb-1 text-xs">
+                  <span>Total Suscriptores</span>
+                  <Smartphone className="w-4 h-4 text-star" />
+                </div>
+                <p className="text-2xl font-black text-cream">{subscribers.length}</p>
+                <p className="text-[11px] text-muted mt-1">Dispositivos listos para recibir</p>
+              </div>
+
+              <div className="bg-surface-2 p-4 rounded-2xl border border-line">
+                <div className="flex items-center justify-between text-muted mb-1 text-xs">
+                  <span>En Android</span>
+                  <Smartphone className="w-4 h-4 text-green-400" />
+                </div>
+                <p className="text-2xl font-black text-cream">
+                  {subscribers.filter(s => s.platform === "android").length}
+                </p>
+                <p className="text-[11px] text-muted mt-1">Celulares con la App instalada</p>
+              </div>
+
+              <div className="bg-surface-2 p-4 rounded-2xl border border-line">
+                <div className="flex items-center justify-between text-muted mb-1 text-xs">
+                  <span>En Web / PC</span>
+                  <Radio className="w-4 h-4 text-blue-400" />
+                </div>
+                <p className="text-2xl font-black text-cream">
+                  {subscribers.filter(s => s.platform !== "android").length}
+                </p>
+                <p className="text-[11px] text-muted mt-1">Navegadores Chrome, Safari, Edge</p>
+              </div>
+            </div>
+
+            {/* Formulario de Envío de Push */}
+            <div className="bg-surface-2 p-5 rounded-3xl border border-line space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-cream text-sm flex items-center gap-2">
+                  <Send className="w-4 h-4 text-star" />
+                  Redactar Notificación Masiva
+                </h4>
+                <span className="text-[11px] text-muted">Llegará como notificación del sistema</span>
+              </div>
+
+              {/* Plantillas rápidas */}
+              <div>
+                <p className="text-[11px] font-bold text-muted uppercase tracking-wider mb-2">Plantillas Rápidas:</p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPushTitle("🚨 Caso Urgente en Ayudarte.App");
+                      setPushBody("Un soñador en situación crítica necesita apoyo de la comunidad. ¿Podés colaborar?");
+                      setPushUrl("/?tab=urgentes");
+                    }}
+                    className="px-3 py-1.5 bg-surface hover:bg-line text-xs font-semibold text-cream rounded-xl border border-line transition-all active:scale-95"
+                  >
+                    🚨 Caso Crítico
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPushTitle("✨ ¡Sueño Cumplido con Éxito!");
+                      setPushBody("Gracias a la comunidad se acaba de hacer realidad un nuevo sueño. Mirá la historia.");
+                      setPushUrl("/suenos");
+                    }}
+                    className="px-3 py-1.5 bg-surface hover:bg-line text-xs font-semibold text-cream rounded-xl border border-line transition-all active:scale-95"
+                  >
+                    ✨ Sueño Cumplido
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPushTitle("🎁 Nuevo Objeto Disponible para Donar");
+                      setPushBody("Un vecino publicó un nuevo regalo en el Mercado Solidario. ¡Entrá a verlo!");
+                      setPushUrl("/regalar");
+                    }}
+                    className="px-3 py-1.5 bg-surface hover:bg-line text-xs font-semibold text-cream rounded-xl border border-line transition-all active:scale-95"
+                  >
+                    🎁 Nuevo Regalo
+                  </button>
+                </div>
+              </div>
+
+              <form onSubmit={handleSendBroadcastPush} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-bold text-cream mb-1">Título de la Notificación</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ej. 🚨 ¡Alerta Solidaria! Necesitamos tu ayuda"
+                    value={pushTitle}
+                    onChange={(e) => setPushTitle(e.target.value)}
+                    className="w-full bg-surface border border-line rounded-xl px-4 py-2.5 text-xs text-cream placeholder:text-muted focus:outline-none focus:border-star font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-cream mb-1">Mensaje / Contenido</label>
+                  <textarea
+                    required
+                    rows={3}
+                    placeholder="Escribí aquí el texto que verán los usuarios en la pantalla de bloqueo de su celular..."
+                    value={pushBody}
+                    onChange={(e) => setPushBody(e.target.value)}
+                    className="w-full bg-surface border border-line rounded-xl p-3 text-xs text-cream placeholder:text-muted focus:outline-none focus:border-star resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-cream mb-1">Enlace al hacer Clic (Destino)</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. / o /suenos o /ayuda-eventual"
+                    value={pushUrl}
+                    onChange={(e) => setPushUrl(e.target.value)}
+                    className="w-full bg-surface border border-line rounded-xl px-4 py-2.5 text-xs text-cream placeholder:text-muted focus:outline-none focus:border-star font-mono"
+                  />
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={isSendingPush || subscribers.length === 0}
+                    className="w-full sm:w-auto px-6 py-3 bg-star hover:bg-star-dim text-night font-extrabold text-xs rounded-xl shadow-lg active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    {isSendingPush ? "Enviando a todos los dispositivos..." : `Enviar Notificación Push a ${subscribers.length} Usuarios`}
+                  </button>
+
+                  {subscribers.length === 0 && (
+                    <p className="text-xs text-warmth font-semibold">
+                      Aún no hay dispositivos suscriptos. Activá las notificaciones desde tu perfil o Home para probar.
+                    </p>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Lista de Dispositivos Registrados */}
+            <div className="space-y-3">
+              <h4 className="font-bold text-cream text-xs uppercase tracking-wider text-muted">
+                Dispositivos Conectados ({subscribers.length}):
+              </h4>
+
+              {subscribers.length === 0 ? (
+                <div className="text-center py-6 border-2 border-dashed border-line rounded-2xl">
+                  <p className="text-xs text-muted">Aún no hay usuarios suscriptos a notificaciones push.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-line/40 border border-line rounded-2xl overflow-hidden bg-surface-2">
+                  {subscribers.slice(0, 10).map((sub) => (
+                    <div key={sub.id} className="p-3 sm:p-4 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-surface flex items-center justify-center border border-line text-star">
+                          {sub.platform === "android" ? <Smartphone className="w-4 h-4" /> : <Radio className="w-4 h-4" />}
+                        </div>
+                        <div>
+                          <p className="font-bold text-cream">{sub.userName || sub.userEmail || "Usuario Anónimo"}</p>
+                          <p className="text-[10px] text-muted">
+                            Plataforma: <strong className="text-cream capitalize">{sub.platform || "Web"}</strong>
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-muted">
+                        {sub.createdAt?.seconds ? new Date(sub.createdAt.seconds * 1000).toLocaleDateString("es-AR") : "Activo"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
