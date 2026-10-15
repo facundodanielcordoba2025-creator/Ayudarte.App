@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { 
   Users, Star, Gift, Search, Trash2, Shield, HandHeart, Package, CheckCircle, 
-  Briefcase, UserCheck, ShieldCheck, AlertCircle, Sparkles, MessageSquare 
+  Briefcase, UserCheck, ShieldCheck, AlertCircle, Sparkles, MessageSquare,
+  Plus, X, UserPlus
 } from "lucide-react";
-import { collection, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 import { 
   type EventualHelp, type EventualStatus, categoryInfo, EVENTUAL_STATUS_LABEL,
@@ -132,6 +133,59 @@ export default function AdminDashboard() {
   // Búsquedas
   const [userSearch, setUserSearch] = useState("");
   const [rrhhSearch, setRrhhSearch] = useState("");
+
+  // Alta de nuevo empleado / colaborador
+  const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+  const [newEmpName, setNewEmpName] = useState("");
+  const [newEmpEmail, setNewEmpEmail] = useState("");
+  const [newEmpPhone, setNewEmpPhone] = useState("");
+  const [newEmpProvincia, setNewEmpProvincia] = useState("Salta");
+  const [newEmpRole, setNewEmpRole] = useState<"evaluador" | "admin">("evaluador");
+  const [isAddingEmp, setIsAddingEmp] = useState(false);
+
+  const handleAddEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmpEmail.trim() || !newEmpName.trim()) {
+      return toast("Por favor ingresa nombre y correo electrónico.");
+    }
+
+    setIsAddingEmp(true);
+    try {
+      const cleanEmail = newEmpEmail.trim().toLowerCase();
+      const existing = users.find(u => u.email?.toLowerCase() === cleanEmail);
+      if (existing) {
+        await updateDoc(doc(db, "users", existing.id), {
+          role: newEmpRole,
+          name: newEmpName.trim(),
+          phone: newEmpPhone.trim() || existing.phone,
+          provincia: newEmpProvincia || existing.provincia,
+          roleUpdatedAt: Date.now()
+        });
+        toast.success(`El colaborador ya existía y fue actualizado a ${newEmpRole === "admin" ? "Administrador 👑" : "Evaluador / Captador ⭐"}!`);
+      } else {
+        await addDoc(collection(db, "users"), {
+          name: newEmpName.trim(),
+          email: cleanEmail,
+          phone: newEmpPhone.trim(),
+          provincia: newEmpProvincia,
+          role: newEmpRole,
+          createdAt: Date.now(),
+          createdBy: currentUser?.email || "Admin",
+        });
+        toast.success(`¡Colaborador ${newEmpName} dado de alta como ${newEmpRole === "admin" ? "Admin 👑" : "Evaluador ⭐"}!`);
+      }
+
+      setShowAddEmployeeModal(false);
+      setNewEmpName("");
+      setNewEmpEmail("");
+      setNewEmpPhone("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al registrar colaborador.");
+    } finally {
+      setIsAddingEmp(false);
+    }
+  };
 
   useEffect(() => {
     // Escuchar Usuarios
@@ -513,16 +567,26 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             {/* Banner explicativo y métricas */}
             <div className="bg-gradient-to-r from-star/10 via-surface-2 to-surface-2 p-5 rounded-2xl border border-star/20">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-star/20 rounded-xl flex items-center justify-center text-star shrink-0">
-                  <Briefcase className="w-5 h-5" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-star/20 rounded-xl flex items-center justify-center text-star shrink-0">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-cream text-base">Gestión de RRHH y Equipo de Captadores</h3>
+                    <p className="text-xs text-muted">
+                      Asigna roles a tus colaboradores para que puedan auditar historias y determinar la urgencia (1 a 5 estrellas).
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-cream text-base">Gestión de RRHH y Equipo de Captadores</h3>
-                  <p className="text-xs text-muted">
-                    Asigna roles a tus colaboradores para que puedan auditar historias y determinar la urgencia (1 a 5 estrellas).
-                  </p>
-                </div>
+
+                <button
+                  onClick={() => setShowAddEmployeeModal(true)}
+                  className="px-4 py-2.5 bg-star text-night font-bold text-xs rounded-xl shadow-lg hover:bg-star/90 active:scale-95 transition-all flex items-center justify-center gap-1.5 shrink-0"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Dar de alta empleado / colaborador
+                </button>
               </div>
 
               {/* Contadores */}
@@ -547,6 +611,123 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Modal para dar de alta nuevo empleado */}
+            {showAddEmployeeModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-night/80 backdrop-blur-sm animate-in fade-in">
+                <div className="bg-surface border border-line rounded-3xl p-6 max-w-md w-full relative shadow-2xl animate-in zoom-in-95">
+                  <div className="flex items-center justify-between pb-3 border-b border-line mb-4">
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="w-5 h-5 text-star" />
+                      <h3 className="font-bold text-cream text-base">Dar de alta Colaborador</h3>
+                    </div>
+                    <button
+                      onClick={() => setShowAddEmployeeModal(false)}
+                      className="p-1.5 text-muted hover:text-cream rounded-xl transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleAddEmployee} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-muted mb-1.5">Nombre y Apellido *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. Martín Gómez"
+                        value={newEmpName}
+                        onChange={(e) => setNewEmpName(e.target.value)}
+                        className="w-full bg-surface-2 border border-line rounded-xl px-3.5 py-2.5 text-sm text-cream focus:outline-none focus:border-star"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-muted mb-1.5">Correo Electrónico (Gmail) *</label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="ejemplo@gmail.com"
+                        value={newEmpEmail}
+                        onChange={(e) => setNewEmpEmail(e.target.value)}
+                        className="w-full bg-surface-2 border border-line rounded-xl px-3.5 py-2.5 text-sm text-cream focus:outline-none focus:border-star"
+                      />
+                      <p className="text-[11px] text-muted mt-1">Con este correo el colaborador iniciará sesión en la app.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-muted mb-1.5">Teléfono / WhatsApp</label>
+                        <input
+                          type="tel"
+                          placeholder="387..."
+                          value={newEmpPhone}
+                          onChange={(e) => setNewEmpPhone(e.target.value)}
+                          className="w-full bg-surface-2 border border-line rounded-xl px-3.5 py-2.5 text-sm text-cream focus:outline-none focus:border-star"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-muted mb-1.5">Provincia</label>
+                        <input
+                          type="text"
+                          placeholder="Salta, Bs As..."
+                          value={newEmpProvincia}
+                          onChange={(e) => setNewEmpProvincia(e.target.value)}
+                          className="w-full bg-surface-2 border border-line rounded-xl px-3.5 py-2.5 text-sm text-cream focus:outline-none focus:border-star"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-muted mb-1.5">Rol inicial</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setNewEmpRole("evaluador")}
+                          className={`p-3 rounded-xl border text-xs font-bold text-left transition-all ${newEmpRole === "evaluador" ? "bg-warmth/20 border-warmth text-cream shadow" : "bg-surface-2 border-line text-muted"}`}
+                        >
+                          <div className="flex items-center gap-1.5 mb-1 text-warmth">
+                            <Star className="w-3.5 h-3.5 fill-warmth" />
+                            <span>Evaluador ⭐</span>
+                          </div>
+                          <p className="text-[10px] text-muted font-normal">Auditar y calificar urgencias.</p>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setNewEmpRole("admin")}
+                          className={`p-3 rounded-xl border text-xs font-bold text-left transition-all ${newEmpRole === "admin" ? "bg-star/20 border-star text-cream shadow" : "bg-surface-2 border-line text-muted"}`}
+                        >
+                          <div className="flex items-center gap-1.5 mb-1 text-star">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span>Admin 👑</span>
+                          </div>
+                          <p className="text-[10px] text-muted font-normal">Acceso total a todo el panel.</p>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddEmployeeModal(false)}
+                        className="px-4 py-2 text-xs font-bold text-muted hover:text-cream rounded-xl transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isAddingEmp}
+                        className="px-5 py-2.5 bg-star text-night font-bold text-xs rounded-xl shadow-lg hover:bg-star/90 active:scale-95 transition-all flex items-center gap-1.5"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                        {isAddingEmp ? "Guardando..." : "Dar de Alta"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Buscador de Colaboradores */}
             <div className="relative">
