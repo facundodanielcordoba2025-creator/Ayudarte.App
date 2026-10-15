@@ -8,7 +8,7 @@ import Link from "next/link";
 import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
-import { useEventualHelps, categoryInfo } from "@/hooks/useEventualHelps";
+import { useEventualHelps, categoryInfo, getUrgencyInfo } from "@/hooks/useEventualHelps";
 import { useOffers } from "@/hooks/useOffers";
 
 const MOTIVATION_QUOTES = [
@@ -58,6 +58,30 @@ export default function Home() {
   const { helps: eventualHelps } = useEventualHelps();
   const approvedEventual = eventualHelps.filter(h => h.status === "aprobada");
   const { offers } = useOffers();
+  
+  const [eventualFilter, setEventualFilter] = useState<"todos" | "urgentes">("todos");
+
+  // Ordenar ayudas eventuales por urgencia auditada (5 estrellas primero)
+  const sortedApprovedEventual = [...approvedEventual].sort((a, b) => {
+    const starsA = a.urgencyStars || 0;
+    const starsB = b.urgencyStars || 0;
+    if (starsB !== starsA) return starsB - starsA;
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
+
+  const displayedEventual = eventualFilter === "urgentes"
+    ? sortedApprovedEventual.filter(h => (h.urgencyStars || 0) >= 4)
+    : sortedApprovedEventual;
+
+  const countCritical = approvedEventual.filter(h => (h.urgencyStars || 0) >= 4).length;
+
+  // Ordenar sueños por prioridad auditada
+  const sortedDreams = [...dreams].sort((a: any, b: any) => {
+    const starsA = a.urgencyStars || 0;
+    const starsB = b.urgencyStars || 0;
+    if (starsB !== starsA) return starsB - starsA;
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
   
   return (
     <div className="pb-28 animate-in fade-in duration-500">
@@ -125,12 +149,12 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-          {dreams.length === 0 ? (
+          {sortedDreams.length === 0 ? (
             <div className="text-center py-8 border-2 border-dashed border-line rounded-2xl">
               <p className="text-muted text-sm">Aún no hay sueños publicados.</p>
             </div>
           ) : (
-            dreams.map(dream => (
+            sortedDreams.map((dream: any) => (
               <div key={dream.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4">
                   <div className="flex items-center gap-1 bg-surface-2 px-2 py-1 rounded-md text-[10px] font-bold text-muted">
@@ -139,7 +163,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full bg-star/20 flex items-center justify-center shrink-0">
                     <span className="text-lg font-bold text-star">{dream.userName?.charAt(0).toUpperCase() || 'U'}</span>
                   </div>
@@ -147,6 +171,16 @@ export default function Home() {
                     <h3 className="font-bold text-cream text-sm">{dream.userName || 'Usuario Anónimo'}</h3>
                   </div>
                 </div>
+
+                {dream.urgencyStars ? (
+                  <div className="mb-3">
+                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${getUrgencyInfo(dream.urgencyStars)?.badgeBg} ${getUrgencyInfo(dream.urgencyStars)?.textColor} ${getUrgencyInfo(dream.urgencyStars)?.borderColor}`}>
+                      <span>{"⭐".repeat(dream.urgencyStars)}</span>
+                      <span>Prioridad {dream.urgencyLabel || getUrgencyInfo(dream.urgencyStars)?.shortLabel}</span>
+                      <span className="text-[9px] opacity-75 font-normal">• Verificado</span>
+                    </span>
+                  </div>
+                ) : null}
 
                 <h4 className="font-display font-bold text-lg text-cream mb-2 leading-tight">
                   {dream.title}
@@ -190,20 +224,55 @@ export default function Home() {
           <HandHeart className="w-6 h-6 text-star" />
           <h2 className="font-display text-xl font-bold text-cream">Ayudas del Día a Día</h2>
         </div>
-        <p className="text-sm text-muted mb-6">
-          Necesidades básicas de personas de la comunidad: una factura, el alquiler, un plato de comida o un medicamento.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+          <p className="text-sm text-muted">
+            Necesidades básicas de la comunidad auditadas y verificadas por nuestro equipo de captadores.
+          </p>
+
+          {/* Filtros de Urgencia */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 shrink-0">
+            <button
+              onClick={() => setEventualFilter("todos")}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${eventualFilter === "todos" ? "bg-star text-night shadow" : "bg-surface text-muted border border-line"}`}
+            >
+              Todos ({approvedEventual.length})
+            </button>
+            {countCritical > 0 && (
+              <button
+                onClick={() => setEventualFilter("urgentes")}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${eventualFilter === "urgentes" ? "bg-red-500 text-white shadow-md shadow-red-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}`}
+              >
+                <span>🚨 Casos Críticos (4-5 ⭐)</span>
+                <span className="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">{countCritical}</span>
+              </button>
+            )}
+          </div>
+        </div>
 
         <div className="space-y-4">
-          {approvedEventual.length === 0 ? (
+          {displayedEventual.length === 0 ? (
             <div className="text-center py-8 border-2 border-dashed border-line rounded-2xl">
-              <p className="text-muted text-sm">No hay pedidos de ayuda publicados por ahora.</p>
+              <p className="text-muted text-sm">
+                {eventualFilter === "urgentes" ? "No hay casos críticos en este momento." : "No hay pedidos de ayuda publicados por ahora."}
+              </p>
             </div>
           ) : (
-            approvedEventual.map(help => {
+            displayedEventual.map(help => {
               const cat = categoryInfo(help.category);
+              const urgency = getUrgencyInfo(help.urgencyStars);
               return (
-                <div key={help.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm">
+                <div key={help.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
+                  {/* Badge de Urgencia Auditada por el Equipo */}
+                  {urgency && (
+                    <div className="mb-3">
+                      <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${urgency.badgeBg} ${urgency.textColor} ${urgency.borderColor}`}>
+                        <span>{"⭐".repeat(help.urgencyStars || 0)}</span>
+                        <span>{urgency.label}</span>
+                        <span className="text-[10px] opacity-80 font-normal">• Verificado por Ayudarte</span>
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-star/15 text-star text-[11px] font-bold px-2.5 py-1 rounded-full">
                       {(() => {
@@ -220,6 +289,14 @@ export default function Home() {
 
                   <h4 className="font-display font-bold text-lg text-cream mb-1 leading-tight">{help.title}</h4>
                   <p className="text-xs text-muted mb-3">{help.userName ? `Pedido por ${help.userName}` : 'Pedido de la comunidad'}</p>
+                  
+                  {/* Nota de auditoría interna de los captadores para generar confianza */}
+                  {help.urgencyNotes && (
+                    <div className="mb-3 p-2.5 bg-surface-2 rounded-xl border border-line/60 text-xs text-muted">
+                      <strong className="text-cream not-italic">📋 Auditoría del equipo:</strong> "{help.urgencyNotes}"
+                    </div>
+                  )}
+
                   <p className="text-sm text-muted mb-4 leading-relaxed line-clamp-3">{help.description}</p>
 
                   {help.amountNeeded ? (
