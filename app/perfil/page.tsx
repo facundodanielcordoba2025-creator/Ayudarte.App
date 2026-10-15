@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -351,6 +351,33 @@ export default function PerfilPage() {
       </div>
 
 
+
+      {/* BOTÓN SOPORTE TÉCNICO / EMPLEO */}
+      <div className="px-6 mt-8">
+        <a
+          href="https://wa.me/5491176766892?text=Hola!%20Me%20contacto%20desde%20Ayudarte.App%20por%20Soporte%20T%C3%A9cnico%20/%20Empleo."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 p-4 rounded-2xl flex items-center justify-between gap-3 shadow-lg active:scale-95 transition-all group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shrink-0 shadow-md">
+              <MessageCircle className="w-5 h-5 text-night" />
+            </div>
+            <div className="text-left">
+              <h4 className="font-bold text-cream text-sm group-hover:text-white transition-colors">
+                SOPORTE TÉCNICO / EMPLEO
+              </h4>
+              <p className="text-xs text-muted">
+                Escribinos directo por WhatsApp al 011 7676-6892
+              </p>
+            </div>
+          </div>
+          <span className="px-3.5 py-1.5 bg-[#25D366] text-night text-xs font-bold rounded-xl shrink-0 shadow active:scale-95">
+            Chatear
+          </span>
+        </a>
+      </div>
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
