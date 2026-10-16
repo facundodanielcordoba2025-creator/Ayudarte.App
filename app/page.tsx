@@ -10,7 +10,6 @@ import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo, getUrgencyInfo } from "@/hooks/useEventualHelps";
 import { useOffers } from "@/hooks/useOffers";
-import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 
 const MOTIVATION_QUOTES = [
   { quote: "El futuro pertenece a aquellos que creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
@@ -140,11 +139,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* BANNER NOTIFICACIONES PUSH */}
-      <div className="px-6">
-        <PushNotificationPrompt />
-      </div>
 
       {/* SECCIÓN SUEÑOS */}
       <section className="px-6 py-10 bg-night relative">

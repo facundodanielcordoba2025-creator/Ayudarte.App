@@ -2,10 +2,11 @@
 import { toast } from "react-hot-toast";
 
 import { useState } from "react";
-import { X, Mail, KeyRound, MapPin, Phone, User } from "lucide-react";
-import { collection, addDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
+import { X, Mail, KeyRound, MapPin, Phone, User, Bell, ShieldCheck } from "lucide-react";
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { VAPID_PUBLIC_KEY, urlBase64ToUint8Array } from "@/lib/push-config";
 
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [step, setStep] = useState(1);
@@ -18,7 +19,8 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [dni, setDni] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(true);
+  const [acceptPush, setAcceptPush] = useState(true);
   const [isCompany, setIsCompany] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<File | null>(null);
@@ -100,6 +102,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   const handleRegister = async () => {
     if (!name || !phone || !provincia) return toast("Por favor completa al menos tu nombre, teléfono y provincia.");
     if (isCompany && !companyName) return toast("Si eres empresa, ingresa el nombre de la empresa.");
+    if (!acceptTerms) return toast("Debes aceptar los Términos y Condiciones para continuar.");
     
     setLoading(true);
     try {
@@ -120,8 +123,43 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         isCompany,
         companyName: isCompany ? companyName : null,
         companyLogo: logoUrl,
+        acceptPush,
         createdAt: Date.now()
       });
+
+      // Si el usuario consintió recibir notificaciones push, solicitamos el permiso nativo y registramos el dispositivo
+      if (acceptPush && typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window) {
+        try {
+          const perm = await Notification.requestPermission();
+          if (perm === "granted") {
+            const reg = await navigator.serviceWorker.ready;
+            let sub = await reg.pushManager.getSubscription();
+            if (!sub) {
+              sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as BufferSource
+              });
+            }
+            const subJson = sub.toJSON();
+            if (subJson.endpoint && subJson.keys) {
+              const docId = encodeURIComponent(subJson.endpoint).slice(-100).replace(/\./g, "_");
+              await setDoc(doc(db, "push_subscriptions", docId), {
+                endpoint: subJson.endpoint,
+                keys: subJson.keys,
+                userId: docRef.id,
+                userEmail: email,
+                userName: name,
+                platform: /android/i.test(navigator.userAgent) ? "android" : "web",
+                active: true,
+                updatedAt: Date.now(),
+                createdAt: Date.now()
+              }, { merge: true });
+            }
+          }
+        } catch (pushErr) {
+          console.warn("Suscripción push durante el registro omitida o no soportada:", pushErr);
+        }
+      }
       
       localStorage.setItem("ayudarte_user_id", docRef.id);
       toast("¡Registro exitoso! Ya eres parte de Ayudarte.App");
@@ -276,11 +314,44 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                   <input type="text" value={address} onChange={e=>setAddress(e.target.value)} className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-cream focus:border-star focus:outline-none" />
                 </div>
               </div>
+
+              {/* Consentimientos Legales y Notificaciones Push */}
+              <div className="space-y-2 pt-1">
+                <label className="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-xl hover:bg-surface-2 transition-colors">
+                  <input 
+                    type="checkbox" 
+                    checked={acceptTerms} 
+                    onChange={e => setAcceptTerms(e.target.checked)} 
+                    className="mt-0.5 accent-star w-4 h-4 rounded cursor-pointer shrink-0"
+                  />
+                  <span className="text-xs text-muted leading-tight select-none">
+                    Acepto los <a href="/legales" target="_blank" className="text-cream underline underline-offset-2 hover:text-star font-semibold">Términos, Privacidad y Políticas</a> de Ayudarte.App.
+                  </span>
+                </label>
+
+                <label className="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-xl bg-star/10 border border-star/30 hover:border-star transition-all">
+                  <input 
+                    type="checkbox" 
+                    checked={acceptPush} 
+                    onChange={e => setAcceptPush(e.target.checked)} 
+                    className="mt-0.5 accent-star w-4 h-4 rounded cursor-pointer shrink-0"
+                  />
+                  <div className="select-none">
+                    <span className="text-xs font-bold text-cream flex items-center gap-1.5 leading-tight">
+                      <Bell className="w-3.5 h-3.5 text-star shrink-0" />
+                      Acepto recibir alertas de casos urgentes y sueños cumplidos
+                    </span>
+                    <span className="text-[10px] text-muted block mt-0.5 leading-snug">
+                      Te notificaremos al instante en tu celular ante necesidades prioritarias.
+                    </span>
+                  </div>
+                </label>
+              </div>
               
               <button 
                 onClick={handleRegister}
-                disabled={loading}
-                className="w-full bg-star text-night font-bold py-3.5 rounded-xl mt-4 shadow-[0_4px_14px_rgba(255,102,0,0.3)] active:scale-95 transition-transform disabled:opacity-50"
+                disabled={loading || !acceptTerms}
+                className="w-full bg-star text-night font-bold py-3.5 rounded-xl mt-3 shadow-[0_4px_14px_rgba(255,102,0,0.3)] active:scale-95 transition-transform disabled:opacity-50"
               >
                 {loading ? "Guardando..." : "Finalizar Registro"}
               </button>
