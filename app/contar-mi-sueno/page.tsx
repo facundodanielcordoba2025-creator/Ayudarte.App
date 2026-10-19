@@ -64,13 +64,21 @@ export default function ContarMiSuenoPage() {
 
     try {
       const { db } = await import('@/lib/firebase');
-      const { collection, addDoc } = await import('firebase/firestore');
+      const { collection, addDoc, doc, getDoc } = await import('firebase/firestore');
       const { uploadToCloudinary } = await import('@/lib/cloudinary');
       
       const uploadedUrls: string[] = [];
       for (const file of media) {
-        uploadedUrls.push(await uploadToCloudinary(file));
+        try {
+          uploadedUrls.push(await uploadToCloudinary(file));
+        } catch (uploadErr) {
+          console.warn("Error procesando archivo, continuando:", uploadErr);
+        }
       }
+
+      // Obtener datos del perfil para incluir datos de verificación y cuenta bancaria
+      const userSnap = await getDoc(doc(db, 'users', userId));
+      const uData = userSnap.exists() ? userSnap.data() : {};
 
       await addDoc(collection(db, 'dreams'), {
         title,
@@ -79,6 +87,17 @@ export default function ContarMiSuenoPage() {
         media: uploadedUrls,
         createdAt: Date.now(),
         userId,
+        userName: uData?.name || null,
+        userProvincia: uData?.provincia || null,
+        photoUrl: uData?.photoUrl || null,
+        isVerified: !!uData?.isVerified,
+        verificationStars: uData?.verificationStars || 0,
+        socials: uData?.socials || null,
+        alias: uData?.alias || null,
+        cbu: uData?.cbu || null,
+        bankOwnerName: uData?.bankOwnerName || uData?.name || null,
+        bankOwnerDni: uData?.bankOwnerDni || null,
+        bankName: uData?.bankName || null,
       });
       
       router.push("/suenos");

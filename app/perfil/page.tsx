@@ -1,15 +1,17 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2 } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2 } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
-import { collection, query, where, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
+import { SocialVerificationSection } from "@/components/SocialVerificationSection";
+import { BankDataSection } from "@/components/BankDataSection";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -49,6 +51,21 @@ export default function PerfilPage() {
     }
   }, []);
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0] || !userId) return;
+    const file = e.target.files[0];
+    const toastId = toast.loading("Subiendo foto de perfil...");
+    try {
+      const { uploadToCloudinary } = await import("@/lib/cloudinary");
+      const url = await uploadToCloudinary(file);
+      await updateDoc(doc(db, "users", userId), { photoUrl: url });
+      toast.success("¡Foto de perfil actualizada!", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("No se pudo subir la foto.", { id: toastId });
+    }
+  };
+
   const hasActiveEventual = myEventual.some(h => h.status === "pendiente" || h.status === "aprobada");
   return (
     <div className="pb-28 min-h-screen bg-surface-2 animate-in fade-in duration-500">
@@ -63,17 +80,41 @@ export default function PerfilPage() {
       <div className="px-6 mt-6">
         {userId ? (
           <div className="space-y-4">
-            <div className="bg-surface border border-star/30 rounded-3xl p-6 shadow-[0_0_15px_rgba(255,182,72,0.1)] flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-star/20 flex items-center justify-center shrink-0 border-2 border-star/50">
-                <CircleUserRound className="w-8 h-8 text-star" />
+            <div className="bg-surface border border-line rounded-3xl p-5 sm:p-6 flex items-center gap-4 shadow-sm">
+              {/* Avatar con botón para subir/cambiar foto */}
+              <div className="relative group shrink-0">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-surface-2 border-2 border-star/50 flex items-center justify-center">
+                  {userData?.photoUrl ? (
+                    <img src={userData.photoUrl} alt={userData.name || "Usuario"} className="w-full h-full object-cover" />
+                  ) : (
+                    <CircleUserRound className="w-8 h-8 text-star" />
+                  )}
+                </div>
+                <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-star text-night flex items-center justify-center shadow-md cursor-pointer hover:scale-110 active:scale-95 transition-transform" title="Cambiar foto de perfil">
+                  <Camera className="w-3.5 h-3.5" />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+                </label>
               </div>
-              <div className="flex-1">
-                <h2 className="font-bold text-cream text-lg">¡Hola, {userData?.name || 'Superhéroe'}!</h2>
-                <p className="text-xs text-star mt-1 leading-relaxed font-semibold">
-                  Sesión iniciada correctamente.
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h2 className="font-bold text-cream text-lg truncate">¡Hola, {userData?.name || 'Superhéroe'}!</h2>
+                  {userData?.isVerified && (
+                    <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
+                  )}
+                </div>
+                <p className="text-xs text-muted mt-0.5 truncate">
+                  {userData?.email || "Sesión iniciada correctamente"}
                 </p>
               </div>
             </div>
+
+            {/* SECCIÓN DE VERIFICACIÓN DE REDES SOCIALES Y PRIVACIDAD */}
+            <SocialVerificationSection userId={userId} userData={userData} />
+
+            {/* SECCIÓN DE DATOS DE COBRO / CUENTA BANCARIA */}
+            <BankDataSection userId={userId} userData={userData} />
+
             <button 
               onClick={() => {
                 localStorage.removeItem("ayudarte_user_id");
@@ -81,7 +122,7 @@ export default function PerfilPage() {
                 setUserData(null);
                 window.location.reload();
               }} 
-              className="w-full bg-surface-2 text-muted font-bold py-3.5 rounded-xl border border-line active:scale-95 transition-transform"
+              className="w-full bg-surface text-muted hover:text-cream font-bold py-3.5 rounded-xl border border-line active:scale-95 transition-transform text-xs"
             >
               CERRAR SESIÓN
             </button>

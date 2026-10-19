@@ -66,7 +66,13 @@ export default function AyudaEventualPage() {
       const user = userSnap.exists() ? userSnap.data() : {};
 
       const media: string[] = [];
-      for (const file of files) media.push(await uploadToCloudinary(file));
+      for (const file of files) {
+        try {
+          media.push(await uploadToCloudinary(file));
+        } catch (uploadErr) {
+          console.warn("Error subiendo evidencia, continuando:", uploadErr);
+        }
+      }
 
       await addDoc(collection(db, "eventualHelps"), {
         category,
@@ -80,6 +86,15 @@ export default function AyudaEventualPage() {
         userId,
         userName: user.name || null,
         userProvincia: user.provincia || null,
+        photoUrl: user.photoUrl || null,
+        isVerified: !!user.isVerified,
+        verificationStars: user.verificationStars || 0,
+        socials: user.socials || null,
+        alias: user.alias || null,
+        cbu: user.cbu || null,
+        bankOwnerName: user.bankOwnerName || user.name || null,
+        bankOwnerDni: user.bankOwnerDni || null,
+        bankName: user.bankName || null,
       });
 
       toast("¡Recibimos tu pedido! Nuestro equipo lo va a revisar y te avisamos cuando esté publicado.");

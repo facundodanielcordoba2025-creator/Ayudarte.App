@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { 
   Users, Star, Gift, Search, Trash2, Shield, HandHeart, Package, CheckCircle, 
   Briefcase, UserCheck, ShieldCheck, AlertCircle, Sparkles, MessageSquare,
-  Plus, X, UserPlus, Bell, Send, Smartphone, CheckCheck, Radio, Volume2
+  Plus, X, UserPlus, Bell, Send, Smartphone, CheckCheck, Radio, Volume2,
+  CheckCircle2, ExternalLink, CreditCard, MessageCircle, Phone
 } from "lucide-react";
 import { collection, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
@@ -12,6 +13,7 @@ import {
   type EventualHelp, type EventualStatus, categoryInfo, EVENTUAL_STATUS_LABEL,
   URGENCY_LEVELS, getUrgencyInfo 
 } from "@/hooks/useEventualHelps";
+import { getSocialUrl } from "@/lib/verification";
 import { db } from "@/lib/firebase";
 
 function UrgencyRatingBlock({
@@ -344,6 +346,26 @@ export default function AdminDashboard() {
     } catch (e) {
       console.error(e);
       toast.error("Error al actualizar rol de RRHH.");
+    }
+  };
+
+  // Validar o revocar la verificación oficial del usuario por parte del equipo
+  const toggleUserVerification = async (targetUser: any) => {
+    try {
+      const nextVerified = !targetUser.isVerified;
+      await updateDoc(doc(db, "users", targetUser.id), {
+        isVerified: nextVerified,
+        verifiedBy: currentUser?.name || currentUser?.email || "Equipo Auditor",
+        verifiedAt: Date.now(),
+      });
+      toast.success(
+        nextVerified 
+          ? `¡${targetUser.name || targetUser.email} validado como Verificado!` 
+          : `Verificación revocada para ${targetUser.name || targetUser.email}`
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error("Error al actualizar estado de verificación.");
     }
   };
 
@@ -876,26 +898,205 @@ export default function AdminDashboard() {
             {filteredUsers.length === 0 ? (
               <p className="text-center text-muted py-8 text-sm">No se encontraron usuarios.</p>
             ) : (
-              <div className="space-y-3">
-                {filteredUsers.map(u => (
-                  <div key={u.id} className="flex items-center justify-between p-4 bg-surface-2 rounded-xl border border-line/50">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-cream text-sm">{u.name || u.email}</h4>
-                        {u.role === "evaluador" && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-warmth/20 text-warmth">Evaluador</span>
-                        )}
-                        {u.role === "admin" && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-star/20 text-star">Admin</span>
-                        )}
+              <div className="space-y-4">
+                {filteredUsers.map(u => {
+                  const phoneDigits = u.phone ? u.phone.replace(/\D/g, "") : "";
+                  const whatsappLink = phoneDigits ? `https://wa.me/${phoneDigits}` : null;
+
+                  return (
+                    <div key={u.id} className="p-4 sm:p-5 bg-surface-2 rounded-2xl border border-line/60 space-y-3 shadow-sm">
+                      {/* Fila principal del usuario */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <h4 className="font-bold text-cream text-base">{u.name || u.email}</h4>
+                            
+                            {u.isVerified ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-star/15 text-star border border-star/30 text-[10px] font-bold">
+                                <CheckCircle2 className="w-3.5 h-3.5 fill-star text-night shrink-0" />
+                                Perfil Verificado
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-night/60 text-muted border border-line">
+                                Sin verificar
+                              </span>
+                            )}
+
+                            {u.verificationStars ? (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-night text-star border border-line">
+                                {"⭐".repeat(u.verificationStars)} ({u.verificationStars}/5 redes)
+                              </span>
+                            ) : null}
+
+                            {u.role === "evaluador" && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-warmth/20 text-warmth">Evaluador</span>
+                            )}
+                            {u.role === "admin" && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-star/20 text-star">Admin</span>
+                            )}
+                            {u.isCompany && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-500/20 text-blue-400">Empresa</span>
+                            )}
+                          </div>
+
+                          <p className="text-xs text-muted flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span>{u.provincia || "Argentina"}</span>
+                            <span>•</span>
+                            <span>Email: <strong className="text-cream font-medium">{u.email}</strong></span>
+                            {u.phone && (
+                              <>
+                                <span>•</span>
+                                <span>Tel: <strong className="text-cream font-medium">{u.phone}</strong></span>
+                              </>
+                            )}
+                            {u.dni && (
+                              <>
+                                <span>•</span>
+                                <span>DNI: <strong className="text-cream font-medium">{u.dni}</strong></span>
+                              </>
+                            )}
+                          </p>
+                        </div>
+
+                        {/* Botones de acción del evaluador */}
+                        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                          {whatsappLink && (
+                            <a
+                              href={whatsappLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-2 bg-green-500/15 hover:bg-green-500/25 text-green-400 border border-green-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all"
+                              title="Contactar al usuario por WhatsApp"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                              WhatsApp
+                            </a>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => toggleUserVerification(u)}
+                            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                              u.isVerified 
+                                ? "bg-night text-muted hover:text-red-400 border border-line" 
+                                : "bg-star hover:bg-star-dim text-night shadow-sm"
+                            }`}
+                          >
+                            <UserCheck className="w-3.5 h-3.5" />
+                            {u.isVerified ? "Revocar Verificación" : "Validar y Verificar"}
+                          </button>
+
+                          <button 
+                            onClick={() => deleteUser(u.id)} 
+                            className="p-2 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all" 
+                            title="Eliminar usuario"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                      <p className="text-xs text-muted mt-1">{u.provincia || "Argentina"} • Tel: {u.phone || "Sin tel"}</p>
+
+                      {/* Bloque de auditoría: Datos bancarios y Redes si existen */}
+                      {(u.alias || u.cbu || u.bankOwnerName || u.socials) && (
+                        <div className="pt-2 border-t border-line/40 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                          {/* Datos bancarios para cotejo */}
+                          <div className="bg-night/50 p-3 rounded-xl border border-line/40 space-y-1">
+                            <span className="text-[10px] uppercase font-bold text-muted flex items-center gap-1.5 mb-1">
+                              <CreditCard className="w-3.5 h-3.5 text-star" />
+                              Datos Bancarios Registrados
+                            </span>
+                            {u.alias ? (
+                              <p className="text-cream text-xs font-mono">
+                                Alias: <strong className="text-star">{u.alias}</strong>
+                              </p>
+                            ) : null}
+                            {u.cbu ? (
+                              <p className="text-muted text-[11px] font-mono">
+                                CBU: {u.cbu}
+                              </p>
+                            ) : null}
+                            {u.bankOwnerName ? (
+                              <p className="text-muted text-[11px]">
+                                Titular: <strong className="text-cream">{u.bankOwnerName}</strong> {u.bankOwnerDni ? `(DNI: ${u.bankOwnerDni})` : ""} {u.bankName ? `• ${u.bankName}` : ""}
+                              </p>
+                            ) : null}
+                            {!u.alias && !u.cbu && !u.bankOwnerName && (
+                              <p className="text-muted text-[11px] italic">Aún no cargó datos de cobro.</p>
+                            )}
+                          </div>
+
+                          {/* Redes sociales para auditar con 1 clic */}
+                          <div className="bg-night/50 p-3 rounded-xl border border-line/40 space-y-1">
+                            <span className="text-[10px] uppercase font-bold text-muted flex items-center gap-1.5 mb-1">
+                              <ShieldCheck className="w-3.5 h-3.5 text-star" />
+                              Redes Sociales Auditables
+                            </span>
+                            <div className="flex flex-wrap gap-1.5 pt-0.5">
+                              {u.socials?.whatsapp?.value && (
+                                <a
+                                  href={getSocialUrl("whatsapp", u.socials.whatsapp.value)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 rounded-lg bg-surface text-[10px] text-cream hover:text-star border border-line flex items-center gap-1"
+                                >
+                                  WA: {u.socials.whatsapp.value}
+                                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                                </a>
+                              )}
+                              {u.socials?.instagram?.value && (
+                                <a
+                                  href={getSocialUrl("instagram", u.socials.instagram.value)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 rounded-lg bg-surface text-[10px] text-cream hover:text-star border border-line flex items-center gap-1"
+                                >
+                                  IG: {u.socials.instagram.value}
+                                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                                </a>
+                              )}
+                              {u.socials?.facebook?.value && (
+                                <a
+                                  href={getSocialUrl("facebook", u.socials.facebook.value)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 rounded-lg bg-surface text-[10px] text-cream hover:text-star border border-line flex items-center gap-1"
+                                >
+                                  FB: {u.socials.facebook.value}
+                                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                                </a>
+                              )}
+                              {u.socials?.tiktok?.value && (
+                                <a
+                                  href={getSocialUrl("tiktok", u.socials.tiktok.value)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 rounded-lg bg-surface text-[10px] text-cream hover:text-star border border-line flex items-center gap-1"
+                                >
+                                  TT: {u.socials.tiktok.value}
+                                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                                </a>
+                              )}
+                              {u.socials?.email?.value && (
+                                <a
+                                  href={getSocialUrl("email", u.socials.email.value)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-2 py-1 rounded-lg bg-surface text-[10px] text-cream hover:text-star border border-line flex items-center gap-1"
+                                >
+                                  Email: {u.socials.email.value}
+                                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                                </a>
+                              )}
+                              {(!u.socials || Object.keys(u.socials).length === 0) && (
+                                <p className="text-muted text-[11px] italic">No cargó redes sociales aún.</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <button onClick={() => deleteUser(u.id)} className="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20" title="Eliminar usuario">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

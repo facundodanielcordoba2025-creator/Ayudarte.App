@@ -5,11 +5,13 @@ import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2 } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo, getUrgencyInfo } from "@/hooks/useEventualHelps";
 import { useOffers } from "@/hooks/useOffers";
+import { MediaDetailModal, type MediaDetailItem } from "@/components/MediaDetailModal";
+import { isProfileVerified } from "@/lib/verification";
 
 const MOTIVATION_QUOTES = [
   { quote: "El futuro pertenece a aquellos que creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
@@ -52,6 +54,7 @@ const MOTIVATION_QUOTES = [
 export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
   const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar", kind?: "dream" | "eventual" | "offer"} | null>(null);
+  const [selectedMediaItem, setSelectedMediaItem] = useState<MediaDetailItem | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   const { dreams } = useDreams();
@@ -75,7 +78,7 @@ export default function Home() {
 
   const countCritical = approvedEventual.filter(h => (h.urgencyStars || 0) >= 4).length;
 
-  // Ordenar sueños por prioridad auditada
+  // Ordenar sueños por prioridad auditada (5 estrellas primero)
   const sortedDreams = [...dreams].sort((a: any, b: any) => {
     const starsA = a.urgencyStars || 0;
     const starsB = b.urgencyStars || 0;
@@ -155,42 +158,83 @@ export default function Home() {
           ) : (
             sortedDreams.map((dream: any) => (
               <div key={dream.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4">
-                  <div className="flex items-center gap-1 bg-surface-2 px-2 py-1 rounded-md text-[10px] font-bold text-muted">
-                    <MapPin className="w-3 h-3" />
-                    {dream.userProvincia || 'Argentina'}
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div 
+                    onClick={() => setSelectedMediaItem({ ...dream, kind: "dream" })}
+                    className="flex items-center gap-3 cursor-pointer group/author"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-star/20 flex items-center justify-center shrink-0 group-hover/author:ring-2 group-hover/author:ring-star/50 transition-all">
+                      <span className="text-lg font-bold text-star">{dream.userName?.charAt(0).toUpperCase() || 'U'}</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-bold text-cream text-sm leading-tight group-hover/author:text-star transition-colors">
+                          {dream.userName || 'Usuario Anónimo'}
+                        </h3>
+                        {((dream as any).isVerified || ((dream as any).socials && isProfileVerified((dream as any).socials))) && (
+                          <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
+                        )}
+                      </div>
+                      <p className="flex items-center gap-1 text-[11px] text-muted font-medium mt-0.5">
+                        <MapPin className="w-3 h-3 text-muted shrink-0" />
+                        <span>{dream.userProvincia || 'Argentina'}</span>
+                      </p>
+                    </div>
                   </div>
+
+                  {/* Nivel de estrellas donde antes estaba la ubicación */}
+                  {dream.urgencyStars ? (
+                    <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-line/70 bg-night/50 text-cream backdrop-blur-sm shrink-0">
+                      <span className="flex items-center gap-0.5 text-star">
+                        {Array.from({ length: dream.urgencyStars }).map((_, i) => (
+                          <Star key={i} className="w-3 h-3 fill-star text-star" />
+                        ))}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
 
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-star/20 flex items-center justify-center shrink-0">
-                    <span className="text-lg font-bold text-star">{dream.userName?.charAt(0).toUpperCase() || 'U'}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-cream text-sm">{dream.userName || 'Usuario Anónimo'}</h3>
-                  </div>
+                <div 
+                  onClick={() => setSelectedMediaItem({ ...dream, kind: "dream" })}
+                  className="cursor-pointer group/story"
+                >
+                  <h4 className="font-display font-bold text-lg text-cream mb-2 leading-tight group-hover/story:text-star transition-colors">
+                    {dream.title}
+                  </h4>
+                  <p className="text-sm text-muted mb-2 leading-relaxed line-clamp-3">
+                    {dream.history}
+                  </p>
+                  <p className="text-xs font-semibold text-star/80 group-hover/story:text-star mb-4 flex items-center gap-1">
+                    Leer historia completa →
+                  </p>
                 </div>
-
-                {dream.urgencyStars ? (
-                  <div className="mb-3">
-                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${getUrgencyInfo(dream.urgencyStars)?.badgeBg} ${getUrgencyInfo(dream.urgencyStars)?.textColor} ${getUrgencyInfo(dream.urgencyStars)?.borderColor}`}>
-                      <span>{"⭐".repeat(dream.urgencyStars)}</span>
-                      <span>Prioridad {dream.urgencyLabel || getUrgencyInfo(dream.urgencyStars)?.shortLabel}</span>
-                      <span className="text-[9px] opacity-75 font-normal">• Verificado</span>
-                    </span>
-                  </div>
-                ) : null}
-
-                <h4 className="font-display font-bold text-lg text-cream mb-2 leading-tight">
-                  {dream.title}
-                </h4>
-                <p className="text-sm text-muted mb-4 leading-relaxed line-clamp-3">
-                  {dream.history}
-                </p>
 
                 {dream.media && dream.media.length > 0 && (
-                  <div className="mb-4 rounded-xl overflow-hidden bg-surface-2 h-40 border border-line">
-                    <img src={dream.media[0]} alt="Sueño" className="w-full h-full object-cover" />
+                  <div 
+                    onClick={() => setSelectedMediaItem({ ...dream, kind: "dream" })}
+                    className="mb-4 rounded-2xl overflow-hidden bg-night h-48 border border-line relative cursor-pointer group"
+                  >
+                    {dream.media[0].includes("video") || dream.media[0].includes(".mp4") ? (
+                      <video 
+                        src={dream.media[0]} 
+                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
+                        muted 
+                        playsInline 
+                      />
+                    ) : (
+                      <img 
+                        src={dream.media[0]} 
+                        alt="Sueño" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                      />
+                    )}
+                    
+                    {/* Botón Play alineado al diseño de la app */}
+                    <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
+                      <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-5 h-5 ml-0.5 fill-current" />
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -229,7 +273,7 @@ export default function Home() {
           </p>
 
           {/* Filtros de Urgencia */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 shrink-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 shrink-0 hide-scrollbar">
             <button
               onClick={() => setEventualFilter("todos")}
               className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${eventualFilter === "todos" ? "bg-star text-night shadow" : "bg-surface text-muted border border-line"}`}
@@ -239,10 +283,11 @@ export default function Home() {
             {countCritical > 0 && (
               <button
                 onClick={() => setEventualFilter("urgentes")}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${eventualFilter === "urgentes" ? "bg-red-500 text-white shadow-md shadow-red-500/30" : "bg-red-500/15 text-red-400 border border-red-500/30"}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${eventualFilter === "urgentes" ? "bg-warmth text-night shadow" : "bg-warmth/15 text-warmth border border-warmth/30"}`}
               >
-                <span>🚨 Casos Críticos (4-5 ⭐)</span>
-                <span className="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">{countCritical}</span>
+                <Star className="w-3.5 h-3.5 fill-current" />
+                <span>Casos Críticos</span>
+                <span className="bg-surface-2 text-cream text-[10px] px-1.5 py-0.5 rounded-full font-mono">{countCritical}</span>
               </button>
             )}
           </div>
@@ -261,17 +306,7 @@ export default function Home() {
               const urgency = getUrgencyInfo(help.urgencyStars);
               return (
                 <div key={help.id} className="bg-surface rounded-3xl p-5 border border-line shadow-sm relative overflow-hidden">
-                  {/* Badge de Urgencia Auditada por el Equipo */}
-                  {urgency && (
-                    <div className="mb-3">
-                      <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${urgency.badgeBg} ${urgency.textColor} ${urgency.borderColor}`}>
-                        <span>{"⭐".repeat(help.urgencyStars || 0)}</span>
-                        <span>{urgency.label}</span>
-                        <span className="text-[10px] opacity-80 font-normal">• Verificado por Ayudarte</span>
-                      </span>
-                    </div>
-                  )}
-
+                  {/* Fila Superior: Categoría a la izquierda, Estrellas a la derecha */}
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-star/15 text-star text-[11px] font-bold px-2.5 py-1 rounded-full">
                       {(() => {
@@ -280,23 +315,47 @@ export default function Home() {
                       })()}
                       {cat.label}
                     </span>
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-muted">
-                      <MapPin className="w-3 h-3" />
-                      {help.userProvincia || 'Argentina'}
-                    </span>
+
+                    {urgency && (
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-line/70 bg-night/50 text-cream backdrop-blur-sm">
+                        <span className="flex items-center gap-0.5 text-star">
+                          {Array.from({ length: help.urgencyStars || 0 }).map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-star text-star" />
+                          ))}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <h4 className="font-display font-bold text-lg text-cream mb-1 leading-tight">{help.title}</h4>
-                  <p className="text-xs text-muted mb-3">{help.userName ? `Pedido por ${help.userName}` : 'Pedido de la comunidad'}</p>
-                  
-                  {/* Nota de auditoría interna de los captadores para generar confianza */}
-                  {help.urgencyNotes && (
-                    <div className="mb-3 p-2.5 bg-surface-2 rounded-xl border border-line/60 text-xs text-muted">
-                      <strong className="text-cream not-italic">📋 Auditoría del equipo:</strong> "{help.urgencyNotes}"
+                  <div 
+                    onClick={() => setSelectedMediaItem({ ...help, kind: "eventual" })}
+                    className="cursor-pointer group/author mb-3"
+                  >
+                    <h4 className="font-display font-bold text-lg text-cream mb-1 leading-tight group-hover/author:text-star transition-colors">
+                      {help.title}
+                    </h4>
+                    <div>
+                      <p className="text-xs font-bold text-cream group-hover/author:text-star transition-colors">
+                        {help.userName || 'Comunidad'}
+                      </p>
+                      <p className="flex items-center gap-1 text-[11px] text-muted font-medium mt-0.5">
+                        <MapPin className="w-3 h-3 text-muted shrink-0" />
+                        <span>{help.userProvincia || 'Argentina'}</span>
+                      </p>
                     </div>
-                  )}
+                  </div>
 
-                  <p className="text-sm text-muted mb-4 leading-relaxed line-clamp-3">{help.description}</p>
+                  <div 
+                    onClick={() => setSelectedMediaItem({ ...help, kind: "eventual" })}
+                    className="cursor-pointer group/desc mb-4"
+                  >
+                    <p className="text-sm text-muted leading-relaxed line-clamp-3 mb-1">
+                      {help.description}
+                    </p>
+                    <p className="text-xs font-semibold text-star/80 group-hover/desc:text-star flex items-center gap-1">
+                      Ver detalle completo →
+                    </p>
+                  </div>
 
                   {help.amountNeeded ? (
                     <p className="text-sm text-cream mb-4">
@@ -305,8 +364,24 @@ export default function Home() {
                   ) : null}
 
                   {help.media && help.media.length > 0 && (
-                    <div className="mb-4 rounded-xl overflow-hidden bg-surface-2 h-40 border border-line">
-                      <img src={help.media[0]} alt="Evidencia de ayuda" className="w-full h-full object-cover" />
+                    <div 
+                      onClick={() => setSelectedMediaItem({ ...help, kind: "eventual" })}
+                      className="group relative mb-4 rounded-xl overflow-hidden bg-night h-44 border border-line cursor-pointer"
+                    >
+                      {help.media[0].includes("video") || help.media[0].endsWith(".mp4") ? (
+                        <div className="w-full h-full bg-night flex items-center justify-center">
+                          <video src={help.media[0]} className="w-full h-full object-cover pointer-events-none" />
+                        </div>
+                      ) : (
+                        <img src={help.media[0]} alt="Evidencia de ayuda" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      )}
+
+                      {/* Botón flotante para reproducir / expandir */}
+                      <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
+                        <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Play className="w-5 h-5 ml-0.5 fill-current" />
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -488,6 +563,29 @@ export default function Home() {
       {/* MODAL: RECLAMAR */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type={intentionItem?.type || "reclamar"} itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} itemKind={intentionItem?.kind || "dream"} />
+
+      {/* MODAL DE DETALLE MULTIMEDIA, FICHA DEL PROPIETARIO Y CBU DIRECTO */}
+      <MediaDetailModal
+        isOpen={!!selectedMediaItem}
+        onClose={() => setSelectedMediaItem(null)}
+        item={selectedMediaItem}
+        onHelp={(it) => {
+          const uid = localStorage.getItem("ayudarte_user_id");
+          if (!uid) {
+            setIsAuthOpen(true);
+            return;
+          }
+          if (uid === it.userId) {
+            return toast("No puedes ayudarte a ti mismo.");
+          }
+          setIntentionItem({
+            id: it.id,
+            title: it.title,
+            type: "ayudar",
+            kind: it.kind || "dream",
+          });
+        }}
+      />
     </div>
   );
 }

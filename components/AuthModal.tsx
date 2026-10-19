@@ -108,7 +108,11 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
     try {
       let logoUrl = null;
       if (isCompany && companyLogo) {
-        logoUrl = await uploadToCloudinary(companyLogo);
+        try {
+          logoUrl = await uploadToCloudinary(companyLogo);
+        } catch (uploadErr) {
+          console.warn("No se pudo procesar el logo, continuando registro:", uploadErr);
+        }
       }
 
       const docRef = await addDoc(collection(db, "users"), {

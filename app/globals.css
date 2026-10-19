@@ -105,11 +105,30 @@ button:focus-visible {
 }
 
 
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Deslizamiento nativo suave sin barras de scroll que rompan el diseño */
+html, body, * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.hide-scrollbar,
+.custom-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
