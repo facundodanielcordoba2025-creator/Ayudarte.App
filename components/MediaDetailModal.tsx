@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   X, Copy, Check, HeartHandshake, MapPin, 
   Star, CircleUserRound, CheckCircle2 
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { type UserSocials, isProfileVerified } from "@/lib/verification";
 import { SocialButtonsRow } from "@/components/SocialButtonsRow";
 
@@ -45,6 +47,23 @@ interface MediaDetailModalProps {
 
 export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailModalProps) {
   const [copied, setCopied] = useState(false);
+  const [liveAuthor, setLiveAuthor] = useState<any>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isOpen && item?.userId) {
+      getDoc(doc(db, "users", item.userId))
+        .then((snap) => {
+          if (isMounted && snap.exists()) {
+            setLiveAuthor(snap.data());
+          }
+        })
+        .catch((err) => console.warn("Error leyendo usuario de la causa:", err));
+    } else {
+      setLiveAuthor(null);
+    }
+    return () => { isMounted = false; };
+  }, [isOpen, item?.userId]);
 
   if (!isOpen || !item) return null;
 
@@ -55,10 +74,13 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
     mediaUrl.includes(".webm") || 
     mediaUrl.includes(".mov");
 
-  const aliasDisplay = item.alias || item.cbu || "";
-  const ownerName = item.userName || "Usuario";
-  const location = item.userProvincia || "Argentina";
+  const currentSocials: UserSocials | undefined = liveAuthor?.socials || item.socials;
+  const aliasDisplay = liveAuthor?.bankData?.alias || liveAuthor?.alias || item.alias || liveAuthor?.bankData?.cbu || liveAuthor?.cbu || item.cbu || "";
+  const ownerName = liveAuthor?.name || item.userName || "Usuario";
+  const ownerPhoto = liveAuthor?.photoUrl || item.photoUrl;
+  const location = liveAuthor?.provincia || item.userProvincia || "Argentina";
   const story = item.history || item.description || "";
+  const isVerified = liveAuthor?.isVerified ?? (item.isVerified || isProfileVerified(currentSocials));
 
   const handleCopyAlias = () => {
     navigator.clipboard.writeText(aliasDisplay);
@@ -108,8 +130,8 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full overflow-hidden bg-star/15 border border-star/30 flex items-center justify-center text-star shrink-0">
-                {item.photoUrl ? (
-                  <img src={item.photoUrl} alt={ownerName} className="w-full h-full object-cover" />
+                {ownerPhoto ? (
+                  <img src={ownerPhoto} alt={ownerName} className="w-full h-full object-cover" />
                 ) : (
                   <CircleUserRound className="w-7 h-7" />
                 )}
@@ -117,7 +139,7 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
               <div>
                 <div className="flex items-center gap-1.5">
                   <h4 className="font-bold text-cream text-base leading-tight">{ownerName}</h4>
-                  {(item.isVerified || isProfileVerified(item.socials)) && (
+                  {isVerified && (
                     <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
                   )}
                 </div>
@@ -141,8 +163,8 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
           </div>
 
           {/* Redes Sociales del Titular */}
-          {item.socials && (
-            <SocialButtonsRow socials={item.socials} />
+          {currentSocials && (
+            <SocialButtonsRow socials={currentSocials} />
           )}
 
           {/* Título de la causa */}
