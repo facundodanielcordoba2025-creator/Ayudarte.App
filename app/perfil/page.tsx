@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
 import { EditProfileModal } from "@/components/EditProfileModal";
-import { isProfileVerified, calculateVerificationStars } from "@/lib/verification";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -82,7 +81,7 @@ export default function PerfilPage() {
         {userId ? (
           <div className="space-y-4">
             <div className="bg-surface border border-line rounded-3xl p-5 sm:p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0">
                   {/* Avatar con botón para subir/cambiar foto */}
                   <div className="relative group shrink-0">
@@ -90,7 +89,7 @@ export default function PerfilPage() {
                       {userData?.photoUrl ? (
                         <img src={userData.photoUrl} alt={userData.name || "Usuario"} className="w-full h-full object-cover" />
                       ) : (
-                        <CircleUserRound className="w-8 h-8 text-star" />
+                        <CircleUserRound className="w-9 h-9 text-star" />
                       )}
                     </div>
                     <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-star text-night flex items-center justify-center shadow-md cursor-pointer hover:scale-110 active:scale-95 transition-transform" title="Cambiar foto de perfil">
@@ -106,32 +105,20 @@ export default function PerfilPage() {
                         <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
                       )}
                     </div>
-                    <p className="text-xs text-muted truncate">
-                      {userData?.email || "Sesión iniciada correctamente"}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${isProfileVerified(userData) ? 'bg-star/15 text-star border-star/40' : 'bg-surface-2 text-muted border-line'}`}>
-                        <Star className={`w-3 h-3 ${isProfileVerified(userData) ? 'fill-star text-star' : 'text-muted'}`} />
-                        {calculateVerificationStars(userData)}/5 Redes
-                      </span>
-                      {userData?.bankData?.alias && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-cream/90 bg-surface-2 px-2 py-0.5 rounded-full border border-line font-mono">
-                          Alias: {userData.bankData.alias}
-                        </span>
-                      )}
-                    </div>
+                    {userData?.email && (
+                      <p className="text-xs text-muted truncate mt-0.5">
+                        {userData.email}
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-2 border border-star/40 text-cream text-xs font-semibold hover:border-star hover:text-star hover:bg-star/10 active:scale-95 transition-all shadow-sm"
-                  title="Editar redes y datos bancarios"
+                  className="shrink-0 px-4 py-2 rounded-xl bg-star text-night text-xs font-bold hover:bg-star-dim active:scale-95 transition-all shadow-[0_0_12px_rgba(0,229,45,0.25)] flex items-center gap-1.5"
                 >
-                  <Settings className="w-3.5 h-3.5 text-star" />
-                  <span className="hidden sm:inline">Editar perfil</span>
-                  <span className="sm:hidden">Editar</span>
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>Editar</span>
                 </button>
               </div>
             </div>
