@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2 } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2, Pencil } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -10,11 +10,12 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
-import { SocialVerificationSection } from "@/components/SocialVerificationSection";
-import { BankDataSection } from "@/components/BankDataSection";
+import { EditProfileModal } from "@/components/EditProfileModal";
+import { isProfileVerified, calculateVerificationStars } from "@/lib/verification";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [myDreams, setMyDreams] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
@@ -80,40 +81,67 @@ export default function PerfilPage() {
       <div className="px-6 mt-6">
         {userId ? (
           <div className="space-y-4">
-            <div className="bg-surface border border-line rounded-3xl p-5 sm:p-6 flex items-center gap-4 shadow-sm">
-              {/* Avatar con botón para subir/cambiar foto */}
-              <div className="relative group shrink-0">
-                <div className="w-16 h-16 rounded-full overflow-hidden bg-surface-2 border-2 border-star/50 flex items-center justify-center">
-                  {userData?.photoUrl ? (
-                    <img src={userData.photoUrl} alt={userData.name || "Usuario"} className="w-full h-full object-cover" />
-                  ) : (
-                    <CircleUserRound className="w-8 h-8 text-star" />
-                  )}
-                </div>
-                <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-star text-night flex items-center justify-center shadow-md cursor-pointer hover:scale-110 active:scale-95 transition-transform" title="Cambiar foto de perfil">
-                  <Camera className="w-3.5 h-3.5" />
-                  <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-                </label>
-              </div>
+            <div className="bg-surface border border-line rounded-3xl p-5 sm:p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-4 min-w-0">
+                  {/* Avatar con botón para subir/cambiar foto */}
+                  <div className="relative group shrink-0">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-surface-2 border-2 border-star/50 flex items-center justify-center">
+                      {userData?.photoUrl ? (
+                        <img src={userData.photoUrl} alt={userData.name || "Usuario"} className="w-full h-full object-cover" />
+                      ) : (
+                        <CircleUserRound className="w-8 h-8 text-star" />
+                      )}
+                    </div>
+                    <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-star text-night flex items-center justify-center shadow-md cursor-pointer hover:scale-110 active:scale-95 transition-transform" title="Cambiar foto de perfil">
+                      <Camera className="w-3.5 h-3.5" />
+                      <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+                    </label>
+                  </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h2 className="font-bold text-cream text-lg truncate">¡Hola, {userData?.name || 'Superhéroe'}!</h2>
-                  {userData?.isVerified && (
-                    <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
-                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-bold text-cream text-lg truncate">¡Hola, {userData?.name || 'Superhéroe'}!</h2>
+                      {userData?.isVerified && (
+                        <CheckCircle2 className="w-4 h-4 text-night fill-star shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-xs text-muted truncate">
+                      {userData?.email || "Sesión iniciada correctamente"}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${isProfileVerified(userData) ? 'bg-star/15 text-star border-star/40' : 'bg-surface-2 text-muted border-line'}`}>
+                        ⭐ {calculateVerificationStars(userData)}/5 Redes
+                      </span>
+                      {userData?.bankData?.alias && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-cream/90 bg-surface-2 px-2 py-0.5 rounded-full border border-line font-mono">
+                          Alias: {userData.bankData.alias}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-muted mt-0.5 truncate">
-                  {userData?.email || "Sesión iniciada correctamente"}
-                </p>
+
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-2 border border-star/40 text-cream text-xs font-semibold hover:border-star hover:text-star hover:bg-star/10 active:scale-95 transition-all shadow-sm"
+                  title="Editar redes y datos bancarios"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-star" />
+                  <span className="hidden sm:inline">Editar perfil</span>
+                  <span className="sm:hidden">Editar</span>
+                </button>
               </div>
             </div>
 
-            {/* SECCIÓN DE VERIFICACIÓN DE REDES SOCIALES Y PRIVACIDAD */}
-            <SocialVerificationSection userId={userId} userData={userData} />
-
-            {/* SECCIÓN DE DATOS DE COBRO / CUENTA BANCARIA */}
-            <BankDataSection userId={userId} userData={userData} />
+            {/* MODAL DE EDICIÓN DE PERFIL */}
+            <EditProfileModal
+              isOpen={isEditModalOpen}
+              onClose={() => setIsEditModalOpen(false)}
+              userId={userId}
+              userData={userData}
+            />
 
             <button 
               onClick={() => {
