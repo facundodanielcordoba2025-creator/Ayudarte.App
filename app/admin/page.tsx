@@ -131,6 +131,7 @@ export default function AdminDashboard() {
   const [eventual, setEventual] = useState<EventualHelp[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
 
   // Búsquedas
   const [userSearch, setUserSearch] = useState("");
@@ -209,6 +210,7 @@ export default function AdminDashboard() {
         const found = loaded.find(u => u.id === uid);
         if (found) setCurrentUser(found);
       }
+      setIsAuthChecking(false);
     });
 
     // Escuchar Sueños
@@ -392,6 +394,54 @@ export default function AdminDashboard() {
       u.provincia?.toLowerCase().includes(term)
     );
   });
+
+  const isAuthorized = 
+    currentUser?.role === "admin" || 
+    currentUser?.role === "evaluador" || 
+    currentUser?.email?.toLowerCase() === "facundodanielcordoba@gmail.com" ||
+    currentUser?.email?.toLowerCase().endsWith("@ayudarte.app");
+
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-surface-2 flex items-center justify-center p-6 text-center">
+        <div className="w-8 h-8 border-2 border-star border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-surface-2 p-6 flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-2xl bg-surface border border-line flex items-center justify-center mb-4 text-star shadow-sm">
+          <Shield className="w-8 h-8" />
+        </div>
+        <h2 className="font-display text-xl font-bold text-cream mb-2">Panel de Control</h2>
+        <p className="text-sm text-muted max-w-sm mb-6 leading-relaxed">
+          Debes iniciar sesión con tu cuenta de administrador o evaluador para acceder a la gestión interna de Ayudarte.App.
+        </p>
+        <a href="/perfil" className="px-6 py-3 bg-star text-night font-bold rounded-xl text-sm shadow-md active:scale-95 transition-transform">
+          Ingresar a Mi Cuenta
+        </a>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-surface-2 p-6 flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-4 text-red-500 shadow-sm">
+          <Shield className="w-8 h-8" />
+        </div>
+        <h2 className="font-display text-xl font-bold text-cream mb-2">Acceso Restringido</h2>
+        <p className="text-sm text-muted max-w-sm mb-6 leading-relaxed">
+          Tu cuenta (<strong className="text-cream">{currentUser.email}</strong>) no tiene asignado un rol de evaluación o administración.
+        </p>
+        <a href="/" className="px-6 py-3 bg-star text-night font-bold rounded-xl text-sm shadow-md active:scale-95 transition-transform">
+          Volver al Inicio
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface-2 p-4 sm:p-6 pb-28">
