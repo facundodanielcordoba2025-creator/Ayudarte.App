@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2, Pencil } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2 } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -111,8 +111,9 @@ export default function PerfilPage() {
                     </p>
 
                     <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${isProfileVerified(userData) ? 'bg-star/15 text-star border-star/40' : 'bg-surface-2 text-muted border-line'}`}>
-                        ⭐ {calculateVerificationStars(userData)}/5 Redes
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${isProfileVerified(userData) ? 'bg-star/15 text-star border-star/40' : 'bg-surface-2 text-muted border-line'}`}>
+                        <Star className={`w-3 h-3 ${isProfileVerified(userData) ? 'fill-star text-star' : 'text-muted'}`} />
+                        {calculateVerificationStars(userData)}/5 Redes
                       </span>
                       {userData?.bankData?.alias && (
                         <span className="inline-flex items-center gap-1 text-[11px] text-cream/90 bg-surface-2 px-2 py-0.5 rounded-full border border-line font-mono">
@@ -128,7 +129,7 @@ export default function PerfilPage() {
                   className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-2 border border-star/40 text-cream text-xs font-semibold hover:border-star hover:text-star hover:bg-star/10 active:scale-95 transition-all shadow-sm"
                   title="Editar redes y datos bancarios"
                 >
-                  <Pencil className="w-3.5 h-3.5 text-star" />
+                  <Settings className="w-3.5 h-3.5 text-star" />
                   <span className="hidden sm:inline">Editar perfil</span>
                   <span className="sm:hidden">Editar</span>
                 </button>

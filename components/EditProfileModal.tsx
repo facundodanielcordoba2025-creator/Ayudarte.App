@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { 
-  X, ShieldCheck, CreditCard, Save, CheckCircle2, 
-  Star, Lock, Eye 
+  X, ShieldCheck, Building2, CheckCircle2, 
+  Star 
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { doc, updateDoc } from "firebase/firestore";
@@ -168,7 +168,7 @@ export function EditProfileModal({ isOpen, onClose, userId, userData }: EditProf
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
-              Redes ({stars}/5 ⭐)
+              <span>Redes ({stars}/5)</span>
             </button>
             <button
               type="button"
@@ -177,8 +177,8 @@ export function EditProfileModal({ isOpen, onClose, userId, userData }: EditProf
                 activeTab === "bank" ? "bg-star text-night shadow" : "text-muted hover:text-cream"
               }`}
             >
-              <CreditCard className="w-4 h-4" />
-              Datos Bancarios
+              <Building2 className="w-4 h-4" />
+              <span>Datos Bancarios</span>
             </button>
           </div>
         </div>
@@ -444,9 +444,9 @@ export function EditProfileModal({ isOpen, onClose, userId, userData }: EditProf
             type="button"
             disabled={isSaving}
             onClick={handleSaveAll}
-            className="w-full py-3.5 bg-star hover:bg-star-dim disabled:opacity-50 text-night rounded-2xl font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95"
+            className="w-full py-3.5 bg-star hover:bg-star-dim disabled:opacity-50 text-night rounded-2xl font-bold text-sm shadow-[0_4px_14px_rgba(0,229,45,0.3)] flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <Save className="w-4 h-4 text-night" />
+            <CheckCircle2 className="w-4 h-4 text-night" />
             {isSaving ? "Guardando cambios..." : "Guardar cambios y cerrar"}
           </button>
         </div>
