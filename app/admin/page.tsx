@@ -399,6 +399,7 @@ export default function AdminDashboard() {
     currentUser?.role === "admin" || 
     currentUser?.role === "evaluador" || 
     currentUser?.email?.toLowerCase() === "facundodanielcordoba@gmail.com" ||
+    currentUser?.email?.toLowerCase() === "facundodanielcordoba2025@gmail.com" ||
     currentUser?.email?.toLowerCase().endsWith("@ayudarte.app");
 
   if (isAuthChecking) {
