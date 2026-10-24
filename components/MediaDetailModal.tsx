@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { 
   X, Copy, Check, HeartHandshake, MapPin, 
-  Star, CircleUserRound, CheckCircle2 
+  Star, CircleUserRound, CheckCircle2,
+  ChevronLeft, ChevronRight
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { doc, getDoc } from "firebase/firestore";
@@ -48,6 +49,11 @@ interface MediaDetailModalProps {
 export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailModalProps) {
   const [copied, setCopied] = useState(false);
   const [liveAuthor, setLiveAuthor] = useState<any>(null);
+  const [activeMediaIdx, setActiveMediaIdx] = useState(0);
+
+  useEffect(() => {
+    setActiveMediaIdx(0);
+  }, [item?.id]);
 
   useEffect(() => {
     let isMounted = true;
@@ -67,12 +73,13 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
 
   if (!isOpen || !item) return null;
 
-  const mediaUrl = item.media && item.media.length > 0 ? item.media[0] : "";
+  const mediaList = item.media && item.media.length > 0 ? item.media : [];
+  const currentMediaUrl = mediaList[activeMediaIdx] || "";
   const isVideo = 
-    mediaUrl.includes(".mp4") || 
-    mediaUrl.includes("video") || 
-    mediaUrl.includes(".webm") || 
-    mediaUrl.includes(".mov");
+    currentMediaUrl.includes(".mp4") || 
+    currentMediaUrl.includes("video") || 
+    currentMediaUrl.includes(".webm") || 
+    currentMediaUrl.includes(".mov");
 
   const currentSocials: UserSocials | undefined = liveAuthor?.socials || item.socials;
   const aliasDisplay = liveAuthor?.bankData?.alias || liveAuthor?.alias || item.alias || liveAuthor?.bankData?.cbu || liveAuthor?.cbu || item.cbu || "";
@@ -102,12 +109,13 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
           <X className="w-5 h-5" />
         </button>
 
-        {/* 1. SECCIÓN MULTIMEDIA (Video o Foto) */}
-        {mediaUrl && (
-          <div className="relative bg-night rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[220px] max-h-[360px] border-b border-line">
+        {/* 1. SECCIÓN MULTIMEDIA (Video o Foto con soporte para galería) */}
+        {currentMediaUrl && (
+          <div className="relative bg-night rounded-t-3xl overflow-hidden flex items-center justify-center min-h-[220px] max-h-[360px] border-b border-line group">
             {isVideo ? (
               <video 
-                src={mediaUrl} 
+                key={currentMediaUrl}
+                src={currentMediaUrl} 
                 controls 
                 autoPlay 
                 playsInline
@@ -115,10 +123,44 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
               />
             ) : (
               <img 
-                src={mediaUrl} 
+                key={currentMediaUrl}
+                src={currentMediaUrl} 
                 alt={item.title} 
                 className="w-full h-full max-h-[360px] object-cover" 
               />
+            )}
+
+            {/* Controles de Galería si hay más de 1 archivo */}
+            {mediaList.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMediaIdx((prev) => (prev > 0 ? prev - 1 : mediaList.length - 1));
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-night/70 hover:bg-night text-cream border border-line/60 backdrop-blur-md flex items-center justify-center transition-all z-10"
+                  aria-label="Foto anterior"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMediaIdx((prev) => (prev < mediaList.length - 1 ? prev + 1 : 0));
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-night/70 hover:bg-night text-cream border border-line/60 backdrop-blur-md flex items-center justify-center transition-all z-10"
+                  aria-label="Siguiente foto"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Indicador de posición (ej: 1/3) */}
+                <div className="absolute bottom-3 bg-night/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-cream border border-line shadow-md">
+                  {activeMediaIdx + 1} / {mediaList.length}
+                </div>
+              </>
             )}
           </div>
         )}

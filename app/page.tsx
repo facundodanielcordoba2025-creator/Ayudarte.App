@@ -209,34 +209,47 @@ export default function Home() {
                   </p>
                 </div>
 
-                {dream.media && dream.media.length > 0 && (
-                  <div 
-                    onClick={() => setSelectedMediaItem({ ...dream, kind: "dream" })}
-                    className="mb-4 rounded-2xl overflow-hidden bg-night h-48 border border-line relative cursor-pointer group"
-                  >
-                    {dream.media[0].includes("video") || dream.media[0].includes(".mp4") ? (
-                      <video 
-                        src={dream.media[0]} 
-                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
-                        muted 
-                        playsInline 
-                      />
-                    ) : (
-                      <img 
-                        src={dream.media[0]} 
-                        alt="Sueño" 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                      />
-                    )}
-                    
-                    {/* Botón Play alineado al diseño de la app */}
-                    <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
-                      <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Play className="w-5 h-5 ml-0.5 fill-current" />
-                      </div>
+                {dream.media && dream.media.length > 0 && (() => {
+                  const firstUrl = dream.media[0];
+                  const isVideo = firstUrl.includes("video") || firstUrl.includes(".mp4") || firstUrl.includes(".webm") || firstUrl.includes(".mov");
+                  return (
+                    <div 
+                      onClick={() => setSelectedMediaItem({ ...dream, kind: "dream" })}
+                      className="mb-4 rounded-2xl overflow-hidden bg-night h-48 border border-line relative cursor-pointer group"
+                    >
+                      {isVideo ? (
+                        <>
+                          <video 
+                            src={firstUrl} 
+                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
+                            muted 
+                            playsInline 
+                          />
+                          {/* Botón Play solo para videos reales */}
+                          <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
+                            <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                              <Play className="w-5 h-5 ml-0.5 fill-current" />
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <img 
+                          src={firstUrl} 
+                          alt="Sueño" 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                        />
+                      )}
+
+                      {/* Indicador si hay múltiples fotos */}
+                      {dream.media.length > 1 && (
+                        <div className="absolute top-3 right-3 bg-night/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold text-cream border border-line flex items-center gap-1 shadow-md">
+                          <span>+{dream.media.length - 1}</span>
+                          <span className="text-[10px] text-muted">fotos</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 <button 
                   onClick={() => {
@@ -363,27 +376,38 @@ export default function Home() {
                     </p>
                   ) : null}
 
-                  {help.media && help.media.length > 0 && (
-                    <div 
-                      onClick={() => setSelectedMediaItem({ ...help, kind: "eventual" })}
-                      className="group relative mb-4 rounded-xl overflow-hidden bg-night h-44 border border-line cursor-pointer"
-                    >
-                      {help.media[0].includes("video") || help.media[0].endsWith(".mp4") ? (
-                        <div className="w-full h-full bg-night flex items-center justify-center">
-                          <video src={help.media[0]} className="w-full h-full object-cover pointer-events-none" />
-                        </div>
-                      ) : (
-                        <img src={help.media[0]} alt="Evidencia de ayuda" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      )}
+                  {help.media && help.media.length > 0 && (() => {
+                    const firstUrl = help.media[0];
+                    const isVideo = firstUrl.includes("video") || firstUrl.endsWith(".mp4") || firstUrl.endsWith(".webm") || firstUrl.endsWith(".mov");
+                    return (
+                      <div 
+                        onClick={() => setSelectedMediaItem({ ...help, kind: "eventual" })}
+                        className="group relative mb-4 rounded-xl overflow-hidden bg-night h-44 border border-line cursor-pointer"
+                      >
+                        {isVideo ? (
+                          <>
+                            <div className="w-full h-full bg-night flex items-center justify-center">
+                              <video src={firstUrl} className="w-full h-full object-cover pointer-events-none opacity-90 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                            <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
+                              <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                                <Play className="w-5 h-5 ml-0.5 fill-current" />
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <img src={firstUrl} alt="Evidencia de ayuda" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        )}
 
-                      {/* Botón flotante para reproducir / expandir */}
-                      <div className="absolute inset-0 bg-night/30 group-hover:bg-night/15 flex items-center justify-center transition-colors">
-                        <div className="w-12 h-12 rounded-full bg-star text-night flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Play className="w-5 h-5 ml-0.5 fill-current" />
-                        </div>
+                        {help.media.length > 1 && (
+                          <div className="absolute top-3 right-3 bg-night/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold text-cream border border-line flex items-center gap-1 shadow-md">
+                            <span>+{help.media.length - 1}</span>
+                            <span className="text-[10px] text-muted">fotos</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
 
                   <button
                     onClick={() => {
