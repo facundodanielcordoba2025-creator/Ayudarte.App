@@ -2,7 +2,7 @@
 import { toast } from "react-hot-toast";
 
 import { useState, useRef } from "react";
-import { Camera, Video, UploadCloud, ChevronRight, Star, X } from "lucide-react";
+import { Camera, Video, UploadCloud, ChevronRight, Star, X, ShieldCheck } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { useRouter } from "next/navigation";
 
@@ -28,7 +28,11 @@ export default function ContarMiSuenoPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
-      const availableSlots = 4 - media.length;
+      const availableSlots = 8 - media.length;
+      if (availableSlots <= 0) {
+        toast.error("Has alcanzado el límite máximo de 8 archivos.");
+        return;
+      }
       const filesToProcess = filesArray.slice(0, availableSlots);
 
       setMedia(prev => [...prev, ...filesToProcess]);
@@ -51,7 +55,13 @@ export default function ContarMiSuenoPage() {
   const handleSubmit = async () => {
     const userId = localStorage.getItem("ayudarte_user_id");
     if (!title.trim() || !history.trim()) {
-      setHistory("Por favor completa el título y la historia.");
+      toast.error("Por favor completa el título y la historia.");
+      return;
+    }
+
+    if (media.length < 4) {
+      toast.error("Por medidas de seguridad debemos asegurarnos que la historia es verdadera, al menos sube 4 archivos.");
+      setStep(2);
       return;
     }
 
@@ -182,9 +192,24 @@ export default function ContarMiSuenoPage() {
 
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-            <p className="text-sm text-cream leading-relaxed">
-              Una imagen o un video vale más que mil palabras. Las historias con fotos tienen un <span className="text-star font-semibold">70% más de chances</span> de cumplirse (Máx 60s o 4 archivos).
-            </p>
+            {/* Aviso de seguridad antifraude */}
+            <div className="bg-surface border border-star/40 rounded-2xl p-4 flex items-start gap-3 shadow-sm">
+              <ShieldCheck className="w-6 h-6 text-star shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-bold text-cream text-sm">Medida de Seguridad Antifraude</h4>
+                <p className="text-xs text-muted mt-1 leading-relaxed">
+                  Por medidas de seguridad y para asegurarnos que la historia es verdadera, <strong className="text-star">debes subir al menos 4 archivos</strong> (fotos o videos reales de tu situación o proyecto).
+                </p>
+              </div>
+            </div>
+
+            {/* Contador de archivos */}
+            <div className="flex items-center justify-between text-xs font-semibold px-1">
+              <span className="text-muted">Evidencias cargadas:</span>
+              <span className={media.length >= 4 ? "text-star font-bold" : "text-amber-400 font-bold"}>
+                {media.length} / 4 mínimo requeridos {media.length >= 4 ? "✓ Requisito cumplido" : ""}
+              </span>
+            </div>
             
             <div className="grid grid-cols-2 gap-4">
               <label className="flex flex-col items-center justify-center gap-3 bg-surface border border-line border-dashed rounded-2xl p-6 text-muted hover:border-star hover:text-star transition-colors cursor-pointer">
@@ -269,8 +294,21 @@ export default function ContarMiSuenoPage() {
           )}
           <button 
             onClick={() => {
-              if (step < 3) setStep(step + 1);
-              else handleSubmit();
+              if (step === 1) {
+                if (!title.trim() || !history.trim()) {
+                  toast.error("Por favor completa el título y la historia.");
+                  return;
+                }
+                setStep(2);
+              } else if (step === 2) {
+                if (media.length < 4) {
+                  toast.error("Por medidas de seguridad debemos asegurarnos que la historia es verdadera, al menos sube 4 archivos.");
+                  return;
+                }
+                setStep(3);
+              } else {
+                handleSubmit();
+              }
             }}
             disabled={isPublishing}
             className="flex-1 flex items-center justify-center gap-2 bg-star text-night px-6 py-3.5 rounded-xl font-semibold text-sm shadow-[0_8px_24px_rgba(255,182,72,0.3)] active:scale-95 transition-transform disabled:opacity-50"

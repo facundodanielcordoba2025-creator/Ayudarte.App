@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2 } from "lucide-react";
+import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2, Pencil } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
 import { collection, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -11,11 +11,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type EventualHelp, categoryInfo, EVENTUAL_STATUS_LABEL } from "@/hooks/useEventualHelps";
 import { EditProfileModal } from "@/components/EditProfileModal";
+import { EditDreamModal } from "@/components/EditDreamModal";
 
 export default function PerfilPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [myDreams, setMyDreams] = useState<any[]>([]);
+  const [editingDream, setEditingDream] = useState<any | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
@@ -247,6 +249,83 @@ export default function PerfilPage() {
         </div>
       )}
 
+
+      {/* MIS SUEÑOS PUBLICADOS */}
+      {userId && myDreams.length > 0 && (
+        <div className="px-6 mt-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Star className="w-5 h-5 text-star" />
+            <h2 className="font-display text-lg font-bold text-cream uppercase tracking-wide">Mis Sueños Publicados</h2>
+          </div>
+          <div className="space-y-4">
+            {myDreams.map(d => (
+              <div key={d.id} className="bg-surface border border-line rounded-2xl p-5 shadow-sm space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-cream text-base leading-snug">{d.title}</h3>
+                    <p className="text-xs text-muted mt-1 line-clamp-2 leading-relaxed">{d.history}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => setEditingDream(d)}
+                      className="px-3 py-2 bg-star/15 hover:bg-star/25 text-star rounded-xl transition-colors flex items-center gap-1.5 text-xs font-bold"
+                      title="Editar publicación"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (confirm("¿Estás seguro de que deseas eliminar este sueño?")) {
+                          await deleteDoc(doc(db, "dreams", d.id));
+                          toast.success("Sueño eliminado.");
+                        }
+                      }}
+                      className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors"
+                      title="Eliminar sueño"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Previsualización de fotos y estado antifraude */}
+                <div className="pt-2 border-t border-line/50 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+                    {d.media && d.media.length > 0 ? (
+                      d.media.map((url: string, idx: number) => (
+                        <div key={idx} className="w-12 h-12 rounded-lg overflow-hidden border border-line bg-night shrink-0">
+                          {url.includes("video") || url.endsWith(".mp4") ? (
+                            <div className="w-full h-full bg-night flex items-center justify-center text-[9px] text-star font-bold">
+                              VIDEO
+                            </div>
+                          ) : (
+                            <img src={url} alt="" className="w-full h-full object-cover" />
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <span className="text-xs text-muted">Sin archivos adjuntos</span>
+                    )}
+                  </div>
+
+                  <div>
+                    {(!d.media || d.media.length < 4) ? (
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                        ⚠️ Incompleto ({d.media?.length || 0}/4 mín.)
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-star/15 text-star border border-star/30">
+                        ✓ Verificado ({d.media.length} archivos)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* MIS PEDIDOS DE AYUDA EVENTUAL */}
       {userId && myEventual.length > 0 && (
@@ -487,6 +566,7 @@ export default function PerfilPage() {
       </div>
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <EditDreamModal isOpen={!!editingDream} onClose={() => setEditingDream(null)} dream={editingDream} />
 
       <div className="px-6 py-10 flex justify-center">
         <button onClick={() => router.push('/legales')} className="text-xs font-bold text-muted hover:text-star transition-colors underline underline-offset-4">
