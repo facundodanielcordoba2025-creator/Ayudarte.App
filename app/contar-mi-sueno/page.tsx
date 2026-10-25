@@ -35,15 +35,19 @@ export default function ContarMiSuenoPage() {
       }
       const filesToProcess = filesArray.slice(0, availableSlots);
 
-      setMedia(prev => [...prev, ...filesToProcess]);
-      
-      filesToProcess.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setMediaPreviews(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+      const validFiles: File[] = [];
+      for (const f of filesToProcess) {
+        if (f.size > 50 * 1024 * 1024) {
+          toast.error(`"${f.name}" supera los 50MB. Elige un video más corto.`);
+        } else {
+          validFiles.push(f);
+        }
+      }
+      if (validFiles.length === 0) return;
+
+      setMedia(prev => [...prev, ...validFiles]);
+      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+      setMediaPreviews(prev => [...prev, ...newPreviews]);
     }
   };
 

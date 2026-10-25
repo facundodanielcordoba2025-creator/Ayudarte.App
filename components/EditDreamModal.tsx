@@ -50,15 +50,19 @@ export function EditDreamModal({ isOpen, onClose, dream }: EditDreamModalProps) 
       }
       const filesToProcess = filesArray.slice(0, availableSlots);
 
-      setNewFiles(prev => [...prev, ...filesToProcess]);
+      const validFiles: File[] = [];
+      for (const f of filesToProcess) {
+        if (f.size > 50 * 1024 * 1024) {
+          toast.error(`"${f.name}" supera los 50MB. Elige un video más corto.`);
+        } else {
+          validFiles.push(f);
+        }
+      }
+      if (validFiles.length === 0) return;
 
-      filesToProcess.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setNewPreviews(prev => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+      setNewFiles(prev => [...prev, ...validFiles]);
+      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+      setNewPreviews(prev => [...prev, ...newPreviews]);
     }
   };
 

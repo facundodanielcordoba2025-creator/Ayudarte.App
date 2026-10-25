@@ -23,12 +23,20 @@ export default function AyudaEventualPage() {
   const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const selected = Array.from(e.target.files).slice(0, 3 - files.length);
-    setFiles(prev => [...prev, ...selected]);
-    selected.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviews(prev => [...prev, reader.result as string]);
-      reader.readAsDataURL(file);
-    });
+    
+    const valid: File[] = [];
+    for (const f of selected) {
+      if (f.size > 50 * 1024 * 1024) {
+        toast.error(`"${f.name}" supera los 50MB. Por favor selecciona un video más corto.`);
+      } else {
+        valid.push(f);
+      }
+    }
+    if (valid.length === 0) return;
+
+    setFiles(prev => [...prev, ...valid]);
+    const newPreviews = valid.map(f => URL.createObjectURL(f));
+    setPreviews(prev => [...prev, ...newPreviews]);
     e.target.value = "";
   };
 
@@ -66,13 +74,16 @@ export default function AyudaEventualPage() {
       const user = userSnap.exists() ? userSnap.data() : {};
 
       const media: string[] = [];
-      for (const file of files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        toast.loading(`Subiendo evidencia ${i + 1} de ${files.length}...`, { id: "upload-progress" });
         try {
           media.push(await uploadToCloudinary(file));
         } catch (uploadErr) {
           console.warn("Error subiendo evidencia, continuando:", uploadErr);
         }
       }
+      toast.dismiss("upload-progress");
 
       await addDoc(collection(db, "eventualHelps"), {
         category,

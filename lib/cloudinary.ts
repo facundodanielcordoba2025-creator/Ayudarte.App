@@ -12,8 +12,9 @@ export async function uploadToCloudinary(file: File): Promise<string> {
   const cloudName = "dffhpwfiz";
   const uploadPreset = "ml_default";
 
-  // "auto" acepta imágenes y videos (el formulario de sueños permite ambos).
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
+  const isVideo = file.type.startsWith("video/") || file.name.match(/\.(mp4|mov|webm|avi|m4v)$/i);
+  const resourceType = isVideo ? "video" : "auto";
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
   const formData = new FormData();
   formData.append("file", file);
@@ -28,18 +29,17 @@ export async function uploadToCloudinary(file: File): Promise<string> {
     if (!response.ok) {
       const errData = await response.json().catch(() => null);
       console.warn("Cloudinary error response:", errData);
-      throw new Error(errData?.error?.message || "Error al subir imagen a Cloudinary");
+      throw new Error(errData?.error?.message || "Error al subir archivo a Cloudinary");
     }
 
     const data = await response.json();
     return data.secure_url;
   } catch (error) {
     console.error("Cloudinary Upload Error:", error);
-    // Fallback seguro a Data URL para imágenes o documentos adjuntos
-    // asegurando que nunca se bloquee el registro ni la publicación
-    if (file && file.size <= 10 * 1024 * 1024) {
+    // Fallback a Data URL solo para imágenes livianas (nunca para videos grandes porque exceden Firestore)
+    if (!isVideo && file && file.size <= 2 * 1024 * 1024) {
       try {
-        console.warn("Usando fallback Data URL para archivo:", file.name);
+        console.warn("Usando fallback Data URL para imagen liviana:", file.name);
         return await fileToDataUrl(file);
       } catch (fallbackErr) {
         console.error("Fallback Data URL falló:", fallbackErr);
