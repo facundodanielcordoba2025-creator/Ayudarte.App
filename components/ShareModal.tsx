@@ -35,7 +35,7 @@ export function ShareModal({ isOpen, onClose, item }: ShareModalProps) {
   if (!isOpen || !item) return null;
 
   const origin = typeof window !== "undefined" ? window.location.origin : "https://www.ayudarte.app";
-  const shareUrl = `${origin}/?historia=${encodeURIComponent(item.id)}&tipo=${item.kind || "dream"}`;
+  const shareUrl = `${origin}/historia/${encodeURIComponent(item.id)}`;
   const author = item.userName ? item.userName.trim() : "un miembro de nuestra comunidad";
   
   // Mensaje persuasivo y optimizado para viralización en grupos
