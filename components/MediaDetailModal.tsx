@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { 
   X, Copy, Check, HeartHandshake, MapPin, 
   Star, CircleUserRound, CheckCircle2,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Share2
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { doc, getDoc } from "firebase/firestore";
@@ -44,9 +44,10 @@ interface MediaDetailModalProps {
   onClose: () => void;
   item: MediaDetailItem | null;
   onHelp?: (item: MediaDetailItem) => void;
+  onShare?: (item: MediaDetailItem) => void;
 }
 
-export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailModalProps) {
+export function MediaDetailModal({ isOpen, onClose, item, onHelp, onShare }: MediaDetailModalProps) {
   const [copied, setCopied] = useState(false);
   const [liveAuthor, setLiveAuthor] = useState<any>(null);
   const [activeMediaIdx, setActiveMediaIdx] = useState(0);
@@ -277,18 +278,35 @@ export function MediaDetailModal({ isOpen, onClose, item, onHelp }: MediaDetailM
             </div>
           )}
 
-          {/* BOTÓN DE ACCIÓN */}
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              if (onHelp) onHelp(item);
-            }}
-            className="w-full py-3.5 bg-star hover:bg-star-dim text-night rounded-2xl font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95"
-          >
-            <HeartHandshake className="w-5 h-5" />
-            Quiero ayudar
-          </button>
+          {/* BOTONES DE ACCIÓN: QUIERO AYUDAR + DIFUNDIR */}
+          <div className="flex items-center gap-2.5 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                if (onHelp) onHelp(item);
+              }}
+              className="flex-1 py-3.5 bg-star hover:bg-star-dim text-night rounded-2xl font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95"
+            >
+              <HeartHandshake className="w-5 h-5" />
+              <span>Quiero ayudar</span>
+            </button>
+
+            {onShare && (
+              <button
+                type="button"
+                onClick={() => {
+                  onShare(item);
+                }}
+                className="py-3.5 px-4 bg-surface-2 hover:bg-line border border-line text-cream hover:text-star rounded-2xl font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 shrink-0"
+                title="Difundir en WhatsApp y Redes"
+                aria-label="Difundir en redes"
+              >
+                <Share2 className="w-5 h-5" />
+                <span className="hidden sm:inline">Difundir</span>
+              </button>
+            )}
+          </div>
 
         </div>
 

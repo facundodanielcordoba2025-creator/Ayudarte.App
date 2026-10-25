@@ -1,16 +1,18 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { MapPin, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
+import { MapPin, Image as ImageIcon, Video as VideoIcon, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useDreams } from "@/hooks/useDreams";
 import { useState } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
+import { ShareModal, type ShareableItem } from "@/components/ShareModal";
 
 export default function SuenosPage() {
   const { dreams, loading } = useDreams();
   const [intentionItem, setIntentionItem] = useState<{id: string, title: string} | null>(null);
+  const [sharingItem, setSharingItem] = useState<ShareableItem | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const handleShare = async (title: string, history: string) => {
@@ -88,10 +90,11 @@ export default function SuenosPage() {
             
             <div className="mt-4 pt-4 border-t border-line flex gap-3">
               <button 
-                onClick={() => handleShare(s.title, s.history)}
-                className="flex-1 bg-surface-2 hover:bg-line text-xs font-bold text-cream py-2.5 rounded-lg transition-colors"
+                onClick={() => setSharingItem({ id: s.id, title: s.title, userName: s.userName, history: s.history, userProvincia: s.userProvincia, kind: "dream" })}
+                className="flex-1 bg-surface-2 hover:bg-line text-xs font-bold text-cream py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5"
               >
-                Compartir
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Compartir</span>
               </button>
               <button 
                 onClick={() => {
@@ -114,6 +117,7 @@ export default function SuenosPage() {
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <IntentionModal isOpen={!!intentionItem} onClose={() => setIntentionItem(null)} type="ayudar" itemId={intentionItem?.id || ""} itemTitle={intentionItem?.title || ""} />
+      <ShareModal isOpen={!!sharingItem} onClose={() => setSharingItem(null)} item={sharingItem} />
           </div>
   );
 }

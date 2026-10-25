@@ -1,16 +1,17 @@
 "use client";
 import { toast } from "react-hot-toast";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2 } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2, Share2 } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo, getUrgencyInfo } from "@/hooks/useEventualHelps";
 import { useOffers } from "@/hooks/useOffers";
 import { MediaDetailModal, type MediaDetailItem } from "@/components/MediaDetailModal";
+import { ShareModal, type ShareableItem } from "@/components/ShareModal";
 import { isProfileVerified } from "@/lib/verification";
 
 const MOTIVATION_QUOTES = [
@@ -55,12 +56,32 @@ export default function Home() {
   const [showOrigen, setShowOrigen] = useState(false);
   const [intentionItem, setIntentionItem] = useState<{id: string, title: string, type: "ayudar" | "reclamar", kind?: "dream" | "eventual" | "offer"} | null>(null);
   const [selectedMediaItem, setSelectedMediaItem] = useState<MediaDetailItem | null>(null);
+  const [sharingItem, setSharingItem] = useState<ShareableItem | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const { gifts } = useGifts();
   const { dreams } = useDreams();
   const { helps: eventualHelps } = useEventualHelps();
   const approvedEventual = eventualHelps.filter(h => h.status === "aprobada");
   const { offers } = useOffers();
+
+  // Deep linking: Abre directamente la historia si alguien entra por un enlace compartido (?historia=ID o ?sueno=ID)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const targetId = params.get("historia") || params.get("sueno") || params.get("id");
+    if (!targetId) return;
+
+    const foundDream = dreams.find((d: any) => d.id === targetId);
+    if (foundDream) {
+      setSelectedMediaItem({ ...foundDream, kind: "dream" });
+      return;
+    }
+
+    const foundHelp = eventualHelps.find((h: any) => h.id === targetId);
+    if (foundHelp) {
+      setSelectedMediaItem({ ...foundHelp, kind: "eventual" });
+    }
+  }, [dreams, eventualHelps]);
   
   const [eventualFilter, setEventualFilter] = useState<"todos" | "urgentes">("todos");
 
@@ -251,22 +272,32 @@ export default function Home() {
                   );
                 })()}
 
-                <button 
-                  onClick={() => {
-                    const uid = localStorage.getItem("ayudarte_user_id");
-                    if (!uid) {
-                      setIsAuthOpen(true);
-                      return;
-                    }
-                    if (uid === dream.userId) {
-                      return toast("No puedes ayudarte a ti mismo.");
-                    }
-                    setIntentionItem({ id: dream.id, title: dream.title, type: "ayudar" });
-                  }}
-                  className="w-full bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20"
-                >
-                  Ayudar a cumplir este sueño
-                </button>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => {
+                      const uid = localStorage.getItem("ayudarte_user_id");
+                      if (!uid) {
+                        setIsAuthOpen(true);
+                        return;
+                      }
+                      if (uid === dream.userId) {
+                        return toast("No puedes ayudarte a ti mismo.");
+                      }
+                      setIntentionItem({ id: dream.id, title: dream.title, type: "ayudar" });
+                    }}
+                    className="flex-1 bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20 text-center"
+                  >
+                    Ayudar a cumplir este sueño
+                  </button>
+                  <button
+                    onClick={() => setSharingItem({ ...dream, kind: "dream" })}
+                    className="p-3 bg-surface hover:bg-surface-2 text-cream hover:text-star border border-line rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
+                    title="Difundir en Redes y WhatsApp"
+                    aria-label="Compartir en redes"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))
           )}
@@ -409,22 +440,32 @@ export default function Home() {
                     );
                   })()}
 
-                  <button
-                    onClick={() => {
-                      const uid = localStorage.getItem("ayudarte_user_id");
-                      if (!uid) {
-                        setIsAuthOpen(true);
-                        return;
-                      }
-                      if (uid === help.userId) {
-                        return toast("No puedes ayudarte a ti mismo.");
-                      }
-                      setIntentionItem({ id: help.id, title: help.title, type: "ayudar", kind: "eventual" });
-                    }}
-                    className="w-full bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20"
-                  >
-                    Quiero ayudar
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const uid = localStorage.getItem("ayudarte_user_id");
+                        if (!uid) {
+                          setIsAuthOpen(true);
+                          return;
+                        }
+                        if (uid === help.userId) {
+                          return toast("No puedes ayudarte a ti mismo.");
+                        }
+                        setIntentionItem({ id: help.id, title: help.title, type: "ayudar", kind: "eventual" });
+                      }}
+                      className="flex-1 bg-star/10 hover:bg-star/20 text-star font-bold text-sm py-3 rounded-xl transition-colors border border-star/20 text-center"
+                    >
+                      Quiero ayudar
+                    </button>
+                    <button
+                      onClick={() => setSharingItem({ ...help, kind: "eventual" })}
+                      className="p-3 bg-surface hover:bg-surface-2 text-cream hover:text-star border border-line rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
+                      title="Difundir en Redes y WhatsApp"
+                      aria-label="Compartir en redes"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               );
             })
@@ -609,6 +650,14 @@ export default function Home() {
             kind: it.kind || "dream",
           });
         }}
+        onShare={(it) => setSharingItem({ ...it, kind: it.kind || "dream" })}
+      />
+
+      {/* MODAL DE DIFUSIÓN EN REDES SOCIALES Y WHATSAPP */}
+      <ShareModal
+        isOpen={!!sharingItem}
+        onClose={() => setSharingItem(null)}
+        item={sharingItem}
       />
     </div>
   );
