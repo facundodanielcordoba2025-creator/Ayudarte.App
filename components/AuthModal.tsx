@@ -60,11 +60,12 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
           setCode(data.fallbackCode);
           toast.success("Código de verificación listo");
         } else {
+          setCode("");
           toast.success("Código enviado a tu correo");
         }
         setStep(2);
       } else {
-        // Failsafe de emergencia para jamás bloquear a un usuario que descarga la app
+        // Failsafe de emergencia ante falla externa del proveedor
         setCode(newCode);
         toast.success("Código de verificación listo");
         setStep(2);
@@ -229,13 +230,18 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
           {step === 2 && (
             <div className="space-y-4 animate-in slide-in-from-right-4">
-              <div className="w-12 h-12 bg-warmth/20 rounded-2xl flex items-center justify-center mb-4">
-                <KeyRound className="w-6 h-6 text-warmth" />
+              <div className="w-12 h-12 bg-star/20 rounded-2xl flex items-center justify-center mb-4 text-star">
+                <KeyRound className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-display font-bold text-cream">Ingresá el código</h2>
-              <p className="text-sm text-muted">Para esta versión de prueba, usa el código universal: <span className="text-cream font-bold">123456</span></p>
+              <p className="text-sm text-muted leading-relaxed">
+                Revisa tu casilla de correo (<strong className="text-cream">{email}</strong>) e ingresa el código de 6 dígitos que te enviamos.
+              </p>
+              <p className="text-xs text-muted/70 bg-surface-2 p-2.5 rounded-xl border border-line/50">
+                ¿No lo ves en tu bandeja principal? Recuerda revisar también tu carpeta de <strong>Spam</strong> o <strong>Correo no deseado</strong>.
+              </p>
               
-              <div className="pt-4">
+              <div className="pt-2">
                 <input 
                   type="text" 
                   maxLength={6}
@@ -245,11 +251,29 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
                   className="w-full bg-surface-2 border border-line rounded-xl px-4 py-3 text-cream text-center text-3xl font-display tracking-[0.5em] focus:border-star focus:outline-none transition-colors"
                 />
               </div>
+
+              <div className="flex items-center justify-between text-xs px-1 text-muted">
+                <button
+                  type="button"
+                  onClick={() => { setStep(1); setCode(""); }}
+                  className="hover:text-cream underline underline-offset-2 transition-colors"
+                >
+                  Cambiar email
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSendCode}
+                  disabled={loading}
+                  className="text-star hover:underline font-semibold transition-colors disabled:opacity-50"
+                >
+                  Reenviar código
+                </button>
+              </div>
               
               <button 
                 onClick={handleVerifyCode}
                 disabled={loading}
-                className="w-full bg-star text-night font-bold py-3.5 rounded-xl mt-4 active:scale-95 transition-transform disabled:opacity-50"
+                className="w-full bg-star text-night font-bold py-3.5 rounded-xl mt-2 active:scale-95 transition-transform disabled:opacity-50"
               >
                 {loading ? "Verificando..." : "Verificar"}
               </button>
