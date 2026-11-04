@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2, Share2, Building2, Mail } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2, Share2, Building2, Mail, Camera } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams, type Dream } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo, getUrgencyInfo, type EventualHelp } from "@/hooks/useEventualHelps";
@@ -63,6 +63,32 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
   const [selectedMediaItem, setSelectedMediaItem] = useState<MediaDetailItem | null>(null);
   const [sharingItem, setSharingItem] = useState<ShareableItem | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const accepted = localStorage.getItem("ayudarte_onboarding_accepted");
+      if (!accepted) {
+        setOnboardingStep(1);
+      }
+    }
+  }, []);
+
+  const handleNextOnboarding = () => {
+    if (onboardingStep === null) return;
+    if (onboardingStep < 3) {
+      setOnboardingStep(onboardingStep + 1);
+    } else {
+      localStorage.setItem("ayudarte_onboarding_accepted", "true");
+      setOnboardingStep(null);
+    }
+  };
+
+  const handleCloseOnboarding = () => {
+    localStorage.setItem("ayudarte_onboarding_accepted", "true");
+    setOnboardingStep(null);
+  };
+
   const { gifts } = useGifts();
   const { dreams } = useDreams(initialDreams);
   const { helps: eventualHelps } = useEventualHelps(initialEventualHelps);
@@ -141,93 +167,31 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
         </div>
       </section>
 
-      {/* SECCIÓN INSTITUCIONAL: ¿QUÉ ES AYUDARTE Y CÓMO FUNCIONA? */}
-      <section className="px-6 py-8 bg-surface/50 border-t border-b border-line my-6">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="text-center space-y-3">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-cream">
-              ¿Qué es Ayudarte y cómo funciona?
-            </h2>
-            <p className="text-sm md:text-base text-muted max-w-xl mx-auto leading-relaxed">
-              Ayudarte es una plataforma comunitaria argentina que conecta personas con sueños pendientes, necesidades urgentes o proyectos de vida con personas y empresas dispuestas a colaborar de forma directa, sin intermediarios ni comisiones.
-            </p>
-          </div>
-
-          {/* 3 Pasos */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
-                1
-              </div>
-              <h3 className="font-bold text-cream text-base">Publicación y Pruebas</h3>
-              <p className="text-xs text-muted leading-relaxed">
-                Cada usuario comparte su sueño o necesidad adjuntando al menos 4 archivos (fotos o videos) que acreditan la realidad del pedido y previenen fraudes.
+      {/* SECCIÓN: MOTIVATE (Carrusel de Frases) */}
+      <section className="px-6 py-12 overflow-hidden">
+        <div className="flex items-center gap-2 mb-6">
+          <Quote className="w-6 h-6 text-star" />
+          <h2 className="font-display text-xl font-bold text-cream">Motívate</h2>
+        </div>
+        
+        {/* Carrusel Horizontal */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 hide-scrollbar">
+          {MOTIVATION_QUOTES.map((item, index) => (
+            <div 
+              key={index} 
+              className="snap-center shrink-0 w-[85vw] max-w-[320px] bg-surface-2 border border-line rounded-[2rem] p-6 shadow-sm relative overflow-hidden flex flex-col justify-center"
+            >
+              {/* Comillas decorativas tipo ícono */}
+              <Quote className="absolute top-4 right-6 w-12 h-12 text-line opacity-30" />
+              
+              <p className="text-cream text-lg font-medium leading-relaxed relative z-10 mt-4 mb-6">
+                "{item.quote}"
               </p>
+              <div className="flex justify-end mt-auto">
+                <p className="text-xs font-bold text-muted uppercase tracking-wide text-right">{item.author}</p>
+              </div>
             </div>
-
-            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
-                2
-              </div>
-              <h3 className="font-bold text-cream text-base">Auditoría Comunitaria</h3>
-              <p className="text-xs text-muted leading-relaxed">
-                Nuestro equipo de captadores comunitarios audita la causa, verifica la identidad y califica la prioridad con estrellas de urgencia antes de publicar.
-              </p>
-            </div>
-
-            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
-                3
-              </div>
-              <h3 className="font-bold text-cream text-base">Ayuda Directa y Transparente</h3>
-              <p className="text-xs text-muted leading-relaxed">
-                Los colaboradores ayudan directamente al beneficiario con donaciones de materiales, objetos en desuso, voluntariado o aportes a su cuenta oficial.
-              </p>
-            </div>
-          </div>
-
-          {/* 4 Ejes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <Link href="/suenos" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
-              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
-                <Star className="w-5 h-5 fill-star" />
-              </div>
-              <div>
-                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Sueños y Hábitat Digno</h4>
-                <p className="text-xs text-muted mt-1">Materiales para construcción, techos, mejoras de hábitat y proyectos de vida con terreno propio.</p>
-              </div>
-            </Link>
-
-            <Link href="/ayuda-eventual" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
-              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
-                <HeartHandshake className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Ayudas Cotidianas</h4>
-                <p className="text-xs text-muted mt-1">Respuestas solidarias urgentes en salud, alimentos, remedios y asistencia vecinal.</p>
-              </div>
-            </Link>
-
-            <Link href="/regalar" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
-              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
-                <Package className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Mercado Solidario y Regalos</h4>
-                <p className="text-xs text-muted mt-1">Doná lo que no usás: herramientas, ropa, muebles o electrodomésticos sin costo.</p>
-              </div>
-            </Link>
-
-            <Link href="/ofrecer-donacion" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
-              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Empresas Solidarias (RSE)</h4>
-                <p className="text-xs text-muted mt-1">Comercios y empresas que donan excedentes de stock, herramientas y apoyan a la comunidad.</p>
-              </div>
-            </Link>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -657,32 +621,6 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
       </section>
 
 
-      {/* SECCIÓN: MOTÍVATE (Carrusel de Citas) */}
-      <section className="px-6 py-10 overflow-hidden bg-night">
-        <div className="flex items-center gap-2 mb-6">
-          <Quote className="w-5 h-5 text-star" />
-          <h2 className="font-display text-lg font-bold text-cream">Inspiración Solidaria</h2>
-        </div>
-        
-        {/* Carrusel Horizontal */}
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 hide-scrollbar">
-          {MOTIVATION_QUOTES.slice(0, 10).map((item, index) => (
-            <div 
-              key={index} 
-              className="snap-center shrink-0 w-[80vw] max-w-[300px] bg-surface-2 border border-line rounded-[1.5rem] p-5 shadow-sm relative overflow-hidden flex flex-col justify-center"
-            >
-              <Quote className="absolute top-3 right-4 w-8 h-8 text-line opacity-25" />
-              <p className="text-cream text-sm font-medium leading-relaxed relative z-10 mt-2 mb-4">
-                "{item.quote}"
-              </p>
-              <div className="flex justify-end mt-auto">
-                <p className="text-[11px] font-bold text-muted uppercase tracking-wide text-right">{item.author}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* FOOTER INSTITUCIONAL */}
       <footer className="px-6 pt-10 pb-16 bg-surface-2 border-t border-line text-muted">
         <div className="max-w-3xl mx-auto space-y-8">
@@ -773,8 +711,100 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
                 <p>
                   Pero esta plataforma es solo una parte de mi viaje. A lo largo de mi vida aprendí lecciones muy duras, cometí errores, caí y me volví a levantar, y cada paso me trajo hasta aquí.
                 </p>
+                <div className="pt-4">
+                  <button
+                    onClick={() => {
+                      setShowOrigen(false);
+                      setOnboardingStep(1);
+                    }}
+                    className="w-full bg-star/10 text-star font-bold text-xs py-3 rounded-xl hover:bg-star/20 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span>Ver cómo funciona en 3 pasos →</span>
+                  </button>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EN 3 PASOS: CÓMO FUNCIONA AYUDARTE */}
+      {onboardingStep !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-night/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-surface border border-line rounded-3xl w-full max-w-sm p-6 shadow-2xl relative animate-in zoom-in-95 duration-200 flex flex-col items-center text-center">
+            
+            {/* Header / Indicador de paso */}
+            <div className="w-full flex items-center justify-between mb-4">
+              <span className="text-[11px] font-bold text-star uppercase tracking-wider bg-star/10 px-3 py-1 rounded-full border border-star/20">
+                Paso {onboardingStep} de 3
+              </span>
+              <button 
+                onClick={handleCloseOnboarding}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-2 text-muted hover:text-cream active:scale-95 transition-all"
+                title="Cerrar y aceptar"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Contenido paso 1 */}
+            {onboardingStep === 1 && (
+              <div className="space-y-4 my-2 animate-in fade-in duration-200">
+                <div className="w-16 h-16 rounded-2xl bg-star/20 text-star flex items-center justify-center mx-auto shadow-inner border border-star/30">
+                  <Camera className="w-8 h-8" />
+                </div>
+                <h3 className="font-display text-xl font-bold text-cream">1. Publicación y Pruebas</h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  Para evitar fraudes y proteger a la comunidad, cada persona comparte su sueño o necesidad adjuntando <strong>al menos 4 archivos</strong> (fotos o videos) que acreditan la realidad de la causa.
+                </p>
+              </div>
+            )}
+
+            {/* Contenido paso 2 */}
+            {onboardingStep === 2 && (
+              <div className="space-y-4 my-2 animate-in fade-in duration-200">
+                <div className="w-16 h-16 rounded-2xl bg-star/20 text-star flex items-center justify-center mx-auto shadow-inner border border-star/30">
+                  <ShieldCheck className="w-8 h-8" />
+                </div>
+                <h3 className="font-display text-xl font-bold text-cream">2. Auditoría Comunitaria</h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  Nuestro equipo de captadores comunitarios audita la causa, verifica la identidad del solicitante y califica la prioridad con <strong>estrellas de urgencia</strong> antes de publicarla.
+                </p>
+              </div>
+            )}
+
+            {/* Contenido paso 3 */}
+            {onboardingStep === 3 && (
+              <div className="space-y-4 my-2 animate-in fade-in duration-200">
+                <div className="w-16 h-16 rounded-2xl bg-star/20 text-star flex items-center justify-center mx-auto shadow-inner border border-star/30">
+                  <HeartHandshake className="w-8 h-8" />
+                </div>
+                <h3 className="font-display text-xl font-bold text-cream">3. Ayuda Directa</h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  Los colaboradores y empresas ayudan directamente al beneficiario con materiales, herramientas o aportes directos, <strong>sin comisiones ni intermediarios</strong>.
+                </p>
+              </div>
+            )}
+
+            {/* Indicadores de puntos */}
+            <div className="flex items-center gap-1.5 my-5">
+              {[1, 2, 3].map((step) => (
+                <div 
+                  key={step} 
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    onboardingStep === step ? "w-6 bg-star" : "w-1.5 bg-line"
+                  }`} 
+                />
+              ))}
+            </div>
+
+            {/* Botón de acción */}
+            <button
+              onClick={handleNextOnboarding}
+              className="w-full bg-star hover:bg-star/90 text-white font-bold text-sm py-3.5 rounded-xl shadow-[0_4px_16px_rgba(255,102,0,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              {onboardingStep < 3 ? "Siguiente paso →" : "¡Entendido y Aceptar! ✨"}
+            </button>
           </div>
         </div>
       )}
