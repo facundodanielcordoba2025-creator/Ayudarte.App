@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Empresas Solidarias y Responsabilidad Social | Ayudarte",
+  title: "Empresas Solidarias y Responsabilidad Social",
   description: "Conectá tu empresa o comercio con causas sociales y sueños comunitarios. Donaciones de excedentes de stock, equipamiento e insumos con impacto directo.",
+  alternates: {
+    canonical: "/ofrecer-donacion",
+  },
   openGraph: {
     title: "Empresas Solidarias y Responsabilidad Social | Ayudarte",
     description: "Conectá tu empresa o comercio con causas sociales y sueños comunitarios. Donaciones de excedentes de stock, equipamiento e insumos con impacto directo.",

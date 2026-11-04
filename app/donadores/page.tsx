@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Trophy, Star, Gift, Medal, Building2 } from "lucide-react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -67,20 +68,21 @@ export default function SuperheroesPage() {
 
       
       <div className="px-6 pt-6">
+        {/* RECONOCIMIENTO Y PREMIOS */}
         <div className="bg-gradient-to-br from-star/20 to-surface border border-star/30 rounded-3xl p-5 shadow-[0_0_20px_rgba(255,182,72,0.15)] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-star/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
           
           <div className="flex items-center gap-3 mb-3 relative z-10">
             <Gift className="w-6 h-6 text-star" />
-            <h2 className="font-display text-lg font-bold text-cream">Tu ayuda vuelve en buenos actos</h2>
+            <h2 className="font-display text-lg font-bold text-cream">Reconocimiento a la Comunidad Solidaria</h2>
           </div>
           
           <div className="space-y-3 relative z-10 text-xs text-cream/90 leading-relaxed">
             <p>
-              Dentro de las ayudas económicas, destinamos un mínimo porcentaje a comprar cosas: por ejemplo, una aspiradora, una notebook o hasta incluso una moto 110cc. Las mismas <strong>se sortean de manera gratuita entre los superhéroes</strong> de este ranking.
+              El 100% de las donaciones dirigidas a causas y sueños se entrega de forma íntegra y directa a los beneficiarios.
             </p>
             <p>
-              La regla de oro es ocupar <strong>solo el 5%</strong> de lo recaudado en el mes. Recuerda que nuestra finalidad principal no son los sorteos, sino cumplir sueños. Pero somos muy agradecidos... y este mes, capaz tú puedas ser el suertudo ganador de una tablet.
+              Como muestra de gratitud, las empresas y comercios aliados aportan reconocimientos, herramientas y distinciones especiales para premiar periódicamente el compromiso de los <strong>Superhéroes y voluntarios más activos</strong> de nuestra comunidad.
             </p>
           </div>
         </div>
@@ -129,15 +131,16 @@ export default function SuperheroesPage() {
           Marcas comprometidas que donan sus excedentes de stock para hacer realidad los sueños de nuestra comunidad.
         </p>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {companies.length === 0 ? (
-            <div className="col-span-2 bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors">
-              <div className="w-16 h-16 bg-surface-2 rounded-full mb-3 flex items-center justify-center text-muted font-bold">
-                LOGO
+            <Link href="/ofrecer-donacion" className="col-span-full bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors group">
+              <div className="w-14 h-14 bg-star/10 rounded-2xl mb-3 flex items-center justify-center text-star group-hover:scale-105 transition-transform">
+                <Building2 className="w-7 h-7" />
               </div>
-              <h3 className="text-sm font-bold text-cream">Tu Empresa Aquí</h3>
-              <p className="text-[10px] text-muted mt-1">Sé la primera empresa en ayudar</p>
-            </div>
+              <h3 className="text-sm font-bold text-cream group-hover:text-star transition-colors">Sumá tu Comercio o Empresa</h3>
+              <p className="text-xs text-muted mt-1 max-w-sm">Canalizá excedentes de stock, herramientas y responsabilidad social corporativa en causas comunitarias reales.</p>
+              <span className="mt-3 text-xs font-bold text-star bg-star/10 px-3 py-1.5 rounded-xl">Ofrecer Donación Empresarial →</span>
+            </Link>
           ) : (
             companies.map(comp => (
               <div key={comp.id} className="bg-surface border border-line rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-star/50 transition-colors relative overflow-hidden">

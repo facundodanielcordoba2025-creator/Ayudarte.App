@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Términos, Condiciones y Privacidad | Ayudarte",
+  title: "Términos, Condiciones y Privacidad",
   description: "Términos de uso, políticas de privacidad, seguridad y transparencia de la plataforma comunitaria Ayudarte.",
+  alternates: {
+    canonical: "/legales",
+  },
   openGraph: {
     title: "Términos, Condiciones y Privacidad | Ayudarte",
     description: "Términos de uso, políticas de privacidad, seguridad y transparencia de la plataforma comunitaria Ayudarte.",

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mercado Solidario - Donar y Regalar | Ayudarte",
+  title: "Mercado Solidario - Donar y Regalar",
   description: "Regalá lo que ya no usás a personas de la comunidad que lo necesitan. Sin intermediarios, 100% gratuito y solidario.",
+  alternates: {
+    canonical: "/regalar",
+  },
   openGraph: {
     title: "Mercado Solidario - Donar y Regalar | Ayudarte",
     description: "Regalá lo que ya no usás a personas de la comunidad que lo necesitan. Sin intermediarios, 100% gratuito y solidario.",

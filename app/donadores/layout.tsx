@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Superhéroes y Colaboradores Solidarios | Ayudarte",
+  title: "Superhéroes y Colaboradores Solidarios",
   description: "Reconocimiento a las personas, comercios y empresas solidarias que ayudan a cumplir sueños y transformar realidades.",
+  alternates: {
+    canonical: "/donadores",
+  },
   openGraph: {
     title: "Superhéroes y Colaboradores Solidarios | Ayudarte",
     description: "Reconocimiento a las personas, comercios y empresas solidarias que ayudan a cumplir sueños y transformar realidades.",

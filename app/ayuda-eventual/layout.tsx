@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ayudas del Día a Día | Ayudarte",
+  title: "Ayudas del Día a Día",
   description: "Pedidos de ayuda comunitaria inmediata para necesidades cotidianas: salud, alimentos, trámites y acompañamiento solidario.",
+  alternates: {
+    canonical: "/ayuda-eventual",
+  },
   openGraph: {
     title: "Ayudas del Día a Día | Ayudarte",
     description: "Pedidos de ayuda comunitaria inmediata para necesidades cotidianas: salud, alimentos, trámites y acompañamiento solidario.",

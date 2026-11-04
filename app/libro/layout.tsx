@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Nuestra Historia y Filosofía | Ayudarte",
+  title: "Nuestra Historia y Filosofía",
   description: "Conocé el origen, los valores y el propósito que impulsan la red comunitaria de Ayudarte.",
+  alternates: {
+    canonical: "/libro",
+  },
   openGraph: {
     title: "Nuestra Historia y Filosofía | Ayudarte",
     description: "Conocé el origen, los valores y el propósito que impulsan la red comunitaria de Ayudarte.",

@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   creator: "Ayudarte",
   publisher: "Ayudarte",
   alternates: {
-    canonical: "https://www.ayudarte.app",
+    canonical: "/",
   },
   openGraph: {
     type: "website",

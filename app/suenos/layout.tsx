@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sueños de la Comunidad | Ayudarte",
+  title: "Sueños de la Comunidad",
   description: "Conocé y colaborá con los sueños y proyectos personales de los miembros de nuestra comunidad. Cada historia cuenta.",
+  alternates: {
+    canonical: "/suenos",
+  },
   openGraph: {
     title: "Sueños de la Comunidad | Ayudarte",
     description: "Conocé y colaborá con los sueños y proyectos personales de los miembros de nuestra comunidad. Cada historia cuenta.",
