@@ -1,5 +1,6 @@
 "use client";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 import { CircleUserRound, Settings, Star, HelpCircle, ChevronDown, Bell, LogOut, ShieldCheck, Heart, Gift, HandHeart, MessageCircle, Briefcase, Building2, Camera, CheckCircle2, Pencil, Share2 } from "lucide-react";
 import { AuthModal } from "@/components/AuthModal";
@@ -591,10 +592,43 @@ export default function PerfilPage() {
       <EditDreamModal isOpen={!!editingDream} onClose={() => setEditingDream(null)} dream={editingDream} />
       <ShareModal isOpen={!!sharingItem} onClose={() => setSharingItem(null)} item={sharingItem} />
 
-      <div className="px-6 py-10 flex justify-center">
-        <button onClick={() => router.push('/legales')} className="text-xs font-bold text-muted hover:text-star transition-colors underline underline-offset-4">
-          Términos, Privacidad y Políticas Legales
-        </button>
+      {/* SECCIÓN INSTITUCIONAL Y NAVEGACIÓN AL PIE */}
+      <div className="px-6 mt-10 pt-8 border-t border-line text-muted">
+        <div className="space-y-6">
+          <div>
+            <span className="font-display font-bold text-lg text-cream tracking-tight">AYUDARTE<span className="text-star">.APP</span></span>
+            <p className="text-xs text-muted mt-1 leading-relaxed">
+              Red Solidaria y Cumplimiento de Sueños en Comunidad. Sede comunitaria en Salta, Argentina.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Comunidad</p>
+              <ul className="space-y-2 text-muted">
+                <li><Link href="/suenos" className="hover:text-cream transition-colors">Explorar Sueños</Link></li>
+                <li><Link href="/ayuda-eventual" className="hover:text-cream transition-colors">Ayudas Cotidianas</Link></li>
+                <li><Link href="/contar-mi-sueno" className="hover:text-cream transition-colors">Publicar un Sueño</Link></li>
+                <li><Link href="/donadores" className="hover:text-cream transition-colors">Superhéroes y Ranking</Link></li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Donaciones & Legal</p>
+              <ul className="space-y-2 text-muted">
+                <li><Link href="/regalar" className="hover:text-cream transition-colors">Mercado Solidario</Link></li>
+                <li><Link href="/ofrecer-donacion" className="hover:text-cream transition-colors">Empresas Solidarias</Link></li>
+                <li><Link href="/legales" className="hover:text-cream transition-colors">Términos y Privacidad</Link></li>
+                <li><Link href="/legales" className="hover:text-cream transition-colors">Políticas Antifraude</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-line/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted/70">
+            <p>© {new Date().getFullYear()} Ayudarte.App. Todos los derechos reservados.</p>
+            <p>Plataforma solidaria libre y comunitaria.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

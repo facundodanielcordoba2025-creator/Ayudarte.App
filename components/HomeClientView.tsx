@@ -620,66 +620,6 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
         </div>
       </section>
 
-
-      {/* FOOTER INSTITUCIONAL */}
-      <footer className="px-6 pt-10 pb-16 bg-surface-2 border-t border-line text-muted">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-line pb-6">
-            <div>
-              <span className="font-display font-bold text-xl text-cream tracking-tight">AYUDARTE<span className="text-star">.APP</span></span>
-              <p className="text-xs text-muted mt-1">Red Solidaria y Cumplimiento de Sueños en Comunidad.</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <a href="mailto:info@ayudarte.app" className="inline-flex items-center gap-1.5 text-xs text-cream hover:text-star transition-colors font-medium">
-                <Mail className="w-4 h-4 text-star" />
-                info@ayudarte.app
-              </a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
-            <div className="space-y-2">
-              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Comunidad</p>
-              <ul className="space-y-1.5">
-                <li><Link href="/suenos" className="hover:text-cream transition-colors">Explorar Sueños</Link></li>
-                <li><Link href="/ayuda-eventual" className="hover:text-cream transition-colors">Ayudas Cotidianas</Link></li>
-                <li><Link href="/contar-mi-sueno" className="hover:text-cream transition-colors">Publicar un Sueño</Link></li>
-                <li><Link href="/donadores" className="hover:text-cream transition-colors">Superhéroes y Ranking</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-2">
-              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Donaciones</p>
-              <ul className="space-y-1.5">
-                <li><Link href="/regalar" className="hover:text-cream transition-colors">Mercado Solidario</Link></li>
-                <li><Link href="/ofrecer-donacion" className="hover:text-cream transition-colors">Empresas Solidarias</Link></li>
-                <li><Link href="/perfil" className="hover:text-cream transition-colors">Mi Cuenta</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-2">
-              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Institucional</p>
-              <ul className="space-y-1.5">
-                <li><Link href="/legales" className="hover:text-cream transition-colors">Términos y Condiciones</Link></li>
-                <li><Link href="/legales" className="hover:text-cream transition-colors">Privacidad y Antifraude</Link></li>
-              </ul>
-            </div>
-
-            <div className="space-y-2">
-              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Presencia</p>
-              <p className="text-muted leading-relaxed">
-                Sede comunitaria en Salta, República Argentina. Red comunitaria con alcance a todo el país.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-line/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-muted/80">
-            <p>© {new Date().getFullYear()} Ayudarte.App. Todos los derechos reservados.</p>
-            <p className="text-center sm:text-right">Plataforma libre, comunitaria y sin fines de lucro.</p>
-          </div>
-        </div>
-      </footer>
-
       {/* MODAL: EL ORIGEN DE TODO */}
       {showOrigen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-night/80 backdrop-blur-sm animate-in fade-in duration-200">
