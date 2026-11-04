@@ -56,8 +56,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const storyUrl = `https://www.ayudarte.app/historia/${id}`;
 
   return {
-    title: `${title} — ${author} | Ayudarte.App`,
+    title: `${title} — ${author}`,
     description,
+    alternates: {
+      canonical: storyUrl,
+    },
     openGraph: {
       title: `${title} — ${author}`,
       description,

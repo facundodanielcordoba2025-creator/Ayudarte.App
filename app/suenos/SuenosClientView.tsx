@@ -47,10 +47,18 @@ export default function SuenosClientView({ initialDreams }: Props) {
           <article key={s.id} className="bg-surface border border-line rounded-2xl p-5 shadow-sm">
             <div className="flex justify-between items-start mb-3">
               <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="font-bold text-xs text-star uppercase tracking-wider">{s.userName || "Miembro de la comunidad"}</span>
+                  {s.userProvincia && (
+                    <span className="flex items-center gap-1 text-[11px] text-muted font-medium">
+                      <MapPin className="w-3 h-3 text-muted" />
+                      {s.userProvincia}
+                    </span>
+                  )}
+                </div>
                 <h3 className="font-bold text-cream text-lg">{s.title}</h3>
                 <div className="flex items-center gap-1 text-xs font-medium text-muted mt-1">
-                  <MapPin className="w-3 h-3 text-warmth" />
-                  {s.isForMe ? "Para sí mismo" : "Para alguien más"}
+                  <span>{s.isForMe ? "Causa personal" : "Para alguien más"}</span>
                 </div>
               </div>
             </div>
