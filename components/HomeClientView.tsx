@@ -145,10 +145,6 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
       <section className="px-6 py-8 bg-surface/50 border-t border-b border-line my-6">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-star/10 text-star text-xs font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" />
-              Red Solidaria Verificada
-            </div>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-cream">
               ¿Qué es Ayudarte y cómo funciona?
             </h2>
