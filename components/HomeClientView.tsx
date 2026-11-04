@@ -660,7 +660,6 @@ export default function HomeClientView({ initialDreams, initialEventualHelps }: 
             <div className="space-y-2">
               <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Institucional</p>
               <ul className="space-y-1.5">
-                <li><Link href="/libro" className="hover:text-cream transition-colors">Nuestra Historia</Link></li>
                 <li><Link href="/legales" className="hover:text-cream transition-colors">Términos y Condiciones</Link></li>
                 <li><Link href="/legales" className="hover:text-cream transition-colors">Privacidad y Antifraude</Link></li>
               </ul>

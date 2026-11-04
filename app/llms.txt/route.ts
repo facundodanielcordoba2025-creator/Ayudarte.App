@@ -19,7 +19,6 @@ export async function GET() {
 - Empresas Solidarias y Alianzas: https://www.ayudarte.app/ofrecer-donacion
 - Publicar un Sueño: https://www.ayudarte.app/contar-mi-sueno
 - Ranking de Superhéroes y Donadores: https://www.ayudarte.app/donadores
-- Nuestra Historia y Misión: https://www.ayudarte.app/libro
 - Términos, Privacidad y Compromiso: https://www.ayudarte.app/legales
 
 ## Información de Contacto y Redes:

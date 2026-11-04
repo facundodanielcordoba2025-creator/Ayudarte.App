@@ -9,6 +9,8 @@ export default function robots(): MetadataRoute.Robots {
     "/perfil/",
     "/dashboard",
     "/dashboard/",
+    "/libro",
+    "/libro/",
   ];
 
   return {
