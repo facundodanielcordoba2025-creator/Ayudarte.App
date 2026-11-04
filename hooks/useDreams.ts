@@ -14,9 +14,9 @@ export interface Dream {
   userProvincia?: string;
 }
 
-export function useDreams() {
-  const [dreams, setDreams] = useState<Dream[]>([]);
-  const [loading, setLoading] = useState(true);
+export function useDreams(initialData?: Dream[]) {
+  const [dreams, setDreams] = useState<Dream[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData || initialData.length === 0);
 
   useEffect(() => {
     const q = query(collection(db, 'dreams'), orderBy('createdAt', 'desc'));

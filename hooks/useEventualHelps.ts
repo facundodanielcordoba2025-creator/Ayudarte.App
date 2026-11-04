@@ -115,9 +115,9 @@ export interface EventualHelp {
 
 /** Devuelve todas las ayudas eventuales (el filtrado por estado se hace en cliente
  *  para no requerir índices compuestos en Firestore). */
-export function useEventualHelps() {
-  const [helps, setHelps] = useState<EventualHelp[]>([]);
-  const [loading, setLoading] = useState(true);
+export function useEventualHelps(initialData?: EventualHelp[]) {
+  const [helps, setHelps] = useState<EventualHelp[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData || initialData.length === 0);
 
   useEffect(() => {
     const q = query(collection(db, 'eventualHelps'), orderBy('createdAt', 'desc'));
