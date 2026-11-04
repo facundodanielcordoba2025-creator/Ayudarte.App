@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { IntentionModal } from "@/components/IntentionModal";
 import Link from "next/link";
-import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2, Share2 } from "lucide-react";
+import { HeartHandshake, HandHeart, Trophy, Calendar, BookOpen, ChevronRight, X, Target, Footprints, Users, Heart, RefreshCw, Star, Smile, Shield, Eye, Rocket, ShieldCheck, Send, Quote, Sparkles, MapPin, Package, Play, CheckCircle2, Share2, Building2, Mail } from "lucide-react";
 import { useGifts } from "@/hooks/useGifts";
 import { useDreams } from "@/hooks/useDreams";
 import { useEventualHelps, categoryInfo, getUrgencyInfo } from "@/hooks/useEventualHelps";
@@ -589,6 +589,160 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* SECCIÓN INSTITUCIONAL: ¿QUÉ ES AYUDARTE Y CÓMO FUNCIONA? */}
+      <section className="px-6 py-12 bg-surface/50 border-t border-b border-line my-10">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-star/10 text-star text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4" />
+              Red Solidaria Verificada
+            </div>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-cream">
+              ¿Qué es Ayudarte y cómo funciona?
+            </h2>
+            <p className="text-sm md:text-base text-muted max-w-xl mx-auto leading-relaxed">
+              Ayudarte es una plataforma comunitaria argentina que conecta personas con sueños pendientes, necesidades urgentes o proyectos de vida con personas y empresas dispuestas a colaborar de forma directa, sin intermediarios ni comisiones.
+            </p>
+          </div>
+
+          {/* 3 Pasos */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
+                1
+              </div>
+              <h3 className="font-bold text-cream text-base">Publicación y Pruebas</h3>
+              <p className="text-xs text-muted leading-relaxed">
+                Cada usuario comparte su sueño o necesidad adjuntando al menos 4 archivos (fotos o videos) que acreditan la realidad del pedido y previenen fraudes.
+              </p>
+            </div>
+
+            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
+                2
+              </div>
+              <h3 className="font-bold text-cream text-base">Auditoría Comunitaria</h3>
+              <p className="text-xs text-muted leading-relaxed">
+                Nuestro equipo de captadores comunitarios audita la causa, verifica la identidad y califica la prioridad con estrellas de urgencia antes de publicar.
+              </p>
+            </div>
+
+            <div className="bg-surface-2 border border-line rounded-2xl p-5 space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-star/20 text-star font-display font-bold text-lg flex items-center justify-center">
+                3
+              </div>
+              <h3 className="font-bold text-cream text-base">Ayuda Directa y Transparente</h3>
+              <p className="text-xs text-muted leading-relaxed">
+                Los colaboradores ayudan directamente al beneficiario con donaciones de materiales, objetos en desuso, voluntariado o aportes a su cuenta oficial.
+              </p>
+            </div>
+          </div>
+
+          {/* 4 Ejes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            <Link href="/suenos" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
+              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
+                <Star className="w-5 h-5 fill-star" />
+              </div>
+              <div>
+                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Sueños y Hábitat Digno</h4>
+                <p className="text-xs text-muted mt-1">Materiales para construcción, techos, mejoras de hábitat y proyectos de vida con terreno propio.</p>
+              </div>
+            </Link>
+
+            <Link href="/ayuda-eventual" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
+              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Ayudas Cotidianas</h4>
+                <p className="text-xs text-muted mt-1">Respuestas solidarias urgentes en salud, alimentos, remedios y asistencia vecinal.</p>
+              </div>
+            </Link>
+
+            <Link href="/regalar" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
+              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
+                <Package className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Mercado Solidario y Regalos</h4>
+                <p className="text-xs text-muted mt-1">Doná lo que no usás: herramientas, ropa, muebles o electrodomésticos sin costo.</p>
+              </div>
+            </Link>
+
+            <Link href="/ofrecer-donacion" className="bg-surface border border-line hover:border-star/50 p-4 rounded-2xl flex items-start gap-3 transition-colors group">
+              <div className="p-2.5 rounded-xl bg-star/10 text-star shrink-0">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-cream text-sm group-hover:text-star transition-colors">Empresas Solidarias (RSE)</h4>
+                <p className="text-xs text-muted mt-1">Comercios y empresas que donan excedentes de stock, herramientas y apoyan a la comunidad.</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER INSTITUCIONAL */}
+      <footer className="px-6 pt-10 pb-16 bg-surface-2 border-t border-line text-muted">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-line pb-6">
+            <div>
+              <span className="font-display font-bold text-xl text-cream tracking-tight">AYUDARTE<span className="text-star">.APP</span></span>
+              <p className="text-xs text-muted mt-1">Red Solidaria y Cumplimiento de Sueños en Comunidad.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <a href="mailto:info@ayudarte.app" className="inline-flex items-center gap-1.5 text-xs text-cream hover:text-star transition-colors font-medium">
+                <Mail className="w-4 h-4 text-star" />
+                info@ayudarte.app
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Comunidad</p>
+              <ul className="space-y-1.5">
+                <li><Link href="/suenos" className="hover:text-cream transition-colors">Explorar Sueños</Link></li>
+                <li><Link href="/ayuda-eventual" className="hover:text-cream transition-colors">Ayudas Cotidianas</Link></li>
+                <li><Link href="/contar-mi-sueno" className="hover:text-cream transition-colors">Publicar un Sueño</Link></li>
+                <li><Link href="/donadores" className="hover:text-cream transition-colors">Superhéroes y Ranking</Link></li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Donaciones</p>
+              <ul className="space-y-1.5">
+                <li><Link href="/regalar" className="hover:text-cream transition-colors">Mercado Solidario</Link></li>
+                <li><Link href="/ofrecer-donacion" className="hover:text-cream transition-colors">Empresas Solidarias</Link></li>
+                <li><Link href="/perfil" className="hover:text-cream transition-colors">Mi Cuenta</Link></li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Institucional</p>
+              <ul className="space-y-1.5">
+                <li><Link href="/libro" className="hover:text-cream transition-colors">Nuestra Historia</Link></li>
+                <li><Link href="/legales" className="hover:text-cream transition-colors">Términos y Condiciones</Link></li>
+                <li><Link href="/legales" className="hover:text-cream transition-colors">Privacidad y Antifraude</Link></li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-bold text-cream uppercase tracking-wider text-[11px]">Presencia</p>
+              <p className="text-muted leading-relaxed">
+                Sede comunitaria en Salta, República Argentina. Red comunitaria con alcance a todo el país.
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-line/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-muted/80">
+            <p>© {new Date().getFullYear()} Ayudarte.App. Todos los derechos reservados.</p>
+            <p className="text-center sm:text-right">Plataforma libre, comunitaria y sin fines de lucro.</p>
+          </div>
+        </div>
+      </footer>
 
       {/* MODAL: EL ORIGEN DE TODO */}
       {showOrigen && (
